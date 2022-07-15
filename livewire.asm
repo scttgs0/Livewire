@@ -198,7 +198,11 @@ LASTSC          .byte 0,0,0,0,0,0,0,0
 ; Start of Code
 ;--------------------------------------
 
-LIVE            cld
+LIVE            .frsGraphics mcGraphicsOn|mcSpriteOn,mcVideoMode320
+                .frsMouse_off
+                .frsBorder_off
+
+                cld
                 jsr SIOINV              ; INIT SOUND
 
                 lda #0                  ; CLEAR PAGE 0
