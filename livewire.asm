@@ -144,12 +144,12 @@ CONTRL          ;    .addr JOYMSG
 Interrupt_DLI1  .proc
                 pha                     ; save accum
 
-                lda GRAC1               ; get gr. ctrl [0,3]
+                ;lda GRAC1              ; get gr. ctrl [0,3]
                 ;sta WSYNC              ; wait for sync
                 ;sta GRACTL             ; store it
 
-                ;lda DMAC1               ; get and save
-                ;sta DMACTL              ; DMA ctrl
+                ;lda DMAC1              ; get and save
+                ;sta DMACTL             ; DMA ctrl
 
                 ;lda #<Interrupt_DLI2   ; point...
                 ;sta VDSLST             ; to...
@@ -178,8 +178,8 @@ Interrupt_DLI2  .proc
                 ;sta COLPF2             ; in color 2
 
 ;   fetch instruction, single-line player, sprite DMA, normal playfield
-                ;lda #$3D                ; set up...
-                ;sta DMACTL              ; DMA ctrl
+                ;lda #$3D               ; set up...
+                ;sta DMACTL             ; DMA ctrl
 
                 pla                     ; get accum.
                 rti                     ; and exit
@@ -1556,11 +1556,11 @@ ENDKEY          lda #0                  ; clear
                 lda PAUFLG              ; paused?
                 beq NOPAU               ; no, continue
 
-                lda #0                  ; turn off
-                sta AUDC1               ; all sounds
-                sta AUDC2               ; during
-                sta AUDC3               ; the
-                sta AUDC4               ; pause
+                ;lda #0                 ; turn off
+                ;sta AUDC1              ; all sounds
+                ;sta AUDC2              ; during
+                ;sta AUDC3              ; the
+                ;sta AUDC4              ; pause
                 rti                     ; then exit
 
 NOPAU           lda FIRSOU              ; fire sound on?
@@ -1568,28 +1568,28 @@ NOPAU           lda FIRSOU              ; fire sound on?
 
                 dec FIRSOU              ; dec counter
                 ldx FIRSOU              ; put in index
-                lda FIRFRQ,X            ; get frequency
-                sta AUDF2
-                lda FIRCTL,X            ; get control
-                sta AUDC2
+                ;lda FIRFRQ,X           ; get frequency
+                ;sta AUDF2
+                ;lda FIRCTL,X           ; get control
+                ;sta AUDC2
 NOFSND          lda OBDSOU              ; obj death sound?
                 beq NOOSND              ; no!
 
                 dec OBDSOU              ; dec counter
                 ldx OBDSOU              ; put in index
-                lda OBDFRQ,X            ; get frequency
-                sta AUDF3
-                lda OBDCTL,X            ; get control
-                sta AUDC3
+                ;lda OBDFRQ,X           ; get frequency
+                ;sta AUDF3
+                ;lda OBDCTL,X           ; get control
+                ;sta AUDC3
 NOOSND          lda MOVSOU              ; move sound?
                 beq CYCCOL              ; no!
 
                 dec MOVSOU              ; dec counter
                 ldx MOVSOU              ; put in index
-                lda MOVFRQ,X            ; get frequency
-                sta AUDF4
-                lda MOVCTL,X            ; get control
-                sta AUDC4
+                ;lda MOVFRQ,X           ; get frequency
+                ;sta AUDF4
+                ;lda MOVCTL,X           ; get control
+                ;sta AUDC4
 CYCCOL          ;lda COLPM2             ; cycle
                 ;clc                    ; player 2
                 ;adc #16                ; color
