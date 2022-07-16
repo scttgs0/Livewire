@@ -98,3 +98,11 @@ MISCAD          .byte ?                 ; misc. score add
 NUMOBJ          .fill 5                 ; objects left
 DIFF            .byte ?                 ; difficulty adjust
 OBJPRS          .fill 6                 ; obj present flags
+
+JIFFYCLOCK      .byte ?
+InputFlags      .byte ?
+InputType       .byte ?
+itJoystick  = 0
+itKeyboard  = 1
+KEYCHAR         .byte ?                 ; last key pressed
+CONSOL          .byte ?                 ; state of OPTION,SELECT,START

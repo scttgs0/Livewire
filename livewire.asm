@@ -6,7 +6,6 @@
 ; A.N.A.L.O.G. COMPUTING #12
 ; ===========================
 
-                .include "equates_system_atari8.asm"
                 .include "equates_system_c256.asm"
                 .include "equates_zeropage.asm"
                 .include "equates_game.asm"
@@ -42,97 +41,97 @@ BOOT            clc
 ; MAIN GAME DISPLAY LIST
 ; ----------------------
 
-DLIST           .byte AEMPTY8
-                .byte AEMPTY8+ADLI
-                .byte AEMPTY8
+DLIST           ;.byte AEMPTY8
+                ;.byte AEMPTY8+ADLI
+                ;.byte AEMPTY8
 
-                .byte $0E+ALMS
-                    .addr DISP
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E
-                .byte $0E+ALMS
-                    .word DISP+$800
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E,$0E
-                .byte $0E,$0E,$0E
+                ;.byte $0E+ALMS
+                ;    .addr DISP
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E
+                ;.byte $0E+ALMS
+                ;    .word DISP+$800
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E,$0E
+                ;.byte $0E,$0E,$0E
 
-                .byte AEMPTY1+ADLI
-                .byte AEMPTY1
+                ;.byte AEMPTY1+ADLI
+                ;.byte AEMPTY1
 
-                .byte $07+ALMS
-                    .addr INFOLN
+                ;.byte $07+ALMS
+                ;    .addr INFOLN
 
-                .byte AVB+AJMP
-                    .addr DLIST
+                ;.byte AVB+AJMP
+                ;    .addr DLIST
 
 ; -------------------------
 ; TITLE SCREEN DISPLAY LIST
 ; -------------------------
 
-TITLDL          .byte AEMPTY8,AEMPTY8,AEMPTY8,AEMPTY8
-                .byte AEMPTY8,AEMPTY8,AEMPTY8
+TITLDL          ;.byte AEMPTY8,AEMPTY8,AEMPTY8,AEMPTY8
+                ;.byte AEMPTY8,AEMPTY8,AEMPTY8
 
-                .byte $07+ALMS
-                    .addr LASTSC
+                ;.byte $07+ALMS
+                ;    .addr LASTSC
 
-                .byte AEMPTY8,AEMPTY8
+                ;.byte AEMPTY8,AEMPTY8
 
-                .byte $06+ALMS
-                    .addr MAGMSG
+                ;.byte $06+ALMS
+                ;    .addr MAGMSG
 
-                .byte AEMPTY8
+                ;.byte AEMPTY8
 
-                .byte $07+ALMS
-                    .addr TITLE
+                ;.byte $07+ALMS
+                ;    .addr TITLE
 
-                .byte AEMPTY4
+                ;.byte AEMPTY4
 
-                .byte $06+ALMS
-                    .addr AUTHOR
+                ;.byte $06+ALMS
+                ;    .addr AUTHOR
 
-                .byte AEMPTY8,AEMPTY8
+                ;.byte AEMPTY8,AEMPTY8
 
-                .byte AEMPTY4
+                ;.byte AEMPTY4
 
-                .byte $06+ALMS
-CONTRL              .addr JOYMSG
-                .byte AVB+AJMP
-                    .addr TITLDL
+                ;.byte $06+ALMS
+CONTRL          ;    .addr JOYMSG
+                ;.byte AVB+AJMP
+                ;    .addr TITLDL
 
 
 ; -----------------------
@@ -142,1067 +141,1154 @@ CONTRL              .addr JOYMSG
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-DLI1            pha                     ; SAVE ACCUM
-                lda GRAC1               ; GET GR. CTRL
-                sta WSYNC               ; WAIT FOR SYNC
-                sta GRACTL              ; STORE IT
-                lda DMAC1               ; GET AND SAVE
-                sta $D400               ; DMA CTRL
-                lda #<DLI2              ; POINT...
-                sta VDSLST              ; TO...
-                lda #>DLI2              ; NEXT...
-                sta VDSLST+1            ; DLI!
-                pla                     ; GET ACCUM
-                rti                     ; AND EXIT!
+Interrupt_DLI1  .proc
+                pha                     ; save accum
+
+                lda GRAC1               ; get gr. ctrl [0,3]
+                ;sta WSYNC              ; wait for sync
+                ;sta GRACTL             ; store it
+
+                ;lda DMAC1               ; get and save
+                ;sta DMACTL              ; DMA ctrl
+
+                ;lda #<Interrupt_DLI2   ; point...
+                ;sta VDSLST             ; to...
+                ;lda #>Interrupt_DLI2   ; next...
+                ;sta VDSLST+1           ; DLI!
+
+                pla                     ; get accum
+                rti                     ; and exit!
+                .endproc
 
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-DLI2            pha                     ; SAVE ACCUM
-                lda #$0A                ; GET WHITE
-                sta WSYNC               ; WAIT FOR SYNC
-                sta $D016               ; PUT IN COLOR 0
-                lda #$74                ; PUT BLUE...
-                sta $D017               ; IN COLOR 1
-                lda #$28                ; PUT ORANGE...
-                sta $D018               ; IN COLOR 2
-                lda #$3D                ; SET UP...
-                sta $D400               ; DMA CTRL
-                pla                     ; GET ACCUM.
-                rti                     ; AND EXIT
+Interrupt_DLI2  .proc
+                pha                     ; save accum
+
+                ;lda #$0A               ; get white
+                ;sta WSYNC              ; wait for sync
+                ;sta COLPF0             ; put in color 0
+
+                ;lda #$74               ; put blue...
+                ;sta COLPF1             ; in color 1
+
+                ;lda #$28               ; put orange...
+                ;sta COLPF2             ; in color 2
+
+;   fetch instruction, single-line player, sprite DMA, normal playfield
+                ;lda #$3D                ; set up...
+                ;sta DMACTL              ; DMA ctrl
+
+                pla                     ; get accum.
+                rti                     ; and exit
+                .endproc
+
+;--------------------------------------
 
 ;
 ; SCREEN MESSAGES
 ;
 
-INFOLN          .byte 0,0,0,0,0,0,0,0
-                .byte 0,0,$6C,$76,$6C,0,0,0
-MAGMSG          .byte $21,$2E,$21,$2C,$2F,$27
-                .byte 0,$23,$2F,$2D,$30,$35
-                .byte $34,$29,$2E,$27
-TITLE           .byte 0,0,0,0,$6C,$69,$76,$65
-                .byte $77,$69,$72,$65,0,0,0,0
-AUTHOR          .byte 0,$A2,$B9,0,0,$B4,$AF
-                .byte $AD,0,$A8,$B5,$A4,$B3
-                .byte $AF,$AE,0
-JOYMSG          .byte 0,0,0,0,$EA,$EF,$F9,$F3
-                .byte $F4,$E9,$E3,$EB,0,0,0,0
-PADMSG          .byte 0,0,0,0,0,$F0,$E1,$E4
-                .byte $E4,$EC,$E5,0,0,0,0,0
-LASTSC          .byte 0,0,0,0,0,0,0,0
-                .byte 0,0,0,0,0,0,0,0
+INFOLN          .text '          lvl   '
+MAGMSG          .text 'ANALOG COMPUTING'
+TITLE           .text '    livewire    '
+AUTHOR          .text ' BY  TOM HUDSON '
+JOYMSG          .text '    joystick    '
+PADMSG          .text '     paddle     '
+LASTSC          .text '                '
 
 
 ;--------------------------------------
 ; Start of Code
 ;--------------------------------------
 
-LIVE            .frsGraphics mcGraphicsOn|mcSpriteOn,mcVideoMode320
+LIVE            .proc
+                .frsGraphics mcTextOn|mcOverlayOn|mcGraphicsOn|mcSpriteOn,mcVideoMode320
                 .frsMouse_off
                 .frsBorder_off
 
+                InitCharLUT
+
+                lda #<CharResX
+                sta COLS_PER_LINE
+                lda #>CharResX
+                sta COLS_PER_LINE+1
+                lda #CharResX
+                sta COLS_VISIBLE
+
+                lda #<CharResY
+                sta LINES_MAX
+                lda #>CharResY
+                sta LINES_MAX+1
+                lda #CharResY
+                sta LINES_VISIBLE
+
+                ClearScreen
+
                 cld
-                jsr SIOINV              ; INIT SOUND
+                ;jsr SIOINV             ; init sound
 
-                lda #0                  ; CLEAR PAGE 0
+                lda #0                  ; clear page 0
                 ldx #127
-CPAGE0          sta $80,X
+_next1          sta $80,X
                 dex
-                bpl CPAGE0
+                bpl _next1
 
-                lda #1                  ; INIT...
-                sta BCDLVL              ; LEVEL #
-                sta INTRFG              ; SET INTRO FLAG
-                lda #<JOYMSG            ; DEFAULT...
-                sta CONTRL              ; CONTROL...
-                lda #>JOYMSG            ; IS...
-                sta CONTRL+1            ; STICK!
-                lda #0                  ; INIT...
-                sta DMACTL              ; DMA
-                sta NMIEN               ; INTERRUPTS
-                sta AUDCTL              ; AUDIO
-                sta HITCLR              ; COLLISION
-                sta COLBK               ; BACKGND COLOR
-                ldx #3                  ; CLEAR SHORTS
-CLRSHO          sta SHORTF,X
+                lda #1                  ; init...
+                sta BCDLVL              ; level #
+                sta INTRFG              ; set intro flag
+                lda #<JOYMSG            ; default...
+                sta CONTRL              ; control...
+                lda #>JOYMSG            ; is...
+                sta CONTRL+1            ; stick!
+
+;   turn off display, disable interrupts
+                lda #0                  ; init...
+                ;sta DMACTL             ; DMA
+                ;sta NMIEN               ; interrupts
+                ;sta AUDCTL             ; audio
+                ;sta HITCLR             ; collision
+                ;sta COLBK              ; backgnd color
+
+                ldx #3                  ; clear shorts
+_next2          sta SHORTF,X
                 dex
-                bpl CLRSHO
+                bpl _next2
 
-                ldx #5                  ; ZERO OBJECT...
-CLRDED          sta OBDEAD,X            ; CLR DEAD TABLE
+                ldx #5                  ; zero object...
+_next3          sta OBDEAD,X            ; clr dead table
                 dex
-                bpl CLRDED
+                bpl _next3
 
-                ldx #2                  ; ZERO SCORE
-CLRSCO          sta SCORE,X
+                ldx #2                  ; zero score
+_next4          sta SCORE,X
                 sta SCOADD,X
                 dex
-                bpl CLRSCO
+                bpl _next4
 
                 ldx #7
-CLRPRJ          sta PROJAC,X            ; CLEAR PROJ.
+_next5          sta PROJAC,X            ; clear proj.
                 dex
-                bpl CLRPRJ
+                bpl _next5
 
                 ldx #5
-MOVSCO          lda INFOLN,X            ; COPY SCORE...
-                sta LASTSC+5,X          ; TO LAST...
-                dex                     ; SCORE LINE
-                bpl MOVSCO
+_next6          lda INFOLN,X            ; copy score...
+                sta LASTSC+5,X          ; to last...
+                dex                     ; score line
+                bpl _next6
 
-                lda #29                 ; SET ALL...
-                ldx #5                  ; OBJECTS TO...
-INIOBS          sta OBJSEG,X            ; SEGMENT # 29
+                lda #29                 ; set all...
+                ldx #5                  ; objects to...
+_next7          sta OBJSEG,X            ; segment # 29
                 dex
-                bpl INIOBS
+                bpl _next7
 
-                jsr SHOSCO              ; SHOW SCORE
-                jsr SNDOFF              ; NO SOUNDS
+                jsr SHOSCO              ; show score
+                jsr SNDOFF              ; no sounds
 
-                lda #6                  ; 6 PROJECTILES
-                sta PAVAIL              ; AVAILABLE
-                lda #2                  ; SET...
-                sta BONUS               ; BONUS=20000
-                sta LIVES               ; 2 EXTRA LIVES
-                jsr SHOLIV              ; SHOW LIVES LEFT
+                lda #6                  ; 6 projectiles
+                sta PAVAIL              ; available
+                lda #2                  ; set...
+                sta BONUS               ; bonus=20000
+                sta LIVES               ; 2 extra lives
+                jsr SHOLIV              ; show lives left
 
-                lda #5                  ; SET UP...
-                sta SP2IX               ; PLAYER...
-                lda #10                 ; SHAPE...
-                sta SP3IX               ; INDEXES
-                lda #<TITLDL            ; POINT TO...
-                sta DLISTL              ; TITLE...
-                lda #>TITLDL            ; DISPLAY...
-                sta DLISTL+1            ; LIST
-                ldy #<VBI               ; POINT TO...
-                ldx #>VBI               ; VERTICAL...
-                lda #7                  ; BLANK...
-                jsr SETVBV              ; INTERRUPT
+                lda #5                  ; set up...
+                sta SP2IX               ; player...
+                lda #10                 ; shape...
+                sta SP3IX               ; indexes
 
-                lda #>PMAREA            ; SET UP P/M...
-                sta PMBASE              ; BASE ADDRESS
-                jsr PMCLR               ; CLEAR P/M
+                ;lda #<TITLDL           ; point to...
+                ;sta DLISTL             ; title...
+                ;lda #>TITLDL           ; display...
+                ;sta DLISTL+1           ; list
 
-                lda #$74                ; PUT BLUE...
-                sta COLPF0              ; IN COLOR 0
-                lda #$C4                ; PUT GREEN...
-                sta COLPF1              ; IN COLOR 1
-                lda #$0A                ; PUT WHITE...
-                sta COLPF2              ; IN COLOR 2
-                lda #$34                ; PUT RED...
-                sta COLPF3              ; IN COLOR 3
-                lda #$3D                ; SET UP...
-                sta DMACTL              ; DMA,
-                lda #3                  ; GRAPHICS,
-                sta GRACTL              ; AND
-                lda #$C0                ; INTERRUPT...
-                sta NMIEN               ; ENABLE
-                lda #$11                ; SET P/M...
-                sta PRIOR               ; PRIORITY
-                lda #$0F                ; PUT WHITE...
-                sta COLPM1              ; IN PLAYER 1,
-                sta COLPM2              ; PLAYER 2
-                sta COLPM3              ; AND 3
-                lda #$16                ; PUT YELLOW...
-                sta COLPM0              ; IN PLAYER 0
+                ;ldy #<VBI              ; point to...
+                ;ldx #>VBI              ; vertical...
+                ;lda #7                 ; blank...
+                ;jsr SETVBV             ; interrupt
 
-;
+                ;lda #>PMAREA           ; set up p/m...
+                ;sta PMBASE             ; base address
+                jsr PMCLR               ; clear p/m
+
+                ;lda #$74               ; put blue...
+                ;sta COLPF0             ; in color 0
+                ;lda #$C4               ; put green...
+                ;sta COLPF1             ; in color 1
+                ;lda #$0A               ; put white...
+                ;sta COLPF2             ; in color 2
+                ;lda #$34               ; put red...
+                ;sta COLPF3             ; in color 3
+
+;   fetch instruction, single-line player, sprite DMA, normal playfield
+                ;lda #$3D               ; set up...
+                ;sta DMACTL             ; DMA,
+
+;   enable sprites
+                ;lda #3                 ; graphics,
+                ;sta GRACTL             ; and
+
+;   enable VBI + DLI
+                ;lda #$C0               ; interrupt...
+                ;sta NMIEN              ; enable
+
+;   5th-player, Player > Playfield > Background
+                ;lda #$11               ; set p/m...
+                ;sta GPRIOR             ; priority
+
+                ;lda #$0F               ; put white...
+                ;sta COLPM1             ; in player 1,
+                ;sta COLPM2             ; player 2
+                ;sta COLPM3             ; and 3
+
+                ;lda #$16               ; put yellow...
+                ;sta COLPM0             ; in player 0
+
+                .endproc
+
+                ;[fall-through]
+
+
+;--------------------------------------
 ; INTRO SCREEN
-;
+;--------------------------------------
+IntroScreen     .proc
+                lda CONSOL              ; start key...
+                and #1                  ; pressed?
+                bne _checkSELECT        ; no!
 
-INTRO           lda CONSOL              ; START KEY...
-                and #1                  ; PRESSED?
-                bne CKSEL               ; NO!
+_wait1          lda CONSOL              ; start key...
+                and #1                  ; released?
+                beq _wait1              ; no, wait.
 
-GOCHEK          lda CONSOL              ; START KEY...
-                and #1                  ; RELEASED?
-                beq GOCHEK              ; NO, WAIT.
+                jmp DIGIN               ; go dig in!!
 
-                jmp DIGIN               ; GO DIG IN!!
+_checkSELECT    lda CONSOL              ; select key...
+                and #2                  ; pressed?
+                bne IntroScreen         ; naw, loop back.
 
-CKSEL           lda CONSOL              ; SELECT KEY...
-                and #2                  ; PRESSED?
-                bne INTRO               ; NAW, LOOP BACK.
-
-                lda JOYPAD              ; TOGGLE...
-                clc                     ; STICK/PADDLE...
-                adc #1                  ; INDICATOR...
+                lda JOYPAD              ; toggle...
+                clc                     ; stick/paddle...
+                adc #1                  ; indicator...
                 and #1
                 sta JOYPAD
                 tax
-                lda JPLO,X              ; AND SHOW...
-                sta CONTRL              ; CONTROLLER...
-                lda JPHI,X              ; MESSAGE...
-                sta CONTRL+1            ; ON SCREEN!
-                lda #30                 ; 30 JIFFY...
-                jsr WAIT                ; WAIT!
+                lda JPLO,X              ; and show...
+                sta CONTRL              ; controller...
+                lda JPHI,X              ; message...
+                sta CONTRL+1            ; on screen!
+                lda #30                 ; 30 jiffy...
+                jsr WAIT                ; wait!
 
-                jmp INTRO               ; AND LOOP.
+                jmp IntroScreen         ; and loop.
+
+                .endproc
 
 
-; ---------------------------
+;--------------------------------------
 ; HERE'S WHERE PROGRAM STARTS
-; ---------------------------
+;--------------------------------------
+DIGIN           .proc
+                ;lda #<DLIST            ; point to...
+                ;sta DLISTL             ; game...
+                ;lda #>DLIST            ; display...
+                ;sta DLISTL+1           ; list
 
-DIGIN           lda #<DLIST             ; POINT TO...
-                sta DLISTL              ; GAME...
-                lda #>DLIST             ; DISPLAY...
-                sta DLISTL+1            ; LIST
-                lda #0                  ; NO LONGER IN...
-                sta INTRFG              ; INTRO
-FOREVR          lda #1                  ; WE WANT...
-                sta COLOR               ; COLOR 1
-                sta ZAP                 ; RESET ZAP.
-                jsr CLRSC               ; CLEAR SCREEN
+                lda #0                  ; no longer in...
+                sta INTRFG              ; intro
+_forever        lda #1                  ; we want...
+                sta COLOR               ; color 1
+                sta ZAP                 ; reset zap.
+                jsr CLRSC               ; clear screen
 
-                lda GRIDIX              ; GET GRID#
-                and #7                  ; FIND WHICH...
-                tax                     ; GRID SHAPE...
-                lda GRDTBL,X            ; TO DRAW...
-                sta GRDNUM              ; AND STORE
-                jsr SHOLVL              ; SHOW LEVEL#
-                jsr DRGRID              ; DRAW GRID!
+                lda GRIDIX              ; get grid#
+                and #7                  ; find which...
+                tax                     ; grid shape...
+                lda GRDTBL,X            ; to draw...
+                sta GRDNUM              ; and store
+                jsr SHOLVL              ; show level#
+                jsr DRGRID              ; draw grid!
 
-CONWT           lda PAUFLG              ; WE PAUSED?
-                bne CONWT               ; YUP, LOOP.
+_wait1          lda PAUFLG              ; we paused?
+                bne _wait1              ; yup, loop.
 
-                lda KILPLR              ; PLAYER DEAD?
-                beq PLIVE               ; NOPE!
+                lda KILPLR              ; player dead?
+                beq _plive              ; nope!
 
-                jsr DECLIV              ; ONE LESS LIFE!
+                jsr DECLIV              ; one less life!
 
-PLIVE           sta ATTRAC              ; CANCEL ATTRACT!
-                lda FLTIME              ; FLASH GOING?
-                bne NOFEND              ; YES! STORE...
+_plive          ;sta ATTRAC             ; cancel attract!
+                lda FLTIME              ; flash going?
+                bne _nofend             ; yes! store...
 
-                sta HPOSP1              ; FLASH POSITION!
-NOFEND          lda OBTIM1              ; OBJECTS MOVING?
-                bne NOOHAN              ; NOT YET!
+                sta SP01_X_POS          ; flash position!
+_nofend         lda OBTIM1              ; objects moving?
+                bne _noohan             ; not yet!
 
-                lda OBJSPD              ; RESET MOVE...
-                sta OBTIM1              ; TIMER
+                lda OBJSPD              ; reset move...
+                sta OBTIM1              ; timer
 
 ;
 ; COPY OBJECT KILL TABLE
 ;
 
-                ldx #5                  ; THIS SECTION
-COPDED          lda OBDEAD,X            ; COPIES THE
-                sta OBDED2,X            ; OBJECT KILL
-                lda #0                  ; TABLE WHICH IS
-                sta OBDEAD,X            ; SET UP BY THE
-                dex                     ; PROJECTILE
-                bpl COPDED              ; HANDLER
+                ldx #5                  ; this section
+_next1          lda OBDEAD,X            ; copies the
+                sta OBDED2,X            ; object kill
+                lda #0                  ; table which is
+                sta OBDEAD,X            ; set up by the
+                dex                     ; projectile
+                bpl _next1              ; handler
 
 
-                lda MISCAD              ; MISC.SCORE?
-                beq NOMSCO              ; NO!
+                lda MISCAD              ; misc.score?
+                beq _nomsco             ; no!
 
-                sta SCOADD+1            ; SET SCORE ADD...
-                jsr ADDSCO              ; AND ADD IT!
+                sta SCOADD+1            ; set score add...
+                jsr ADDSCO              ; and add it!
 
-                lda #0                  ; THEN RESET THE
-                sta MISCAD              ; ADD VALUE.
-NOMSCO          ldx #5                  ; THIS SECTION
-                lda #0                  ; TALLIES ALL
-CKOBLV          ora OBJPRS,X            ; OBJECTS THAT
-                dex                     ; ARE ALIVE
-                bpl CKOBLV
+                lda #0                  ; then reset the
+                sta MISCAD              ; add value.
+_nomsco         ldx #5                  ; this section
+                lda #0                  ; tallies all
+_next2          ora OBJPRS,X            ; objects that
+                dex                     ; are alive
+                bpl _next2
 
-                ldx #4                  ; NOW TALLY
-CKOBWT          ora NUMOBJ,X            ; ALL OBJECTS
-                dex                     ; THAT ARE NOT
-                bpl CKOBWT              ; ON GRID YET
+                ldx #4                  ; now tally
+_next3          ora NUMOBJ,X            ; all objects
+                dex                     ; that are not
+                bpl _next3              ; on grid yet
 
-                cmp #0                  ; ANY OBJECTS?
-                beq LVLEND              ; NO, END OF LEVEL!
+                cmp #0                  ; any objects?
+                beq _lvlend             ; no, end of level!
 
 
-                ldx #5                  ; IS OBJECT
-GENNOL          lda OBJPRS,X            ; PRESENT?
-                bne NXTOGN              ; YES, TRY NEXT.
+                ldx #5                  ; is object
+_next4          lda OBJPRS,X            ; present?
+                bne _nxtogn             ; yes, try next.
 
-TRYTYP          lda RANDOM              ; LET'S TRY TO
-                and #7                  ; START UP A
-                cmp #5                  ; NEW OBJECT
-                bcs TRYTYP              ; GET A TYPE
+_next5          lda SID_RANDOM          ; let's try to
+                and #7                  ; start up a
+                cmp #5                  ; new object
+                bcs _next5              ; get a type
 
-                tay                     ; ANY OF THAT
-                lda NUMOBJ,Y            ; TYPE WAITING?
-                beq NXTOGN              ; NO, TRY NEXT
+                tay                     ; any of that
+                lda NUMOBJ,Y            ; type waiting?
+                beq _nxtogn             ; no, try next
 
-                sec                     ; DECREMENT #
-                sbc #1                  ; OF OBJECTS
-                sta NUMOBJ,Y            ; WAITING.
-                tya                     ; THEN SET
-                sta OBJTYP,X            ; OBJECT TYPE.
-NEWGRD          lda RANDOM              ; GET A RANDOM
-                and #$0F                ; SUB-GRID
-                cmp #15                 ; NUMBER
-                beq NEWGRD
+                sec                     ; decrement #
+                sbc #1                  ; of objects
+                sta NUMOBJ,Y            ; waiting.
+                tya                     ; then set
+                sta OBJTYP,X            ; object type.
+_next6          lda SID_RANDOM          ; get a random
+                and #$0F                ; sub-grid
+                cmp #15                 ; number
+                beq _next6
 
-                sta OBJGRD,X            ; AND SAVE IT
-                lda #30                 ; PUT OBJECT AT
-                sta OBJSEG,X            ; FAR END OF GRID
-                lda #1                  ; SET UP...
-                sta OBJINC,X            ; OBJ. INCREMENT
-                sta OBJPRS,X            ; OBJECT PRESENT
-NXTOGN          dex                     ; LOOP BACK TO DO
-                bpl GENNOL              ; NEXT OBJECT
+                sta OBJGRD,X            ; and save it
+                lda #30                 ; put object at
+                sta OBJSEG,X            ; far end of grid
+                lda #1                  ; set up...
+                sta OBJINC,X            ; obj. increment
+                sta OBJPRS,X            ; object present
+_nxtogn          dex                     ; loop back to do
+                bpl _next4              ; next object
 
-                jsr OBJHAN              ; HANDLE OBJECTS
-                jsr SHOHAN              ; HANDLE SHORTS
+                jsr OBJHAN              ; handle objects
+                jsr SHOHAN              ; handle shorts
 
-NOOHAN          lda CONSOL              ; ANY CONSOLE
-                cmp #7                  ; KEYS PRESSED?
-                beq JCONWT              ; NOPE!
+_noohan         lda CONSOL              ; any console
+                cmp #7                  ; keys pressed?
+                beq _jconwt             ; nope!
 
-                jmp LIVE                ; YES, RESTART GAME
+                jmp LIVE                ; yes, restart game
 
-JCONWT          jmp CONWT               ; INDIRECT JUMP
+_jconwt         jmp _wait1              ; indirect jump
 
-LVLEND          lda GRIDIX              ; ARE WE ON
-                cmp #63                 ; GRID #63?
-                beq NOGRDI              ; YES, DON'T INC!
+_lvlend         lda GRIDIX              ; are we on
+                cmp #63                 ; grid #63?
+                beq _nogrdi             ; yes, don't inc!
 
-                clc                     ; INCREMENT
-                adc #1                  ; GRID #
-                sta GRIDIX              ; AND SAVE IT.
-                and #7                  ; ADD 2 TO
-                bne NODIFI              ; DIFFICULTY IF
+                clc                     ; increment
+                adc #1                  ; grid #
+                sta GRIDIX              ; and save it.
+                and #7                  ; add 2 to
+                bne _nodifi             ; difficulty if
 
-                inc DIFF                ; ON A MULTIPLE
-                inc DIFF                ; OF 8 GRIDS.
-NODIFI          sed                     ; INCREMENT
-                lda BCDLVL              ; BCD LEVEL #
+                inc DIFF                ; on a multiple
+                inc DIFF                ; of 8 grids.
+_nodifi         sed                     ; increment
+                lda BCDLVL              ; bcd level #
                 clc
                 adc #1
                 sta BCDLVL
-                cld                     ; NOW GO TO
-NOGRDI          jmp FOREVR              ; DRAW NEW GRID.
+                cld                     ; now go to
+_nogrdi         jmp _forever            ; draw new grid.
+
+                .endproc
 
 
 ;======================================
 ; OBJECT HANDLER
 ;======================================
-OBJHAN          lda OBJNUM              ; INCREMENT
-                clc                     ; OBJECT #
+OBJHAN          .proc
+                lda OBJNUM              ; increment
+                clc                     ; object #
                 adc #1
-                cmp #6                  ; DONE?
-                bne STONUM              ; NO, CONTINUE.
+                cmp #6                  ; done?
+                bne STONUM              ; no, continue.
 
-                lda #$FF                ; RESET
-                sta OBJNUM              ; OBJECT #
-                rts                     ; AND EXIT.
+                lda #$FF                ; reset
+                sta OBJNUM              ; object #
+                rts                     ; and exit.
 
-STONUM          sta OBJNUM              ; SAVE OBJ #
-OBHLP1          ldx OBJNUM              ; GET OBJ #
-                lda OBJPRS,X            ; OBJ PRESENT?
-                beq OBJHAN              ; NO!
+STONUM          sta OBJNUM              ; save obj #
+OBHLP1          ldx OBJNUM              ; get obj #
+                lda OBJPRS,X            ; obj present?
+                beq OBJHAN              ; no!
 
-OBLIVE          lda OBJSEG,X            ; WITHIN 2 UNITS
-                cmp #2                  ; OF RIM?
-                bcc NOOBFI              ; YES, DON'T FIRE
+OBLIVE          lda OBJSEG,X            ; within 2 units
+                cmp #2                  ; of rim?
+                bcc NOOBFI              ; yes, don't fire
 
-                lda RANDOM              ; RANDOM CHANCE
-                and #$0F                ; OF SHOOTING
-                bne NOOBFI              ; DON'T SHOOT
+                lda SID_RANDOM          ; random chance
+                and #$0F                ; of shooting
+                bne NOOBFI              ; don't shoot
 
-                lda PROJAC              ; PROJ. 0 ACTIVE?
-                bne TRYPR1              ; YES, IGNORE!
+                lda PROJAC              ; proj. 0 active?
+                bne TRYPR1              ; yes, ignore!
 
-                ldy #0                  ; FORCE BRANCH
-                beq STOBFI              ; TO STORE IT
+                ldy #0                  ; force branch
+                beq STOBFI              ; to store it
 
-TRYPR1          lda PROJAC+1            ; PROJ. 1 ACTIVE?
-                bne NOOBFI              ; YES, NO FIRE
+TRYPR1          lda PROJAC+1            ; proj. 1 active?
+                bne NOOBFI              ; yes, no fire
 
-                ldy #1                  ; SET INDEX
-STOBFI          lda OBJSEG,X            ; INITIALIZE
-                lsr A                   ; PROJECTILE
-                sta PROJSG,Y            ; SEGMENT #
-                lda OBJGRD,X            ; AND
-                sta PROGRD,Y            ; SUB-GRID #
-                asl A                   ; MULTIPLY
-                asl A                   ; BY
+                ldy #1                  ; set index
+STOBFI          lda OBJSEG,X            ; initialize
+                lsr A                   ; projectile
+                sta PROJSG,Y            ; segment #
+                lda OBJGRD,X            ; and
+                sta PROGRD,Y            ; sub-grid #
+                asl A                   ; multiply
+                asl A                   ; by
                 asl A                   ; 16
-                asl A                   ; AND
-                sta PROJGN,Y            ; SAVE INDEX!
-                lda #$FF                ; SET INCREMENT
-                sta PROINC,Y            ; (TOWARD RIM)
-                lda #21                 ; START THE
-                sta FIRSOU              ; FIRE SOUND
-                lda #1                  ; AND
-                sta PROJAC,Y            ; PROJECTILE
-NOOBFI          lda #0                  ; SET COLOR 0
-                sta COLOR               ; TO ERASE OBJECT
-                jsr DRWOBJ              ; AND ERASE IT
+                asl A                   ; and
+                sta PROJGN,Y            ; save index!
+                lda #$FF                ; set increment
+                sta PROINC,Y            ; (toward rim)
+                lda #21                 ; start the
+                sta FIRSOU              ; fire sound
+                lda #1                  ; and
+                sta PROJAC,Y            ; projectile
+NOOBFI          lda #0                  ; set color 0
+                sta COLOR               ; to erase object
+                jsr DRWOBJ              ; and erase it
 
                 ldx OBJNUM
-                lda OBDED2,X            ; OBJ DEAD?
-                beq NOOKIL              ; YES! START
+                lda OBDED2,X            ; obj dead?
+                beq NOOKIL              ; yes! start
 
-                jsr FLASH               ; DEATH FLASH
-
-                ldx OBJNUM
-                ldy OBJTYP,X            ; GET OBJECT TYPE
-                lda POINT1,Y            ; GET POINTS
-                sta SCOADD+1            ; AND READY
-                lda POINT2,Y            ; THE SCORE
-                sta SCOADD+2            ; ADD VALUE
-                jsr ADDSCO              ; ADD TO SCORE!
+                jsr FLASH               ; death flash
 
                 ldx OBJNUM
-                jmp KILOBJ              ; THEN KILL OBJ.
+                ldy OBJTYP,X            ; get object type
+                lda POINT1,Y            ; get points
+                sta SCOADD+1            ; and ready
+                lda POINT2,Y            ; the score
+                sta SCOADD+2            ; add value
+                jsr ADDSCO              ; add to score!
 
-NOOKIL          lda OBJSEG,X            ; INCREMENT
-                sec                     ; OBJECT'S
-                sbc OBJINC,X            ; SEGMENT
-                sta OBJSEG,X            ; POSITION
-                bmi KILOBJ              ; PAST RIM!
+                ldx OBJNUM
+                jmp KILOBJ              ; then kill obj.
 
-                cmp #30                 ; TYPE 3 PAST END?
-                bne NOTOT3              ; NOPE!
+NOOKIL          lda OBJSEG,X            ; increment
+                sec                     ; object's
+                sbc OBJINC,X            ; segment
+                sta OBJSEG,X            ; position
+                bmi KILOBJ              ; past rim!
 
-                inc NUMOBJ+2            ; START TYPE 2
-                bne KILOBJ              ; FORCE BRANCH
+                cmp #30                 ; type 3 past end?
+                bne NOTOT3              ; nope!
 
-NOTOT3          cmp #10                 ; AT TYPE 3 TURN?
-                bne OBHLP2              ; NO!
+                inc NUMOBJ+2            ; start type 2
+                bne KILOBJ              ; force branch
 
-                lda OBJTYP,X            ; IS IT
-                cmp #3                  ; TYPE 3?
-                bne OBHLP2              ; NO!
+NOTOT3          cmp #10                 ; at type 3 turn?
+                bne OBHLP2              ; no!
 
-                lda #$FF                ; REVERSE OBJECT
-                sta OBJINC,X            ; INCREMENT
-OBHLP2          lda OBJTYP,X            ; IS OBJECT
-                cmp #2                  ; TYPE 2?
-                bne SETHUE              ; NO, SET COLOR
+                lda OBJTYP,X            ; is it
+                cmp #3                  ; type 3?
+                bne OBHLP2              ; no!
 
-                lda RANDOM              ; GET RANDOM
-                and #1                  ; DIRECTION
-                tay                     ; FOR TYPE 2
-                lda OBJGRD,X            ; AND
-                clc                     ; ADD OR
-                adc ADDSB1,Y            ; SUBTRACT 1
-                cmp #15                 ; PAST LIMIT?
-                bcs SETHUE              ; YES!
+                lda #$FF                ; reverse object
+                sta OBJINC,X            ; increment
+OBHLP2          lda OBJTYP,X            ; is object
+                cmp #2                  ; type 2?
+                bne SETHUE              ; no, set color
 
-                sta OBJGRD,X            ; SAVE NEW POS.
-SETHUE          lda OBJTYP,X            ; GET OBJ. TYPE
-                tax                     ; AND GET
-                lda OBJHUE,X            ; COLOR #
-                sta COLOR               ; SAVE IT
-                jsr DRWOBJ              ; AND DRAW OBJECT!
+                lda SID_RANDOM          ; get random
+                and #1                  ; direction
+                tay                     ; for type 2
+                lda OBJGRD,X            ; and
+                clc                     ; add or
+                adc ADDSB1,Y            ; subtract 1
+                cmp #15                 ; past limit?
+                bcs SETHUE              ; yes!
 
-                jmp OBJHAN              ; DO NEXT ONE
+                sta OBJGRD,X            ; save new pos.
+SETHUE          lda OBJTYP,X            ; get obj. type
+                tax                     ; and get
+                lda OBJHUE,X            ; color #
+                sta COLOR               ; save it
+                jsr DRWOBJ              ; and draw object!
 
+                jmp OBJHAN              ; do next one
 
-KILOBJ          lda #0                  ; OBJECT IS NO
-                sta OBJPRS,X            ; LONGER ALIVE
-                lda #21                 ; SET UP
-                sta OBDSOU              ; DEATH SOUND
-                lda OBJSEG,X            ; CHECK
-                bpl JOBHAN              ; FOR A
+KILOBJ          lda #0                  ; object is no
+                sta OBJPRS,X            ; longer alive
+                lda #21                 ; set up
+                sta OBDSOU              ; death sound
+                lda OBJSEG,X            ; check
+                bpl JOBHAN              ; for a
 
-                lda OBJGRD,X            ; COLLISION
-                cmp PLRGRD              ; WITH PLAYER
-                bne CKSHOR              ; NO HIT
+                lda OBJGRD,X            ; collision
+                cmp PLRGRD              ; with player
+                bne CKSHOR              ; no hit
 
-                lda #1                  ; HIT,
-                sta KILPLR              ; KILL PLAYER!
-                bne JOBHAN              ; NEXT OBJECT
+                lda #1                  ; hit,
+                sta KILPLR              ; kill player!
+                bne JOBHAN              ; next object
 
-CKSHOR          lda OBJTYP,X            ; OBJECT
-                cmp #1                  ; TYPE 1?
-                bne JOBHAN              ; NOPE!
+CKSHOR          lda OBJTYP,X            ; object
+                cmp #1                  ; type 1?
+                bne JOBHAN              ; nope!
 
-                ldy #3                  ; TRY SHORT:
-TRYSHO          lda SHORTF,Y            ; SHORT AVAILABLE?
-                beq INISHO              ; YUP!
+                ldy #3                  ; try short:
+TRYSHO          lda SHORTF,Y            ; short available?
+                beq INISHO              ; yup!
 
-                dey                     ; KEEP...
-                bpl TRYSHO              ; TRYING!
+                dey                     ; keep...
+                bpl TRYSHO              ; trying!
 
-                bmi JOBHAN              ; NO SHORT AVAIL!
+                bmi JOBHAN              ; no short avail!
 
-INISHO          lda OBJGRD,X            ; MULTIPLY THE
-                asl A                   ; OBJECT'S
-                asl A                   ; SUB-GRID #
-                asl A                   ; BY 16...
+INISHO          lda OBJGRD,X            ; multiply the
+                asl A                   ; object's
+                asl A                   ; sub-grid #
+                asl A                   ; by 16...
                 asl A
                 clc
-                adc #8                  ; AND ADD 8 FOR
-                sta SHORTX,Y            ; THE SHORT INDEX
-                lda #1                  ; SHORT IS
-                sta SHORTF,Y            ; ALIVE!
-                lda RANDOM              ; RANDOMIZE...
-                and #1                  ; SHORT...
-                sta SHORTD,Y            ; DIRECTION
-                lda RANDOM              ; AND THAT...
-                and #$3F                ; DIRECTION'S...
-                sta SHORTT,Y            ; TIME!
-JOBHAN          jmp OBJHAN              ; NEXT OBJECT
+                adc #8                  ; and add 8 for
+                sta SHORTX,Y            ; the short index
+                lda #1                  ; short is
+                sta SHORTF,Y            ; alive!
+                lda SID_RANDOM          ; randomize...
+                and #1                  ; short...
+                sta SHORTD,Y            ; direction
+                lda SID_RANDOM          ; and that...
+                and #$3F                ; direction's...
+                sta SHORTT,Y            ; time!
+JOBHAN          jmp OBJHAN              ; next object
+
+                .endproc
 
 
 ;======================================
 ; DRAW OBJECT
 ;======================================
-DRWOBJ          ldx OBJNUM              ; GET OBJECT #
-                lda OBJGRD,X            ; GET SUB-GRID #
-                asl A                   ; MULTIPLY
-                asl A                   ; BY 16...
+DRWOBJ          .proc
+                ldx OBJNUM              ; get object #
+                lda OBJGRD,X            ; get sub-grid #
+                asl A                   ; multiply
+                asl A                   ; by 16...
                 asl A
                 asl A
-                sta HLDGRD              ; AND SAVE.
-                lda OBJSEG,X            ; DIVIDE
-                lsr A                   ; SEGMENT BY 2
-                bcs ODDSEG              ; PROCESS ODD #
+                sta HLDGRD              ; and save.
+                lda OBJSEG,X            ; divide
+                lsr A                   ; segment by 2
+                bcs ODDSEG              ; process odd #
 
-                clc                     ; IT'S EVEN, ADD
-                adc HLDGRD              ; GRID INDEX
-                tay                     ; PUT IN Y REG.
-                lda SEGX,Y              ; GET OBJECT'S
-                sta PLOTX               ; X POSITION
-                sta SAVEX               ; AND SAVE
-                lda SEGY,Y              ; GET OBJECT'S
-                sta PLOTY               ; Y POSITION
-                sta SAVEY               ; AND SAVE
-                jmp ODDSKP              ; SKIP ODD ROUTINE
+                clc                     ; it's even, add
+                adc HLDGRD              ; grid index
+                tay                     ; put in y reg.
+                lda SEGX,Y              ; get object's
+                sta PLOTX               ; x position
+                sta SAVEX               ; and save
+                lda SEGY,Y              ; get object's
+                sta PLOTY               ; y position
+                sta SAVEY               ; and save
+                jmp ODDSKP              ; skip odd routine
 
-ODDSEG          clc                     ; IT'S ODD, ADD
-                adc HLDGRD              ; GRID INDEX
-                tay                     ; PUT IN Y REG.
-                lda SEGX,Y              ; GET OBJECT'S
-                clc                     ; X POS, ADD
-                adc SEGX+1,Y            ; NEXT X POS.
-                ror A                   ; GET AVERAGE
-                sta PLOTX               ; PUT IN PLOT X
-                sta SAVEX               ; AND SAVE
-                lda SEGY,Y              ; GET OBJECT'S
-                clc                     ; Y POS, ADD
-                adc SEGY+1,Y            ; NEXT Y POS.
-                ror A                   ; GET AVERAGE
-                sta PLOTY               ; PUT IN PLOT Y
-                sta SAVEY               ; AND SAVE
-ODDSKP          lda #30                 ; NOW CALCULATE
-                sec                     ; THE OBJECT'S
-                sbc OBJSEG,X            ; SIZE BASED ON
-                lsr A                   ; ITS POSITION
-                and #$FE                ; ON THE GRID
+ODDSEG          clc                     ; it's odd, add
+                adc HLDGRD              ; grid index
+                tay                     ; put in y reg.
+                lda SEGX,Y              ; get object's
+                clc                     ; x pos, add
+                adc SEGX+1,Y            ; next x pos.
+                ror A                   ; get average
+                sta PLOTX               ; put in plot x
+                sta SAVEX               ; and save
+                lda SEGY,Y              ; get object's
+                clc                     ; y pos, add
+                adc SEGY+1,Y            ; next y pos.
+                ror A                   ; get average
+                sta PLOTY               ; put in plot y
+                sta SAVEY               ; and save
+ODDSKP          lda #30                 ; now calculate
+                sec                     ; the object's
+                sbc OBJSEG,X            ; size based on
+                lsr A                   ; its position
+                and #$FE                ; on the grid
                 asl A
                 asl A
-                tay                     ; PUT INDEX IN Y
-                ldx #0                  ; NOW COPY PART
-COPYSZ          lda SIZTBL,Y            ; OF THE SIZE
-                sta SIZEWK,X            ; TABLE TO A
-                iny                     ; SIZE WORK AREA
-                inx                     ; THIS TABLE HOLDS
-                cpx #8                  ; 8 SIZE VALUES
-                bne COPYSZ              ; BASED ON DIST.
+                tay                     ; put index in y
+                ldx #0                  ; now copy part
+COPYSZ          lda SIZTBL,Y            ; of the size
+                sta SIZEWK,X            ; table to a
+                iny                     ; size work area
+                inx                     ; this table holds
+                cpx #8                  ; 8 size values
+                bne COPYSZ              ; based on dist.
 
-                ldx OBJNUM              ; GET OBJECT #
-                lda OBJTYP,X            ; AND ITS TYPE
-                asl A                   ; AND MULTIPLY
-                asl A                   ; BY 8 FOR AN
-                asl A                   ; INDEX INTO
-                sta SHAPIX              ; THE SHAPE TABLE
-                lda #8                  ; MAX 8 LINES IN
-                sta SHAPCT              ; EACH OBJECT
-DOBLP           ldx SHAPIX              ; GET LINE#
-                lda OBJDIR,X            ; & ITS DIRECTION
-                tay                     ; A NEGATIVE #
-                bmi ENDOBJ              ; INDICATES END
+                ldx OBJNUM              ; get object #
+                lda OBJTYP,X            ; and its type
+                asl A                   ; and multiply
+                asl A                   ; by 8 for an
+                asl A                   ; index into
+                sta SHAPIX              ; the shape table
+                lda #8                  ; max 8 lines in
+                sta SHAPCT              ; each object
+DOBLP           ldx SHAPIX              ; get line#
+                lda OBJDIR,X            ; & its direction
+                tay                     ; a negative #
+                bmi ENDOBJ              ; indicates end
 
-                lda PXINC,Y             ; GET X INCREMENT
-                sta XI                  ; OF LINE,
-                lda PYINC,Y             ; Y INCREMENT
-                sta YI                  ; OF LINE,
-                lda OBJLEN,X            ; ABSOLUTE LENGTH
-                tay                     ; OF LINE THEN
-                lda SIZEWK,Y            ; SCALED LENGTH
-                sta LENGTH              ; AND STORE!
-PLOTOB          lda PLOTX               ; THIS SECTION
-                clc                     ; ADJUSTS THE
-                adc XI                  ; X AND Y PLOT
-                sta PLOTX               ; VALUES...
+                lda PXINC,Y             ; get x increment
+                sta XI                  ; of line,
+                lda PYINC,Y             ; y increment
+                sta YI                  ; of line,
+                lda OBJLEN,X            ; absolute length
+                tay                     ; of line then
+                lda SIZEWK,Y            ; scaled length
+                sta LENGTH              ; and store!
+PLOTOB          lda PLOTX               ; this section
+                clc                     ; adjusts the
+                adc XI                  ; x and y plot
+                sta PLOTX               ; values...
                 lda PLOTY
                 clc
                 adc YI
                 sta PLOTY
-                lda SHAPIX              ; DON'T PLOT
-                beq NOPLT1              ; FIRST LINE!
+                lda SHAPIX              ; don't plot
+                beq NOPLT1              ; first line!
 
-                jsr PLOTCL              ; PLOT POINT
+                jsr PLOTCL              ; plot point
 
-NOPLT1          lda PLOTY               ; INCREMENT Y
-                clc                     ; AGAIN TO ADJUST
-                adc YI                  ; FOR GR. 7+
-                sta PLOTY               ; ASPECT RATIO
-                lda SHAPIX              ; DON'T PLOT
-                beq NOPLT2              ; FIRST LINE
+NOPLT1          lda PLOTY               ; increment y
+                clc                     ; again to adjust
+                adc YI                  ; for gr. 7+
+                sta PLOTY               ; aspect ratio
+                lda SHAPIX              ; don't plot
+                beq NOPLT2              ; first line
 
-                jsr PLOTCL              ; PLOT POINT
+                jsr PLOTCL              ; plot point
 
-NOPLT2          dec LENGTH              ; END OF LINE?
-                bpl PLOTOB              ; NOPE!
+NOPLT2          dec LENGTH              ; end of line?
+                bpl PLOTOB              ; nope!
 
-                inc SHAPIX              ; NEXT LINE
-                dec SHAPCT              ; LAST LINE?
-                bne DOBLP               ; NOT YET!
+                inc SHAPIX              ; next line
+                dec SHAPCT              ; last line?
+                bne DOBLP               ; not yet!
 
-ENDOBJ          rts                     ; ALL DONE!
+ENDOBJ          rts                     ; all done!
+                .endproc
 
 
 ;======================================
 ; SHORT HANDLER
 ;======================================
-SHOHAN          ldx #3                  ; MAX. 4 SHORTS
-SHHANL          lda SHORTF,X            ; SHORT ALIVE?
-                beq HANNXS              ; NO, DO NEXT
+SHOHAN          .proc
+                ldx #3                  ; max. 4 shorts
+SHHANL          lda SHORTF,X            ; short alive?
+                beq HANNXS              ; no, do next
 
-                ldy SHORTD,X            ; GET SHORT DIR.
-                lda SHORTX,X            ; GET X POS.
-                clc                     ; AND ADJUST
-                adc ADDSUB,Y            ; POSITION
-                cmp #240                ; ON GRID?
-                bcs RESSHD              ; NO! DON'T MOVE
+                ldy SHORTD,X            ; get short dir.
+                lda SHORTX,X            ; get x pos.
+                clc                     ; and adjust
+                adc ADDSUB,Y            ; position
+                cmp #240                ; on grid?
+                bcs RESSHD              ; no! don't move
 
-                sta SHORTX,X            ; OK, SAVE POS.
-                dec SHORTT,X            ; DIRECTION CHANGE?
-                bpl HANNXS              ; NO!
+                sta SHORTX,X            ; ok, save pos.
+                dec SHORTT,X            ; direction change?
+                bpl HANNXS              ; no!
 
-RESSHD          lda RANDOM              ; GET A RANDOM
-                and #$3F                ; DIRECTION TIME
-                sta SHORTT,X            ; 0-63 & SAVE
-                and #1                  ; RANDOM DIRECTION
-                sta SHORTD,X            ; 0-1 & SAVE
-HANNXS          dex                     ; MORE SHORTS?
-                bpl SHHANL              ; YUP!
+RESSHD          lda SID_RANDOM          ; get a random
+                and #$3F                ; direction time
+                sta SHORTT,X            ; 0-63 & save
+                and #1                  ; random direction
+                sta SHORTD,X            ; 0-1 & save
+HANNXS          dex                     ; more shorts?
+                bpl SHHANL              ; yup!
 
-                rts                     ; ALL DONE!
+                rts                     ; all done!
+                .endproc
 
 
 ;======================================
 ; ADD TO SCORE
 ;======================================
-ADDSCO          ldy #0                  ; GET ZERO
-                sed                     ; SET DECIMAL MODE
-                lda SCORE+2             ; THIS SECTION
-                clc                     ; INCREMENTS
-                adc SCOADD+2            ; THE 3-DIGIT
-                sta SCORE+2             ; SCORE USING
-                sty SCOADD+2            ; THE 3-DIGIT
-                lda SCORE+1             ; SCORE ADD
-                adc SCOADD+1            ; AREA, THEN
-                sta SCORE+1             ; ZEROS OUT
-                sty SCOADD+1            ; THE
-                lda SCORE               ; SCORE ADD
-                adc SCOADD              ; AREA USING
-                sta SCORE               ; THE
-                sty SCOADD              ; Y REGISTER.
-                cld                     ; CLR DECIMAL MODE
-                jsr SHOSCO              ; SHOW SCORE
+ADDSCO          .proc
+                ldy #0                  ; get zero
+                sed                     ; set decimal mode
+                lda SCORE+2             ; this section
+                clc                     ; increments
+                adc SCOADD+2            ; the 3-digit
+                sta SCORE+2             ; score using
+                sty SCOADD+2            ; the 3-digit
+                lda SCORE+1             ; score add
+                adc SCOADD+1            ; area, then
+                sta SCORE+1             ; zeros out
+                sty SCOADD+1            ; the
+                lda SCORE               ; score add
+                adc SCOADD              ; area using
+                sta SCORE               ; the
+                sty SCOADD              ; y register.
+                cld                     ; clr decimal mode
+                jsr SHOSCO              ; show score
 
-                lda SCORE               ; IS SCORE AT
-                cmp BONUS               ; BONUS LEVEL?
-                bne NOBONS              ; SORRY!
+                lda SCORE               ; is score at
+                cmp BONUS               ; bonus level?
+                bne NOBONS              ; sorry!
 
-                jsr INCLIV              ; BONUS, ADD LIFE!
+                jsr INCLIV              ; bonus, add life!
 
-                sed                     ; SET DECIMAL
-                lda BONUS               ; GET OLD BONUS
-                clc                     ; ADD 20000
-                adc #2                  ; TO IT
-                cld                     ; CLR DECIMAL
-                sta BONUS               ; AND SAVE BONUS
-NOBONS          rts                     ; FINIS!
+                sed                     ; set decimal
+                lda BONUS               ; get old bonus
+                clc                     ; add 20000
+                adc #2                  ; to it
+                cld                     ; clr decimal
+                sta BONUS               ; and save bonus
+NOBONS          rts                     ; finis!
+                .endproc
 
 
 ;======================================
 ; Show Score
 ;======================================
-SHOSCO          lda #$10                ; SET UP COLOR
-                sta SHCOLR              ; BYTE FOR SHOW
-                ldx #0                  ; ZERO X
-                ldy #0                  ; & Y REGS
-SSCOLP          lda SCORE,Y             ; GET SCORE BYTE
-                jsr SHOBCD              ; SHOW IT
+SHOSCO          .proc
+                lda #$10                ; set up color
+                sta SHCOLR              ; byte for show
+                ldx #0                  ; zero x
+                ldy #0                  ; & y regs
+SSCOLP          lda SCORE,Y             ; get score byte
+                jsr SHOBCD              ; show it
 
-                inx                     ; INCREMENT SHOW
-                inx                     ; POS. BY 2
-                iny                     ; NEXT SCORE BYTE
-                cpy #3                  ; DONE?
-                bne SSCOLP              ; NOT YET!
+                inx                     ; increment show
+                inx                     ; pos. by 2
+                iny                     ; next score byte
+                cpy #3                  ; done?
+                bne SSCOLP              ; not yet!
 
-                rts                     ; ALL DONE!
+                rts                     ; all done!
+                .endproc
 
 
 ;======================================
 ; INCREMENT LIVES
 ;======================================
-INCLIV          lda LIVES               ; DO WE HAVE
-                cmp #5                  ; 5 LIVES NOW?
-                beq NOMOLV              ; YUP, NO INC!
+INCLIV          .proc
+                lda LIVES               ; do we have
+                cmp #5                  ; 5 lives now?
+                beq NOMOLV              ; yup, no inc!
 
-                inc LIVES               ; ONE MORE LIFE
-                jsr SHOLIV              ; SHOW IT
+                inc LIVES               ; one more life
+                jsr SHOLIV              ; show it
 
-NOMOLV          rts                     ; AND EXIT!
+NOMOLV          rts                     ; and exit!
+                .endproc
 
 
 ;======================================
 ; DECREMENT LIVES
 ;======================================
-DECLIV          jsr SNDOFF              ; NO SOUND
+DECLIV          .proc
+                jsr SNDOFF              ; no sound
 
 
 ; ---------------------------
 ; WAIT FOR PROJECTILES TO END
 ; ---------------------------
 
-WAITPD          ldx #7                  ; 8 PROJECTILES
-                lda #0                  ; ZERO TALLY
-CKPRLV          ora PROJAC,X            ; CHECK ALL
-                dex                     ; PROJECTILES
-                bne CKPRLV              ; FOR ACTIVITY
+WAITPD          ldx #7                  ; 8 projectiles
+                lda #0                  ; zero tally
+CKPRLV          ora PROJAC,X            ; check all
+                dex                     ; projectiles
+                bne CKPRLV              ; for activity
 
-                cmp #0                  ; ANY ACTIVE?
-                bne WAITPD              ; YES! WAIT MORE!
+                cmp #0                  ; any active?
+                bne WAITPD              ; yes! wait more!
 
 ;
 ; STOP SHORTS
 ;
 
-                ldx #3                  ; 4 SHORTS (0-3)
-STPSHO          sta SHORTF,X            ; TURN OFF
-                dex                     ; ALL OF 'EM
-                bpl STPSHO              ; LOOP UNTIL DONE
+                ldx #3                  ; 4 shorts (0-3)
+STPSHO          sta SHORTF,X            ; turn off
+                dex                     ; all of 'em
+                bpl STPSHO              ; loop until done
 
 ;
 ; PUT OBJECTS AT END OF GRID
 ;
 
-                lda #0                  ; ERASE
-                sta COLOR               ; COLOR
-                lda #5                  ; ERASE ALL 6
-                sta OBJNUM              ; OBJECTS
-ERSOBJ          jsr DRWOBJ              ; ERASE IT!
+                lda #0                  ; erase
+                sta COLOR               ; color
+                lda #5                  ; erase all 6
+                sta OBJNUM              ; objects
+ERSOBJ          jsr DRWOBJ              ; erase it!
 
-                ldx OBJNUM              ; GET OBJECT #
-                lda #30                 ; PLACE AT
-                sta OBJSEG,X            ; SEG #30
-                lda #1                  ; SET UP MOVE
-                sta OBJINC,X            ; INCREMENT
-RNDOBG          lda RANDOM              ; GET RANDOM
-                and #$0F                ; SUB-GRID #
+                ldx OBJNUM              ; get object #
+                lda #30                 ; place at
+                sta OBJSEG,X            ; seg #30
+                lda #1                  ; set up move
+                sta OBJINC,X            ; increment
+RNDOBG          lda SID_RANDOM          ; get random
+                and #$0F                ; sub-grid #
                 cmp #$0F                ; 0-14
                 beq RNDOBG
 
                 sta OBJGRD,X
-                dec OBJNUM              ; MORE OBJECTS?
-                bpl ERSOBJ              ; YEAH, DO 'EM
+                dec OBJNUM              ; more objects?
+                bpl ERSOBJ              ; yeah, do 'em
 
-                lda #$0F                ; SHOW PLAYER
-                sta COLPM0              ; DEATH HERE
-                sta AUDC1               ; START SOUND
-MOREWT          lda RANDOM              ; SET RANDOM
-                and #$1F                ; DEATH SOUND
-                sta AUDF1               ; FREQUENCY
-                lda #6                  ; WAIT 0.1 SEC
+                ;lda #$0F               ; show player
+                ;sta COLPM0             ; death here
+                ;sta AUDC1              ; start sound
+MOREWT          ;lda SID_RANDOM         ; set random
+                ;and #$1F               ; death sound
+                ;sta AUDF1              ; frequency
+                lda #6                  ; wait 0.1 sec
                 jsr WAIT
 
-                dec COLPM0              ; DEC BRIGHTNESS
-                lda COLPM0              ; NOW SET
-                sta AUDC1               ; DEATH VOLUME
-                bne MOREWT              ; MORE WAIT
+                ;dec COLPM0             ; dec brightness
+                ;lda COLPM0             ; now set
+                ;sta AUDC1              ; death volume
+                ;bne MOREWT             ; more wait
 
-                lda LIVES               ; MORE LIVES?
-                beq DEAD                ; NO MORE LIFE!
+                lda LIVES               ; more lives?
+                beq DEAD                ; no more life!
 
-                dec LIVES               ; ONE LESS LIFE
-                jsr SHOLIV              ; SHOW IT
+                dec LIVES               ; one less life
+                jsr SHOLIV              ; show it
 
-                lda #60                 ; WAIT 1 SEC
+                lda #60                 ; wait 1 sec
                 jsr WAIT
 
-                lda #0                  ; RESET PLAYER
-                sta KILPLR              ; KILL FLAG
-                lda #$16                ; AND
-                sta COLPM0              ; PLAYER COLOR
-                rts                     ; AND EXIT!
+                lda #0                  ; reset player
+                sta KILPLR              ; kill flag
+                ;lda #$16               ; and
+                ;sta COLPM0             ; player color
+                rts                     ; and exit!
 
-DEAD            pla                     ; ALL DEAD, PULL
-                pla                     ; RETURN ADDR.
-                jmp LIVE                ; AND RESTART GAME
+DEAD            pla                     ; all dead, pull
+                pla                     ; return addr.
+                jmp LIVE                ; and restart game
+
+                .endproc
 
 
 ;======================================
 ; SHOW LIVES
 ;======================================
-SHOLIV          lda #$90                ; SELECT DISPLAY
-                sta SHCOLR              ; COLOR
-                lda LIVES               ; GET LIVES
-                ldx #7                  ; 7TH CHAR ON LINE
-                jsr SHOBCD              ; SHOW IT!
+SHOLIV          .proc
+                lda #$90                ; select display
+                sta SHCOLR              ; color
+                lda LIVES               ; get lives
+                ldx #7                  ; 7th char on line
+                jsr SHOBCD              ; show it!
 
-                rts                     ; AND EXIT
+                rts                     ; and exit
+                .endproc
 
 
 ;======================================
 ; SHOW LEVEL
 ;======================================
-SHOLVL          ldy #$50                ; SELECT DISPLAY
-                sty SHCOLR              ; COLOR
-                lda BCDLVL              ; GET LEVEL#
-                ldx #14                 ; 14TH CHAR
+SHOLVL          .proc
+                ldy #$50                ; select display
+                sty SHCOLR              ; color
+                lda BCDLVL              ; get level#
+                ldx #14                 ; 14th char
+
+                .endproc
+
+                ;[fall-through]
 
 
 ;======================================
 ; BCD CHAR DISPLAY
 ;======================================
-SHOBCD          sta SHOBYT              ; SAVE CHARACTER
-                and #$0F                ; GET NUM 1
-                ora SHCOLR              ; ADD COLOR
-                sta INFOLN+1,X          ; SHOW IT
-                lda SHOBYT              ; GET CHAR.
-                lsr A                   ; SHIFT RIGHT
-                lsr A                   ; TO GET
-                lsr A                   ; NUM 2
+SHOBCD          .proc
+                sta SHOBYT              ; save character
+                and #$0F                ; get num 1
+                ora SHCOLR              ; add color
+                sta INFOLN+1,X          ; show it
+                lda SHOBYT              ; get char.
+                lsr A                   ; shift right
+                lsr A                   ; to get
+                lsr A                   ; num 2
                 lsr A
-                ora SHCOLR              ; ADD COLOR
-                sta INFOLN,X            ; SHOW IT
-                rts                     ; AND EXIT!
+                ora SHCOLR              ; add color
+                sta INFOLN,X            ; show it
+                rts                     ; and exit!
+                .endproc
 
 
 ;======================================
 ; FLASH OBJECT WHEN DEAD
 ;======================================
-FLASH           ldy FLASHY              ; GET Y POS.
-                lda #0                  ; GET READY TO
-                ldx #14                 ; CLEAR OLD FLASH
-CLFLSH          sta PL1,Y               ; ZERO OUT EACH
-                iny                     ; BYTE OF FLASH
-                dex                     ; DONE YET?
-                bne CLFLSH              ; NO, LOOP.
+FLASH           .proc
+                ldy FLASHY              ; get y pos.
+                lda #0                  ; get ready to
+                ldx #14                 ; clear old flash
+CLFLSH          sta PL1,Y               ; zero out each
+                iny                     ; byte of flash
+                dex                     ; done yet?
+                bne CLFLSH              ; no, loop.
 
-                lda SAVEX               ; GET OBJECT'S
-                clc                     ; X POS. AND
-                adc #61                 ; ADD 61 FOR
-                sta HPOSP1              ; FLASH HORIZ.
-                lda SAVEY               ; GET Y POS AND
-                clc                     ; ADD 26 FOR
-                adc #26                 ; FLASH VERT.
-                tay                     ; POSITION
-                sty FLASHY              ; AND SAVE
-                ldx #13                 ; FLASH = 14 BYTES
-SEFLSH          lda FLBYTE,X            ; GET IMAGE
-                sta PL1,Y               ; PUT IN PLAYER 1
-                iny                     ; NEXT P/M BYTE
-                dex                     ; NEXT IMAGE BYTE
-                bpl SEFLSH              ; LOOP.
+                lda SAVEX               ; get object's
+                clc                     ; x pos. and
+                adc #61                 ; add 61 for
+                sta SP01_X_POS          ; flash horiz.
+                lda SAVEY               ; get y pos and
+                clc                     ; add 26 for
+                adc #26                 ; flash vert.
+                tay                     ; position
+                sty FLASHY              ; and save
+                ldx #13                 ; flash = 14 bytes
+SEFLSH          lda FLBYTE,X            ; get image
+                sta PL1,Y               ; put in player 1
+                iny                     ; next p/m byte
+                dex                     ; next image byte
+                bpl SEFLSH              ; loop.
 
-                lda #1                  ; SET FLASH
-                sta FLTIME              ; DURATION
-                rts                     ; ALL DONE!
+                lda #1                  ; set flash
+                sta FLTIME              ; duration
+                rts                     ; all done!
+                .endproc
 
 
 ;======================================
 ; TIME DELAY
 ;======================================
-WAIT            sta TIMER               ; SET TIMER
-WAITLP          lda TIMER               ; TIMER = 0?
-                bne WAITLP              ; NOPE!
+WAIT            .proc
+                sta TIMER               ; set timer
+WAITLP          lda TIMER               ; timer = 0?
+                bne WAITLP              ; nope!
 
-                rts                     ; TIMER FINISHED!
+                rts                     ; timer finished!
+                .endproc
 
 
 ;======================================
 ; TURN SOUNDS OFF
 ;======================================
-SNDOFF          lda #0                  ; ZERO OUT:
-                sta FIRSOU              ; FIRE SOUND
-                sta OBDSOU              ; OBJ DEATH SOUND
-                sta MOVSOU              ; PLYR MOVE SOUND
-                ldx #7                  ; ZERO ALL:
-SNDOF2          sta AUDF1,X             ; AUDIO REGISTERS
+SNDOFF          .proc
+                lda #0                  ; zero out:
+                sta FIRSOU              ; fire sound
+                sta OBDSOU              ; obj death sound
+                sta MOVSOU              ; plyr move sound
+                ldx #7                  ; zero all:
+_next1          ;sta AUDF1,X            ; audio registers
                 dex
-                bpl SNDOF2
+                bpl _next1
 
-                rts                     ; AND EXIT
+                rts                     ; and exit
+                .endproc
 
 
 ;======================================
 ; DRAW GRID
 ;======================================
-DRGRID          lda #1                  ; TELL INTERRUPT
-                sta INTRFG              ; IT'S INTRO
-                jsr SNDOFF              ; TURN OFF SOUND
+DRGRID          .proc
+                lda #1                  ; tell interrupt
+                sta INTRFG              ; it's intro
+                jsr SNDOFF              ; turn off sound
 
-                lda #$20                ; TURN OFF TOP
-                sta DMAC1               ; OF SCREEN BY
-                lda #0                  ; SHUTTING OFF
-                sta GRAC1               ; DMA & GRAPHICS
-                ldx #3                  ; TURN OFF SHORTS
+                lda #$20                ; turn off top
+                sta DMAC1               ; of screen by
+                lda #0                  ; shutting off
+                sta GRAC1               ; DMA & graphics
+                ldx #3                  ; turn off shorts
 CLSHRT          sta SHORTF,X
                 dex
                 bpl CLSHRT
 
-                ldx #7                  ; TURN OFF
-CLPRJC          sta PROJAC,X            ; ALL PROJECTILES
+                ldx #7                  ; turn off
+CLPRJC          sta PROJAC,X            ; all projectiles
                 dex
                 bpl CLPRJC
 
-                jsr PMCLR               ; CLEAR P/M AREA
+                jsr PMCLR               ; clear p/m area
 
-                sta OFFSET              ; ZERO OFFSET
-                lda #6                  ; SET 6 PROJECT.
-                sta PAVAIL              ; AVAILABLE
-                lda GRIDIX              ; GET GRID #
-                lsr A                   ; DIVIDE
-                lsr A                   ; BY
+                sta OFFSET              ; zero offset
+                lda #6                  ; set 6 project.
+                sta PAVAIL              ; available
+                lda GRIDIX              ; get grid #
+                lsr A                   ; divide
+                lsr A                   ; by
                 lsr A                   ; 8
-                tax                     ; LOAD APPROPRIATE
-                lda C0TBL,X             ; GRID COLOR
-                sta COLPF0
-                lda C1TBL,X             ; OBJECT COLOR 1
-                sta COLPF1
-                lda C2TBL,X             ; OBJECT COLOR 2
-                sta COLPF2
-                lda OBSTBL,X            ; OBJECT SPEED
+                tax                     ; load appropriate
+
+                ;lda C0TBL,X            ; grid color
+                ;sta COLPF0
+                ;lda C1TBL,X            ; object color 1
+                ;sta COLPF1
+                ;lda C2TBL,X            ; object color 2
+                ;sta COLPF2
+
+                lda OBSTBL,X            ; object speed
                 sta OBJSPD
-                lda GRIDIX              ; GET GRID
-                and #7                  ; SHAPE INDEX
-                tax                     ; LOAD:
-                lda OBCNT0,X            ; TYPE 0
-                sta NUMOBJ              ; OBJECT COUNT
-                lda OBCNT1,X            ; TYPE 1
-                sta NUMOBJ+1            ; OBJECT COUNT
-                lda OBCNT2,X            ; TYPE 2
-                sta NUMOBJ+2            ; OBJECT COUNT
-                lda OBCNT3,X            ; TYPE 3
-                sta NUMOBJ+3            ; OBJECT COUNT
-                lda OBCNT4,X            ; TYPE 4
-                sta NUMOBJ+4            ; OBJECT COUNT
-                ldx #4                  ; ADJUST ALL
-DIFFAD          lda NUMOBJ,X            ; OBJECT COUNTS
-                clc                     ; BY ADDING
-                adc DIFF                ; DIFFICULTY
-                sta NUMOBJ,X            ; AND SAVE
+                lda GRIDIX              ; get grid
+                and #7                  ; shape index
+                tax                     ; load:
+                lda OBCNT0,X            ; type 0
+                sta NUMOBJ              ; object count
+                lda OBCNT1,X            ; type 1
+                sta NUMOBJ+1            ; object count
+                lda OBCNT2,X            ; type 2
+                sta NUMOBJ+2            ; object count
+                lda OBCNT3,X            ; type 3
+                sta NUMOBJ+3            ; object count
+                lda OBCNT4,X            ; type 4
+                sta NUMOBJ+4            ; object count
+                ldx #4                  ; adjust all
+DIFFAD          lda NUMOBJ,X            ; object counts
+                clc                     ; by adding
+                adc DIFF                ; difficulty
+                sta NUMOBJ,X            ; and save
                 dex
                 bpl DIFFAD
 
-                lda GRDNUM              ; GET GRID #
-                asl A                   ; MULTIPLY
-                asl A                   ; BY 16
+                lda GRDNUM              ; get grid #
+                asl A                   ; multiply
+                asl A                   ; by 16
                 asl A
                 asl A
-                sta GRDADJ              ; SAVE
-                sta GRDWK               ; SAVE
-                tax                     ; SET X INDEX
-                lda #16                 ; LOAD 16 BYTES
+                sta GRDADJ              ; save
+                sta GRDWK               ; save
+                tax                     ; set x index
+                lda #16                 ; load 16 bytes
                 sta GRDWK2
-GRDLIN          lda CX,X                ; GET CLOSE X
+GRDLIN          lda CX,X                ; get close x
                 sta PLOTX
-                lda CY,X                ; GET CLOSE Y
+                lda CY,X                ; get close y
                 sta PLOTY
-                lda FX,X                ; GET FAR X
+                lda FX,X                ; get far x
                 sta DRAWX
-                lda FY,X                ; GET FAR Y
+                lda FY,X                ; get far y
                 sta DRAWY
-                lda COLPF0              ; INVISIBLE?
-                beq NOGRD1              ; YES, DON'T DRAW
+                
+                ;lda COLPF0              ; invisible?
+                ;beq NOGRD1              ; yes, don't draw
 
-                jsr PLOTCL              ; PLOT CLOSE POINT
-                jsr DRAW                ; DRAW TO FAR
+                jsr PLOTCL              ; plot close point
+                jsr DRAW                ; draw to far
 
-NOGRD1          dec GRDWK2              ; CONTINUE DRAWING
-                beq GRDBO1              ; UNTIL ALL 16
+NOGRD1          dec GRDWK2              ; continue drawing
+                beq GRDBO1              ; until all 16
 
-                inc GRDWK               ; LINES ARE DONE
+                inc GRDWK               ; lines are done
                 ldx GRDWK
                 jmp GRDLIN
 
-GRDBO1          ldx GRDADJ              ; NOW DRAW 15
-                stx GRDWK               ; CLOSE GRID
-                lda #15                 ; BORDER LINES
+GRDBO1          ldx GRDADJ              ; now draw 15
+                stx GRDWK               ; close grid
+                lda #15                 ; border lines
                 sta GRDWK2
-GRDBL1          lda CX,X                ; GET CLOSE X
+GRDBL1          lda CX,X                ; get close x
                 sta PLOTX
-                lda CY,X                ; GET CLOSE Y
+                lda CY,X                ; get close y
                 sta PLOTY
-                lda CX+1,X              ; NEXT CLOSE X
+                lda CX+1,X              ; next close x
                 sta DRAWX
-                clc                     ; FIND POINT
-                adc PLOTX               ; BETWEEN THEM
+                clc                     ; find point
+                adc PLOTX               ; between them
                 ror A
-                sta XWORK               ; AND SAVE IT!
-                lda CY+1,X              ; NEXT CLOSE Y
+                sta XWORK               ; and save it!
+                lda CY+1,X              ; next close y
                 sta DRAWY
-                clc                     ; FIND POINT
-                adc PLOTY               ; BETWEEN THEM
+                clc                     ; find point
+                adc PLOTY               ; between them
                 ror A
-                sta YWORK               ; AND SAVE IT!
-                lda #15                 ; SET UP A WORK
-                sec                     ; AREA TO HOLD
-                sbc GRDWK2              ; THE POINTS
-                sta GRID                ; BETWEEN LINES
-                jsr GRIDSV              ; AND SAVE THEM
+                sta YWORK               ; and save it!
+                lda #15                 ; set up a work
+                sec                     ; area to hold
+                sbc GRDWK2              ; the points
+                sta GRID                ; between lines
+                jsr GRIDSV              ; and save them
 
-                lda COLPF0              ; INVISIBLE GRID?
-                beq NOGRD2              ; YES, DON'T DRAW
+                ;lda COLPF0             ; invisible grid?
+                ;beq NOGRD2             ; yes, don't draw
 
-                jsr PLOTCL              ; PLOT CLOSE POINT1
-                jsr DRAW                ; DRAW TO POINT 2
+                jsr PLOTCL              ; plot close point1
+                jsr DRAW                ; draw to point 2
 
-NOGRD2          dec GRDWK2              ; MORE LINES?
-                beq GRDBO2              ; NO!
+NOGRD2          dec GRDWK2              ; more lines?
+                beq GRDBO2              ; no!
 
-                inc GRDWK               ; INCREMENT TO
-                ldx GRDWK               ; NEXT LINE
-                jmp GRDBL1              ; AND LOOP
+                inc GRDWK               ; increment to
+                ldx GRDWK               ; next line
+                jmp GRDBL1              ; and loop
 
-GRDBO2          ldx GRDADJ              ; NOW DRAW 15
-                stx GRDWK               ; FAR GRID
-                lda #15                 ; BORDER LINES
+GRDBO2          ldx GRDADJ              ; now draw 15
+                stx GRDWK               ; far grid
+                lda #15                 ; border lines
                 sta GRDWK2
-                sta OFFSET              ; AND SET OFFSET
-GRDBL2          lda FX,X                ; GET FAR X
+                sta OFFSET              ; and set offset
+GRDBL2          lda FX,X                ; get far x
                 sta PLOTX
-                lda FY,X                ; GET FAR Y
+                lda FY,X                ; get far y
                 sta PLOTY
-                lda FX+1,X              ; NEXT FAR X
+                lda FX+1,X              ; next far x
                 sta DRAWX
-                clc                     ; AND FIND
-                adc PLOTX               ; MIDPOINT
-                ror A                   ; BETWEEN THEM
-                sta XWORK               ; AND SAVE IT!
-                lda FY+1,X              ; NEXT FAR Y
+                clc                     ; and find
+                adc PLOTX               ; midpoint
+                ror A                   ; between them
+                sta XWORK               ; and save it!
+                lda FY+1,X              ; next far y
                 sta DRAWY
-                clc                     ; AND FIND
-                adc PLOTY               ; MIDPOINT
-                ror A                   ; BETWEEN THEM
-                sta YWORK               ; AND SAVE IT!
-                lda #15                 ; USE THE SAME
-                sec                     ; WORK AREA
-                sbc GRDWK2              ; TO HOLD THE
-                sta GRID                ; MIDPOINTS
-                jsr GRIDSV              ; AND SAVE THEM
+                clc                     ; and find
+                adc PLOTY               ; midpoint
+                ror A                   ; between them
+                sta YWORK               ; and save it!
+                lda #15                 ; use the same
+                sec                     ; work area
+                sbc GRDWK2              ; to hold the
+                sta GRID                ; midpoints
+                jsr GRIDSV              ; and save them
 
-                lda COLPF0              ; INVISIBLE GRID?
-                beq NOGRD3              ; YES, DON'T DRAW
+                ;lda COLPF0             ; invisible grid?
+                ;beq NOGRD3             ; yes, don't draw
 
-                jsr PLOTCL              ; PLOT FAR POINT 1
-                jsr DRAW                ; DRAW TO POINT 2
+                jsr PLOTCL              ; plot far point 1
+                jsr DRAW                ; draw to point 2
 
-NOGRD3          dec GRDWK2              ; MORE LINES?
-                beq GENCOO              ; NO!
+NOGRD3          dec GRDWK2              ; more lines?
+                beq GENCOO              ; no!
 
-                inc GRDWK               ; INCREMENT TO
-                ldx GRDWK               ; NEXT LINE
-                jmp GRDBL2              ; AND LOOP
+                inc GRDWK               ; increment to
+                ldx GRDWK               ; next line
+                jmp GRDBL2              ; and loop
+
+                .endproc
 
 
 ; -----------------------------
@@ -1217,19 +1303,20 @@ NOGRD3          dec GRDWK2              ; MORE LINES?
 ; POSITIONING OF SHORTS.
 ; -----------------------------
 
-GENCOO          lda #0
+GENCOO          .proc
+                lda #0
                 sta GRIDNO
 DIVCTL          tax
-                lda SEGX,X              ; SET UP SEGWK
-                sta SEGWK               ; WITH END
-                lda SEGX+15,X           ; COORDINATES
+                lda SEGX,X              ; set up segwk
+                sta SEGWK               ; with end
+                lda SEGX+15,X           ; coordinates
                 sta SEGWK+16
-                jsr DIVIDE              ; DIVIDE SEGWK
+                jsr DIVIDE              ; divide segwk
 
                 ldx GRIDNO
                 ldy #0
-COPY1           lda SEGWK,Y             ; COPY SEGWK
-                sta SEGX,X              ; TABLE TO SEGX
+COPY1           lda SEGWK,Y             ; copy segwk
+                sta SEGX,X              ; table to segx
                 inx
                 iny
                 cpy #16
@@ -1237,16 +1324,16 @@ COPY1           lda SEGWK,Y             ; COPY SEGWK
 
 ; NOW THE Y COORDS
                 ldx GRIDNO
-                lda SEGY,X              ; SET UP SEGWK
-                sta SEGWK               ; WITH END
-                lda SEGY+15,X           ; COORDINATES
+                lda SEGY,X              ; set up segwk
+                sta SEGWK               ; with end
+                lda SEGY+15,X           ; coordinates
                 sta SEGWK+16
-                jsr DIVIDE              ; DIVIDE SEGWK
+                jsr DIVIDE              ; divide segwk
 
                 ldx GRIDNO
                 ldy #0
-COPY2           lda SEGWK,Y             ; COPY SEGWK
-                sta SEGY,X              ; TABLE TO SEGY
+COPY2           lda SEGWK,Y             ; copy segwk
+                sta SEGY,X              ; table to segy
                 inx
                 iny
                 cpy #16
@@ -1258,16 +1345,16 @@ COPY2           lda SEGWK,Y             ; COPY SEGWK
 ; ----------------------------
 
                 ldx GRIDNO
-                lda RIMX,X              ; SET UP SEGWK
-                sta SEGWK               ; WITH END
-                lda RIMX+15,X           ; COORDINATES
+                lda RIMX,X              ; set up segwk
+                sta SEGWK               ; with end
+                lda RIMX+15,X           ; coordinates
                 sta SEGWK+16
-                jsr DIVIDE              ; DIVIDE SEGWK
+                jsr DIVIDE              ; divide segwk
 
                 ldx GRIDNO
                 ldy #0
-COPY3           lda SEGWK,Y             ; COPY SEGWK
-                sta RIMX,X              ; TABLE TO RIMX
+COPY3           lda SEGWK,Y             ; copy segwk
+                sta RIMX,X              ; table to rimx
                 inx
                 iny
                 cpy #16
@@ -1275,37 +1362,38 @@ COPY3           lda SEGWK,Y             ; COPY SEGWK
 
 ; NOW THE RIM Y COORDS
                 ldx GRIDNO
-                lda RIMY,X              ; SET UP SEGWK
-                sta SEGWK               ; WITH END
-                lda RIMY+15,X           ; COORDINATES
+                lda RIMY,X              ; set up segwk
+                sta SEGWK               ; with end
+                lda RIMY+15,X           ; coordinates
                 sta SEGWK+16
-                jsr DIVIDE              ; DIVIDE SEGWK
+                jsr DIVIDE              ; divide segwk
 
                 ldx GRIDNO
                 ldy #0
-COPY4           lda SEGWK,Y             ; COPY SEGWK
-                sta RIMY,X              ; TABLE TO RIMY
+COPY4           lda SEGWK,Y             ; copy segwk
+                sta RIMY,X              ; table to rimy
                 inx
                 iny
                 cpy #16
                 bne COPY4
 
-                lda GRIDNO              ; DO ALL 15
-                clc                     ; GRID LINES
+                lda GRIDNO              ; do all 15
+                clc                     ; grid lines
                 adc #16
                 sta GRIDNO
-                cmp #240                ; ALL DONE?
-                beq ENDDVC              ; YOU BET!
+                cmp #240                ; all done?
+                beq ENDDVC              ; you bet!
 
-                jmp DIVCTL              ; LOOP BACK!
+                jmp DIVCTL              ; loop back!
 
-ENDDVC          lda #$3D                ; RESTART
-                sta DMAC1               ; THE DISPLAY
-                lda #$03                ; AFTER GRID
-                sta GRAC1               ; IS DRAWN
-                lda #0                  ; NO MORE
-                sta INTRFG              ; INTRO STATUS
-                rts                     ; FINIS!
+ENDDVC          lda #$3D                ; restart
+                sta DMAC1               ; the display
+                lda #$03                ; after grid
+                sta GRAC1               ; is drawn
+                lda #0                  ; no more
+                sta INTRFG              ; intro status
+                rts                     ; finis!
+                .endproc
 
 
 ;======================================
@@ -1317,7 +1405,8 @@ ENDDVC          lda #$3D                ; RESTART
 ; between with an even transition
 ; from one endpoint to the other
 ;======================================
-DIVIDE          lda #16
+DIVIDE          .proc
+                lda #16
                 sta STEP
                 sta NEXT
                 lsr A
@@ -1358,49 +1447,54 @@ NOSTEP          lda STEP
                 jmp DIVLP2
 
 ENDDIV          rts
+                .endproc
 
 
 ;======================================
 ; GRID COORDINATES SAVE
 ;======================================
-GRIDSV          lda GRID
+GRIDSV          .proc
+                lda GRID
                 asl A                   ; *2
                 asl A                   ; *4
                 asl A                   ; *8
                 asl A                   ; *16
-                clc                     ; ADD THE
-                adc OFFSET              ; OFFSET VALUE
-                tax                     ; SAVE IN INDEX
-                lda XWORK               ; GET X WORK
-                sta SEGX,X              ; AND SAVE
-                lda YWORK               ; GET Y WORK
-                sta SEGY,X              ; AND SAVE
-                lda OFFSET              ; DON'T CONTINUE
-                bne SAVEND              ; IF OFFSET >0
+                clc                     ; add the
+                adc OFFSET              ; offset value
+                tax                     ; save in index
+                lda XWORK               ; get x work
+                sta SEGX,X              ; and save
+                lda YWORK               ; get y work
+                sta SEGY,X              ; and save
+                lda OFFSET              ; don't continue
+                bne SAVEND              ; if offset >0
 
-                lda PLOTX               ; GET PLOTX
-                sta RIMX,X              ; AND SAVE
-                lda PLOTY               ; GET PLOTY
-                sta RIMY,X              ; AND SAVE
-                lda DRAWX               ; GET DRAWX
-                sta RIMX+15,X           ; AND SAVE
-                lda DRAWY               ; GET DRAWY
-                sta RIMY+15,X           ; AND SAVE
-SAVEND          rts                     ; ALL DONE!
+                lda PLOTX               ; get plotx
+                sta RIMX,X              ; and save
+                lda PLOTY               ; get ploty
+                sta RIMY,X              ; and save
+                lda DRAWX               ; get drawx
+                sta RIMX+15,X           ; and save
+                lda DRAWY               ; get drawy
+                sta RIMY+15,X           ; and save
+SAVEND          rts                     ; all done!
+                .endproc
 
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; VERTICAL BLANK ROUTINE
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-VBI             lda #<DLI1              ; POINT TO
-                sta VDSLST              ; FIRST
-                lda #>DLI1              ; DISPLAY LIST
-                sta VDSLST+1            ; INTERRUPT
-                cld                     ; CLR DECIMAL MODE
-                lda OBTIM1              ; THIS SECTION
-                beq NOOBTD              ; PROCESSES
+VBI             .proc
+                ;lda #<Interrupt_DLI1   ; point to
+                ;sta VDSLST             ; first
+                ;lda #>Interrupt_DLI1   ; display list
+                ;sta VDSLST+1           ; interrupt
 
-                dec OBTIM1              ; ALL TIMERS
+                cld                     ; clr decimal mode
+                lda OBTIM1              ; this section
+                beq NOOBTD              ; processes
+
+                dec OBTIM1              ; all timers
 NOOBTD          lda TIMER
                 beq NOTIMR
 
@@ -1409,238 +1503,248 @@ NOTIMR          lda FLTIME
                 beq NOFTIM
 
                 dec FLTIME
-NOFTIM          lda KILPLR              ; PLAYER DEAD?
-                beq CHKINT              ; NO, CONTINUE!
+NOFTIM          lda KILPLR              ; player dead?
+                beq CHKINT              ; no, continue!
 
-                jmp VBCONT              ; SKIP PLAYER STUFF
+                jmp VBCONT              ; skip player stuff
 
-CHKINT          lda INTRFG              ; IN INTRO?
-                beq NOTINT              ; NO, CONTINUE!
+CHKINT          lda INTRFG              ; in intro?
+                beq NOTINT              ; no, continue!
 
-                jmp XITVBV              ; EXIT IF INTRO
+                rti                     ; exit if intro
 
-NOTINT          lda KEY                 ; GET KEYBOARD
-                cmp #$1C                ; PAUSE (ESC)?
-                bne CKZAP               ; NO, CHECK ZAP
+NOTINT          lda KEYCHAR             ; get keyboard
+                cmp #$1C                ; pause (esc)?
+                bne CKZAP               ; no, check zap
 
-                lda PAUFLG              ; GET PAUSE FLAG
-                eor #$FF                ; AND FLIP
-                sta PAUFLG              ; AND STORE
-                jmp ENDKEY              ; DONE W/KEY
+                lda PAUFLG              ; get pause flag
+                eor #$FF                ; and flip
+                sta PAUFLG              ; and store
+                jmp ENDKEY              ; done w/key
 
-CKZAP           cmp #$21                ; SPACE BAR?
-                bne ENDKEY              ; NAW, DONE W/KEY
+CKZAP           cmp #$21                ; space bar?
+                bne ENDKEY              ; naw, done w/key
 
-                lda ZAP                 ; USED ZAP YET?
-                beq ENDKEY              ; YES, NO ZAP
+                lda ZAP                 ; used zap yet?
+                beq ENDKEY              ; yes, no zap
 
-                dec ZAP                 ; ZAP NOW USED
-                ldx #5                  ; TIME TO KILL
-                lda #1                  ; ALL OBJECTS
+                dec ZAP                 ; zap now used
+                ldx #5                  ; time to kill
+                lda #1                  ; all objects
 ZAPOBJ          sta OBDEAD,X
                 dex
                 bpl ZAPOBJ
 
-                ldx #3                  ; AND KILL
-ZAPSHO          lda SHORTF,X            ; ALL SHORTS
+                ldx #3                  ; and kill
+ZAPSHO          lda SHORTF,X            ; all shorts
                 beq NOSKIL
 
-                lda MISCAD              ; ALSO SET
-                sed                     ; MISCELLANEOUS
-                clc                     ; SCORE ADD
-                adc #4                  ; FOR 400 POINTS
-                sta MISCAD              ; FOR EACH SHORT
+                lda MISCAD              ; also set
+                sed                     ; miscellaneous
+                clc                     ; score add
+                adc #4                  ; for 400 points
+                sta MISCAD              ; for each short
                 cld
-                lda #0                  ; KILL
-                sta SHORTF,X            ; SHORT
+                lda #0                  ; kill
+                sta SHORTF,X            ; short
 NOSKIL          dex
                 bpl ZAPSHO
 
-ENDKEY          lda #0                  ; CLEAR
-                sta KEY                 ; KEYPRESS.
-                lda PAUFLG              ; PAUSED?
-                beq NOPAU               ; NO, CONTINUE
+ENDKEY          lda #0                  ; clear
+                sta KEYCHAR             ; keypress.
 
-                lda #0                  ; TURN OFF
-                sta AUDC1               ; ALL SOUNDS
-                sta AUDC2               ; DURING
-                sta AUDC3               ; THE
-                sta AUDC4               ; PAUSE
-                jmp XITVBV              ; THEN EXIT
+                lda PAUFLG              ; paused?
+                beq NOPAU               ; no, continue
 
-NOPAU           lda FIRSOU              ; FIRE SOUND ON?
-                beq NOFSND              ; NO!
+                lda #0                  ; turn off
+                sta AUDC1               ; all sounds
+                sta AUDC2               ; during
+                sta AUDC3               ; the
+                sta AUDC4               ; pause
+                rti                     ; then exit
 
-                dec FIRSOU              ; DEC COUNTER
-                ldx FIRSOU              ; PUT IN INDEX
-                lda FIRFRQ,X            ; GET FREQUENCY
+NOPAU           lda FIRSOU              ; fire sound on?
+                beq NOFSND              ; no!
+
+                dec FIRSOU              ; dec counter
+                ldx FIRSOU              ; put in index
+                lda FIRFRQ,X            ; get frequency
                 sta AUDF2
-                lda FIRCTL,X            ; GET CONTROL
+                lda FIRCTL,X            ; get control
                 sta AUDC2
-NOFSND          lda OBDSOU              ; OBJ DEATH SOUND?
-                beq NOOSND              ; NO!
+NOFSND          lda OBDSOU              ; obj death sound?
+                beq NOOSND              ; no!
 
-                dec OBDSOU              ; DEC COUNTER
-                ldx OBDSOU              ; PUT IN INDEX
-                lda OBDFRQ,X            ; GET FREQUENCY
+                dec OBDSOU              ; dec counter
+                ldx OBDSOU              ; put in index
+                lda OBDFRQ,X            ; get frequency
                 sta AUDF3
-                lda OBDCTL,X            ; GET CONTROL
+                lda OBDCTL,X            ; get control
                 sta AUDC3
-NOOSND          lda MOVSOU              ; MOVE SOUND?
-                beq CYCCOL              ; NO!
+NOOSND          lda MOVSOU              ; move sound?
+                beq CYCCOL              ; no!
 
-                dec MOVSOU              ; DEC COUNTER
-                ldx MOVSOU              ; PUT IN INDEX
-                lda MOVFRQ,X            ; GET FREQUENCY
+                dec MOVSOU              ; dec counter
+                ldx MOVSOU              ; put in index
+                lda MOVFRQ,X            ; get frequency
                 sta AUDF4
-                lda MOVCTL,X            ; GET CONTROL
+                lda MOVCTL,X            ; get control
                 sta AUDC4
-CYCCOL          lda COLPM2              ; CYCLE
-                clc                     ; PLAYER 2
-                adc #16                 ; COLOR
-                sta COLPM2              ; SAVE IN P/M 2
-                sta COLPM3              ; AND IN P/M 3
-                and #$FC                ; ALSO PUT IN
-                sta COLPF3              ; PF3 FOR MISSILES
-                dec TRANTM              ; TRANSIENT TIME
-                bne NOTRAN              ; NO CHANGE
+CYCCOL          ;lda COLPM2             ; cycle
+                ;clc                    ; player 2
+                ;adc #16                ; color
+                ;sta COLPM2             ; save in p/m 2
+                ;sta COLPM3             ; and in p/m 3
+                ;and #$FC               ; also put in
+                ;sta COLPF3             ; pf3 for missiles
 
-                lda OBJHUE+4            ; FLIP
-                bne TRAN1               ; TRANSIENT
+                dec TRANTM              ; transient time
+                bne NOTRAN              ; no change
 
-                lda #2                  ; HUE
-                bne STOTRN              ; TO EITHER
+                lda OBJHUE+4            ; flip
+                bne TRAN1               ; transient
 
-TRAN1           lda #0                  ; 0 OR 2
+                lda #2                  ; hue
+                bne STOTRN              ; to either
+
+TRAN1           lda #0                  ; 0 or 2
 STOTRN          sta OBJHUE+4
-                lda RANDOM
-                ora #$1F                ; RESET
-                and #$3F                ; THE
-                sta TRANTM              ; TRANSIENT TIME
-NOTRAN          inc PSCNT               ; INC PLYR TIMER
-                lda PSCNT               ; READY TO
-                cmp #3                  ; CHANGE SHAPE?
-                bne NOPSIN              ; NOT YET!
+                lda SID_RANDOM
+                ora #$1F                ; reset
+                and #$3F                ; the
+                sta TRANTM              ; transient time
+NOTRAN          inc PSCNT               ; inc plyr timer
+                lda PSCNT               ; ready to
+                cmp #3                  ; change shape?
+                bne NOPSIN              ; not yet!
 
-                lda #0                  ; BETTER RESET
-                sta PSCNT               ; INDEX
-                inc SP1IX               ; AND INCREMENT
-                inc SP2IX               ; ALL SHAPE
-                inc SP3IX               ; INDEXES!
-NOPSIN          lda PFTIME              ; SEE IF WE'RE
-                beq FIRE                ; READY TO CHECK
+                lda #0                  ; better reset
+                sta PSCNT               ; index
+                inc SP1IX               ; and increment
+                inc SP2IX               ; all shape
+                inc SP3IX               ; indexes!
+NOPSIN          lda PFTIME              ; see if we're
+                beq FIRE                ; ready to check
 
-                dec PFTIME              ; IF PLAYER IS
-                jmp CHKPMV              ; SHOOTING
+                dec PFTIME              ; if player is
+                jmp CHKPMV              ; shooting
 
-FIRE            lda #4                  ; RESET FIRE
-                sta PFTIME              ; TIMER
-                lda JOYPAD              ; USING STICK?
-                beq RDSTRG              ; YES!
+FIRE            lda #4                  ; reset fire
+                sta PFTIME              ; timer
+                lda JOYPAD              ; using stick?
+                beq RDSTRG              ; yes!
 
-                lda PTRIG0              ; GET PADL TRIGGER
-                jmp CMPTRG              ; CHECK IT
+                ;lda PTRIG0             ; get padl trigger
+                ;jmp CMPTRG             ; check it
 
-RDSTRG          lda STRIG               ; GET STICK TRIGGER
-CMPTRG          bne CHKPMV              ; NOT FIRING!
+RDSTRG          lda JOYSTICK0           ; get stick trigger
+                and #$10
+CMPTRG          bne CHKPMV              ; not firing!
 
-                lda PAVAIL              ; ANY PROJ AVAIL?
-                beq CHKPMV              ; NO!
+                lda PAVAIL              ; any proj avail?
+                beq CHKPMV              ; no!
 
-                ldx #7                  ; FIND AN
-PRSCAN          lda PROJAC,X            ; AVAILABLE
-                beq GOTPRN              ; PROJECTILE
+                ldx #7                  ; find an
+PRSCAN          lda PROJAC,X            ; available
+                beq GOTPRN              ; projectile
 
                 dex
                 bne PRSCAN
 
-GOTPRN          dec PAVAIL              ; 1 LESS AVAILABLE
-                lda #1                  ; IT'S NOW
-                sta PROJAC,X            ; ACTIVE
-                lda #21                 ; START UP
-                sta FIRSOU              ; FIRE SOUND
-                lda #0                  ; INITIALIZE
-                sta PROJSG,X            ; SEGMENT # TO 0
-                lda PLRGRD              ; SET UP
-                sta PROGRD,X            ; PROJ GRID#
-                asl A                   ; AND
-                asl A                   ; MULTIPLY
-                asl A                   ; BY 16
+GOTPRN          dec PAVAIL              ; 1 less available
+                lda #1                  ; it's now
+                sta PROJAC,X            ; active
+                lda #21                 ; start up
+                sta FIRSOU              ; fire sound
+                lda #0                  ; initialize
+                sta PROJSG,X            ; segment # to 0
+                lda PLRGRD              ; set up
+                sta PROGRD,X            ; proj grid#
+                asl A                   ; and
+                asl A                   ; multiply
+                asl A                   ; by 16
                 asl A
-                sta PROJGN,X            ; FOR INDEX
-                lda #1                  ; INITIALIZE
-                sta PROINC,X            ; PROJ INCREMENT
-CHKPMV          lda JOYPAD              ; USING STICK?
-                beq GOSTIK              ; YES!
+                sta PROJGN,X            ; for index
+                lda #1                  ; initialize
+                sta PROINC,X            ; proj increment
+CHKPMV          lda JOYPAD              ; using stick?
+                beq GOSTIK              ; yes!
 
-                lda POT0                ; GET PADDLE
-                lsr A                   ; DIVIDE BY
-                lsr A                   ; 16 TO GET
-                lsr A                   ; USABLE VALUE
-                lsr A
-                cmp #15                 ; > 14?
-                bmi STOPOS              ; NO, GO STORE
+                ;lda POT0               ; get paddle
+                ;lsr A                  ; divide by
+                ;lsr A                  ; 16 to get
+                ;lsr A                  ; usable value
+                ;lsr A
+                ;cmp #15                ; > 14?
+                ;bmi STOPOS             ; no, go store
+                bra STOPOS  ; HACK:
 
-                lda #14                 ; MAX. IS 14
-                bne STOPOS              ; AND GO STORE
+                lda #14                 ; max. is 14
+                bne STOPOS              ; and go store
 
-GOSTIK          lda PMTIME              ; READY FOR STICK?
-                beq RDSTIK              ; YES!
+GOSTIK          lda PMTIME              ; ready for stick?
+                beq RDSTIK              ; yes!
 
-                dec PMTIME              ; DEC TIMER
-JVBC            jmp VBCONT              ; JMP TO CONTINUE
+                dec PMTIME              ; dec timer
+JVBC            jmp VBCONT              ; jmp to continue
 
-RDSTIK          lda #2                  ; RESET STICK TIMER
-                sta PMTIME              ; TO 2 JIFFIES
-                ldx STICK               ; GET STICK
-                lda PLRGRD              ; GET PLYR GRID #
-                clc                     ; ADD THE
-                adc STKADD,X            ; DIRECTION INC
-                bmi SAMPOS              ; IF <0 REJECT
+RDSTIK          lda #2                  ; reset stick timer
+                sta PMTIME              ; to 2 jiffies
 
-                cmp #15                 ; IF <15...
-                bne STOPOS              ; USE IT!
+                .setbank $AF
+                ldx JOYSTICK0           ; get stick
+                .setbank $00
 
-SAMPOS          lda PLRGRD              ; GET GRID#
-STOPOS          cmp PLRGRD              ; SAME AS LAST?
-                beq NOPSTO              ; YES, DON'T STORE
+                lda PLRGRD              ; get plyr grid #
+                clc                     ; add the
+                adc STKADD,X            ; direction inc
+                bmi SAMPOS              ; if <0 reject
 
-                ldx #9                  ; START UP
-                stx MOVSOU              ; MOVE SOUND
-                sta PLRGRD              ; SAVE GRID#
-NOPSTO          asl A                   ; MULTIPLY
-                asl A                   ; BY 16 FOR
-                asl A                   ; POSITION
-                asl A                   ; INDEX
+                cmp #15                 ; if <15...
+                bne STOPOS              ; use it!
+
+SAMPOS          lda PLRGRD              ; get grid#
+STOPOS          cmp PLRGRD              ; same as last?
+                beq NOPSTO              ; yes, don't store
+
+                ldx #9                  ; start up
+                stx MOVSOU              ; move sound
+                sta PLRGRD              ; save grid#
+NOPSTO          asl A                   ; multiply
+                asl A                   ; by 16 for
+                asl A                   ; position
+                asl A                   ; index
                 tax
-                lda P0PL
-                and #$0C                ; HIT P2/P3?
-                beq NOHSHO              ; NO!
 
-                lda #1                  ; OOPS! HIT SHORT!
-                sta KILPLR              ; KILL PLAYER
-                jmp VBEND               ; AND EXIT VBLANK
+                ;lda P0PL
+                ;and #$0C               ; hit p2/p3?
+                ;beq NOHSHO             ; no!
+                bra NOHSHO  ; HACK:
 
-NOHSHO          lda SEGX,X              ; GET PLAYER'S
-                clc                     ; X POSITION AND
-                adc #61                 ; ADJUST FOR P/M
-                sta HPOSP0              ; AND SAVE
-                ldy PLRY                ; HOLD OLD Y POS
-                lda SEGY,X              ; GET NEW Y POS
-                clc                     ; ADJUST FOR P/M
-                adc #32                 ; BY ADDING 32
-                sta PLRY                ; SET Y POS
-                lda #0                  ; CLEAR OUT
-                ldx #15                 ; OLD PLAYER
-CLRPS           sta PL0-8,Y             ; IMAGE
+                lda #1                  ; oops! hit short!
+                sta KILPLR              ; kill player
+                jmp VBEND               ; and exit vblank
+
+NOHSHO          lda SEGX,X              ; get player's
+                clc                     ; x position and
+                adc #61                 ; adjust for p/m
+                sta SP00_X_POS          ; and save
+                ldy PLRY                ; hold old y pos
+                lda SEGY,X              ; get new y pos
+                clc                     ; adjust for p/m
+                adc #32                 ; by adding 32
+                sta PLRY                ; set y pos
+                lda #0                  ; clear out
+                ldx #15                 ; old player
+CLRPS           sta PL0-8,Y             ; image
                 iny
                 dex
                 bpl CLRPS
 
-                lda #15                 ; NOW COPY
-                sta SPIX                ; 16-BYTE
-SPLOOP          lda #0                  ; PLAYER IMAGE
-                sta PLTBYT              ; TO PLAYER 0
+                lda #15                 ; now copy
+                sta SPIX                ; 16-byte
+SPLOOP          lda #0                  ; player image
+                sta PLTBYT              ; to player 0
                 lda SP1IX
                 and #15
                 tax
@@ -1652,8 +1756,8 @@ SPLOOP          lda #0                  ; PLAYER IMAGE
                 bcs NOSP1
 
                 tax
-                lda PN1,X               ; GET IMAGE 1
-                sta PLTBYT              ; AND SAVE
+                lda PN1,X               ; get image 1
+                sta PLTBYT              ; and save
 NOSP1           lda SP2IX
                 and #15
                 tax
@@ -1666,8 +1770,8 @@ NOSP1           lda SP2IX
 
                 tax
                 lda PN2,X
-                ora PLTBYT              ; ADD IMAGE 2
-                sta PLTBYT              ; AND SAVE
+                ora PLTBYT              ; add image 2
+                sta PLTBYT              ; and save
 NOSP2           lda SP3IX
                 and #15
                 tax
@@ -1680,28 +1784,28 @@ NOSP2           lda SP3IX
 
                 tax
                 lda PN3,X
-                ora PLTBYT              ; ADD IMAGE 3
-                sta PLTBYT              ; AND SAVE
+                ora PLTBYT              ; add image 3
+                sta PLTBYT              ; and save
 NOSP3           lda PLRY
                 clc
                 adc SPIX
                 sec
                 sbc #8
                 tay
-                lda PLTBYT              ; GET IMAGE BYTE
-                sta PL0,Y               ; PUT IN P/M AREA
-                dec SPIX                ; MORE IMAGE?
-                bpl SPLOOP              ; YES!
+                lda PLTBYT              ; get image byte
+                sta PL0,Y               ; put in p/m area
+                dec SPIX                ; more image?
+                bpl SPLOOP              ; yes!
 
-VBCONT          lda PRADV1              ; ADVANCE PROJ?
-                beq SETPRA              ; YES!
+VBCONT          lda PRADV1              ; advance proj?
+                beq SETPRA              ; yes!
 
-                dec PRADV1              ; NO, DEC TIMER
-                jmp FLIPIT              ; GO FLIP DISPLAY
+                dec PRADV1              ; no, dec timer
+                jmp FLIPIT              ; go flip display
 
 SETPRA          inc PRADVT
-                lda #1                  ; SET ADVANCE
-                sta PRADV1              ; TIMER
+                lda #1                  ; set advance
+                sta PRADV1              ; timer
 
 ; ------------------------------
 ; THIS SECTION FLIP-FLOPS THE 4
@@ -1711,26 +1815,26 @@ SETPRA          inc PRADVT
 ; OBSERVED.
 ; ------------------------------
 
-FLIPIT          inc PRFLIP              ; INC FLIP INDEX
-                lda PRFLIP              ; GET INDEX
-                and #1                  ; MAKE 0/1
-                tay                     ; SAVE IN Y
-                lda PREND,Y             ; GET # OF LAST
-                sta ENDVAL              ; PROJECTILE
-                ldx PRSTRT,Y            ; GET # OF FIRST
-                stx VBXHLD              ; PROJECTILE
-                lda #3                  ; START W/MISSILE
-                sta MISNUM              ; NUMBER 3
-PROJLP          lda PROJAC,X            ; IS PROJ. ACTIVE?
-                bne GOTPRJ              ; YOU BET.
+FLIPIT          inc PRFLIP              ; inc flip index
+                lda PRFLIP              ; get index
+                and #1                  ; make 0/1
+                tay                     ; save in y
+                lda PREND,Y             ; get # of last
+                sta ENDVAL              ; projectile
+                ldx PRSTRT,Y            ; get # of first
+                stx VBXHLD              ; projectile
+                lda #3                  ; start w/missile
+                sta MISNUM              ; number 3
+PROJLP          lda PROJAC,X            ; is proj. active?
+                bne GOTPRJ              ; you bet.
 
-                jmp CKPEND              ; TRY ANOTHER
+                jmp CKPEND              ; try another
 
-GOTPRJ          ldx MISNUM              ; GET MISSILE #
-                ldy PRYHLD,X            ; GET LAST POSITION
-                lda MISSLS-1,Y          ; ERASE OLD
-                and MISLOF,X            ; PROJECTILE
-                sta MISSLS-1,Y          ; IMAGE
+GOTPRJ          ldx MISNUM              ; get missile #
+                ldy PRYHLD,X            ; get last position
+                lda MISSLS-1,Y          ; erase old
+                and MISLOF,X            ; projectile
+                sta MISSLS-1,Y          ; image
                 lda MISSLS,Y
                 and MISLOF,X
                 sta MISSLS,Y
@@ -1738,112 +1842,112 @@ GOTPRJ          ldx MISNUM              ; GET MISSILE #
                 and MISLOF,X
                 sta MISSLS+1,Y
                 ldx VBXHLD
-                lda PRADVT              ; READY TO
-                and #1                  ; ADVANCE PROJ?
-                bne NOPADV              ; NOT YET
+                lda PRADVT              ; ready to
+                and #1                  ; advance proj?
+                bne NOPADV              ; not yet
 
-                lda PROJSG,X            ; GET PROJ SEG#
-                clc                     ; AND
-                adc PROINC,X            ; ADD INCREMENT
-                sta PROJSG,X            ; THEN SAVE
-NOPADV          lda PROINC,X            ; ENEMY SHOT?
-                bmi NOOHCK              ; NO OBJ HIT CHECK
+                lda PROJSG,X            ; get proj seg#
+                clc                     ; and
+                adc PROINC,X            ; add increment
+                sta PROJSG,X            ; then save
+NOPADV          lda PROINC,X            ; enemy shot?
+                bmi NOOHCK              ; no obj hit check
 
                 ldy #5
-OBKILP          lda OBDEAD,Y            ; ALREADY DEAD?
-                bne NXTOCK              ; YES!
+OBKILP          lda OBDEAD,Y            ; already dead?
+                bne NXTOCK              ; yes!
 
-                lda OBJPRS,Y            ; OBJECT THERE?
-                beq NXTOCK              ; NO!
+                lda OBJPRS,Y            ; object there?
+                beq NXTOCK              ; no!
 
-                lda OBJTYP,Y            ; TRANSIENT?
+                lda OBJTYP,Y            ; transient?
                 cmp #4
-                bne NOTRNC              ; NO!
+                bne NOTRNC              ; no!
 
-                lda OBJHUE+4            ; INVISIBLE?
-                beq NXTOCK              ; YES!
+                lda OBJHUE+4            ; invisible?
+                beq NXTOCK              ; yes!
 
-NOTRNC          lda OBJGRD,Y            ; SAME GRID #
-                cmp PROGRD,X            ; AS PROJ?
-                bne NXTOCK              ; NO!
+NOTRNC          lda OBJGRD,Y            ; same grid #
+                cmp PROGRD,X            ; as proj?
+                bne NXTOCK              ; no!
 
-                lda OBJSEG,Y            ; SAME SEG #
+                lda OBJSEG,Y            ; same seg #
                 lsr A
                 sec
-                sbc PROJSG,X            ; AS PROJ?
+                sbc PROJSG,X            ; as proj?
                 beq HITOBJ
 
                 cmp #254
-                bcc NXTOCK              ; NO!
+                bcc NXTOCK              ; no!
 
-HITOBJ          lda OBJTYP,Y            ; RESISTOR?
-                beq CGPRDR              ; YES!
+HITOBJ          lda OBJTYP,Y            ; resistor?
+                beq CGPRDR              ; yes!
 
-                lda #1                  ; KILL OBJECT
+                lda #1                  ; kill object
                 sta OBDEAD,Y
-                jmp KILLPR              ; AND PROJ.
+                jmp KILLPR              ; and proj.
 
-CGPRDR          lda #$FF                ; PROJ NOW HEADING
-                sta PROINC,X            ; FOR PLAYER!
-NXTOCK          dey                     ; NEXT OBJECT
-                bpl OBKILP              ; MORE TO DO!
+CGPRDR          lda #$FF                ; proj now heading
+                sta PROINC,X            ; for player!
+NXTOCK          dey                     ; next object
+                bpl OBKILP              ; more to do!
 
-NOOHCK          lda PROJSG,X            ; IS PROJ SEG# =0?
-                beq KILLPR              ; YES, KILL IT!
+NOOHCK          lda PROJSG,X            ; is proj seg# =0?
+                beq KILLPR              ; yes, kill it!
 
                 cmp #16                 ; =16?
-                beq KILLPR              ; YES, KILL IT!
+                beq KILLPR              ; yes, kill it!
 
-                clc                     ; NOW ADD PROJ
-                adc PROJGN,X            ; GRID INDEX
-                tax                     ; AND GET
-                lda SEGX,X              ; X COORD
-                ldy SEGY,X              ; AND Y COORD
-                clc                     ; ADD 64 TO
-                adc #64                 ; X COORD FOR
-                ldx MISNUM              ; P/M HORIZ
-                sta HPOSM0,X            ; AND SAVE
-                tya                     ; GET Y
-                clc                     ; ADD 32 TO
-                adc #32                 ; Y COORD FOR
-                tay                     ; P/M VERT
-                sty PRYHLD,X            ; AND SAVE.
-                lda MISSLS-1,Y          ; NOW DRAW
-                ora MISLON,X            ; PROJECTILE IN
-                sta MISSLS-1,Y          ; NEW POSITION
+                clc                     ; now add proj
+                adc PROJGN,X            ; grid index
+                tax                     ; and get
+                lda SEGX,X              ; x coord
+                ldy SEGY,X              ; and y coord
+                clc                     ; add 64 to
+                adc #64                 ; x coord for
+                ldx MISNUM              ; p/m horiz
+                sta SP03_X_POS,X        ; and save
+                tya                     ; get y
+                clc                     ; add 32 to
+                adc #32                 ; y coord for
+                tay                     ; p/m vert
+                sty PRYHLD,X            ; and save.
+                lda MISSLS-1,Y          ; now draw
+                ora MISLON,X            ; projectile in
+                sta MISSLS-1,Y          ; new position
                 lda MISSLS,Y
                 ora MISLON,X
                 sta MISSLS,Y
                 lda MISSLS+1,Y
                 ora MISLON,X
                 sta MISSLS+1,Y
-CKPEND          dec MISNUM              ; NEXT MISSILE #
-                dec VBXHLD              ; NEXT PROJ.
+CKPEND          dec MISNUM              ; next missile #
+                dec VBXHLD              ; next proj.
                 ldx VBXHLD
-                cpx ENDVAL              ; DONE?
-                beq SHORTS              ; YES!
+                cpx ENDVAL              ; done?
+                beq SHORTS              ; yes!
 
-                jmp PROJLP              ; DO NEXT PROJ.
+                jmp PROJLP              ; do next proj.
 
-KILLPR          lda #0                  ; KILL PROJ.
+KILLPR          lda #0                  ; kill proj.
                 sta PROJAC,X
-                cpx #2                  ; ENEMY PROJ?
-                bcc NOAVIN              ; YES DON'T INC
+                cpx #2                  ; enemy proj?
+                bcc NOAVIN              ; yes don't inc
 
-                inc PAVAIL              ; ANOTHER AVAIL
-NOAVIN          lda PROJSG,X            ; SEGMENT 0?
-                bne NOKILP              ; NO!
+                inc PAVAIL              ; another avail
+NOAVIN          lda PROJSG,X            ; segment 0?
+                bne NOKILP              ; no!
 
-                lda PROINC,X            ; TOWARD RIM?
-                bpl NOKILP              ; NO!
+                lda PROINC,X            ; toward rim?
+                bpl NOKILP              ; no!
 
-                lda PROGRD,X            ; SAME GRID...
-                cmp PLRGRD              ; AS PLAYER?
-                bne NOKILP              ; NO!
+                lda PROGRD,X            ; same grid...
+                cmp PLRGRD              ; as player?
+                bne NOKILP              ; no!
 
-                lda #1                  ; THE PLAYER
-                sta KILPLR              ; IS DEAD!
-NOKILP          jmp CKPEND              ; NEXT PROJ.
+                lda #1                  ; the player
+                sta KILPLR              ; is dead!
+NOKILP          jmp CKPEND              ; next proj.
 
 
 ; ------------------------------
@@ -1853,99 +1957,104 @@ NOKILP          jmp CKPEND              ; NEXT PROJ.
 ; FLICKER MAY BE OBSERVED.
 ; ------------------------------
 
-SHORTS          inc SHFLIP              ; TOGGLE FLIP
-                lda SHFLIP              ; MASK FLIP
-                lsr A                   ; TO EITHER
-                and #1                  ; 0 OR 1
-                tay                     ; PUT IN Y
-                lda CPYSTN,Y            ; AND GET IMAGE
-                sta CPYST               ; TO USE (+/X)
-                lda SHFLIP              ; GET FLIP,
-                and #1                  ; MASK AND
-                tay                     ; PUT IN Y
-                lda #>PL3               ; PUT PLAYER 3
-                sta DESTHI              ; IN DESTINATION
-                lda #<PL3               ; ADDRESS
-                sta DESTLO              ; HI & LO
-                lda #1                  ; SET DEST #
+SHORTS          inc SHFLIP              ; toggle flip
+                lda SHFLIP              ; mask flip
+                lsr A                   ; to either
+                and #1                  ; 0 or 1
+                tay                     ; put in y
+                lda CPYSTN,Y            ; and get image
+                sta CPYST               ; to use (+/x)
+                lda SHFLIP              ; get flip,
+                and #1                  ; mask and
+                tay                     ; put in y
+                lda #>PL3               ; put player 3
+                sta DESTHI              ; in destination
+                lda #<PL3               ; address
+                sta DESTLO              ; hi & lo
+                lda #1                  ; set dest #
                 sta DESTNM
-                lda SHSTRT,Y            ; GET START
-                sta VBXHLD              ; SHORT #
+                lda SHSTRT,Y            ; get start
+                sta VBXHLD              ; short #
 SHORLP          lda #0
                 ldx DESTNM
-                ldy SHYHLD,X            ; GET LAST INDEX
-                ldx #9                  ; NOW ERASE
-ERSSHO          sta (DESTLO),Y          ; PREVIOUS
-                iny                     ; SHORT
+                ldy SHYHLD,X            ; get last index
+                ldx #9                  ; now erase
+ERSSHO          sta (DESTLO),Y          ; previous
+                iny                     ; short
                 dex
                 bpl ERSSHO
 
                 ldx VBXHLD
-                lda SHORTF,X            ; SHORT ALIVE?
-                beq NXTSHO              ; NO!
+                lda SHORTF,X            ; short alive?
+                beq NXTSHO              ; no!
 
-                lda SHORTX,X            ; GET INDEX OF
-                tax                     ; SHORT'S POS.
-                lda RIMX,X              ; GET X COORD
-                ldy RIMY,X              ; AND Y COORD
+                lda SHORTX,X            ; get index of
+                tax                     ; short's pos.
+                lda RIMX,X              ; get x coord
+                ldy RIMY,X              ; and y coord
                 clc
-                adc #62                 ; ADJUST X
-                ldx DESTNM              ; GET PLAYER#
-                sta HPOSP2,X            ; AND STORE
+                adc #62                 ; adjust x
+                ldx DESTNM              ; get player#
+                sta SP02_X_POS,X        ; and store
                 tya
                 clc
-                adc #28                 ; ADJUST Y
-                sta SHYHLD,X            ; SAVE IT
+                adc #28                 ; adjust y
+                sta SHYHLD,X            ; save it
                 tay
                 ldx CPYST
                 lda #4
                 sta CPYCNT
-SHOCOP          lda SHOIMG,X            ; NOW COPY
-                sta (DESTLO),Y          ; SHORT IMAGE
-                iny                     ; TO P/M
-                sta (DESTLO),Y          ; AREA
+SHOCOP          lda SHOIMG,X            ; now copy
+                sta (DESTLO),Y          ; short image
+                iny                     ; to p/m
+                sta (DESTLO),Y          ; area
                 iny
                 dex
                 dec CPYCNT
                 bpl SHOCOP
 
-NXTSHO          dec DESTNM              ; MORE?
-                bmi VBEND               ; NO, EXIT!
+NXTSHO          dec DESTNM              ; more?
+                bmi VBEND               ; no, exit!
 
-                dec DESTHI              ; NEXT PLAYER
+                dec DESTHI              ; next player
                 inc VBXHLD
-                jmp SHORLP              ; LOOP BACK.
+                jmp SHORLP              ; loop back.
 
-VBEND           sta HITCLR              ; CLEAR COLLISION
-                jmp XITVBV              ; VBI DONE! (WHEW!)
+VBEND           ;sta HITCLR             ; clear collision
+                rti                     ; VBI done! (whew!)
+
+                .endproc
 
 
 ;======================================
 ; CLEAR Player-MISSILES
 ;======================================
-PMCLR           lda #0                  ; PUT 255
-                tax                     ; ZEROS IN
-PMCLP           sta MISSLS,X            ; EACH P/M
-                sta PL0,X               ; AREA
+PMCLR           .proc
+                lda #0                  ; put 255
+                tax                     ; zeros in
+PMCLP           sta MISSLS,X            ; each p/m
+                sta PL0,X               ; area
                 sta PL1,X
                 sta PL2,X
                 sta PL3,X
                 dex
                 bne PMCLP
 
-                rts                     ; FINIS!
+                rts                     ; finis!
+                .endproc
 
 
 ;======================================
 ; CLEAR SCREEN
 ;======================================
-CLRSC           lda #>DISP              ; INITIAL
-                sta HI                  ; DISPLAY
-                lda #<DISP              ; ADDRESS
-                sta LO                  ; WORK AREA
-                ldx #20                 ; CLEAR 20 GROUPS
-CLRSC2          ldy #0                  ; OF 256 BYTES
-                tya                     ; (5120 BYTES)
+CLRSC           .proc
+                lda #>DISP              ; initial
+                sta HI                  ; display
+                lda #<DISP              ; address
+                sta LO                  ; work area
+                ldx #20                 ; clear 20 groups
+CLRSC2          ldy #0                  ; of 256 bytes
+                tya                     ; (5120 bytes)
 CLRSC3          sta (LO),Y
                 dey
                 bne CLRSC3
@@ -1958,13 +2067,16 @@ CLRSC3          sta (LO),Y
 CLRSC4          inc HI
                 jmp CLRSC2
 
+                .endproc
+
 
 ;======================================
 ; GR. 7+ PLOTTER ROUTINE
 ;--------------------------------------
 ; (SEE A.N.A.L.O.G. #11)
 ;======================================
-PLOTCL          lda PLOTY               ; MULT. Y BY 32:
+PLOTCL          .proc
+                lda PLOTY               ; mult. y by 32:
                 asl A
                 sta LO
                 lda #0
@@ -1978,36 +2090,39 @@ PLOTCL          lda PLOTY               ; MULT. Y BY 32:
                 rol HI                  ; *16
                 asl LO
                 rol HI                  ; *32
-                lda #<DISP              ; ADD THE DISPLAY
-                clc                     ; ADDRESS TO GET
-                adc LO                  ; THE ACTUAL
-                sta LO                  ; ADDRESS OF THE
-                lda #>DISP              ; BYTE THAT WILL
-                adc HI                  ; BE ALTERED FOR
-                sta HI                  ; THE PLOT.
-                lda PLOTX               ; MASK PLOTX FOR
-                and #3                  ; PLOT INDEX,
-                tax                     ; PLACE IN X.
-                lda PLOTX               ; GET PLOTX AND
-                lsr A                   ; DIVIDE
-                lsr A                   ; BY 4,
+                lda #<DISP              ; add the display
+                clc                     ; address to get
+                adc LO                  ; the actual
+                sta LO                  ; address of the
+                lda #>DISP              ; byte that will
+                adc HI                  ; be altered for
+                sta HI                  ; the plot.
+                lda PLOTX               ; mask plotx for
+                and #3                  ; plot index,
+                tax                     ; place in x.
+                lda PLOTX               ; get plotx and
+                lsr A                   ; divide
+                lsr A                   ; by 4,
                 sta YOFSET
                 tay
                 lda (LO),Y
                 and BMASK2,X
-                cmp COLOR1,X
+                cmp COLR1,X
                 beq PABORT
 
-                ldy COLOR               ; GET COLOR
-                lda BMASK2,X            ; AND MASK OFF
-                and COLORS,Y            ; PIXEL POSITION
-                sta HOLD                ; SAVE IT,
-                lda BMASK1,X            ; MASK OFF PIXEL
-                ldy YOFSET              ; OF THE ADDRESS
-                and (LO),Y              ; TO BE ALTERED
-                ora HOLD                ; SET THE PLOT
-                sta (LO),Y              ; BITS AND STORE!
-PABORT          rts                     ; FINIS!
+                ldy COLOR               ; get color
+                lda BMASK2,X            ; and mask off
+                and COLORS,Y            ; pixel position
+                sta HOLD                ; save it,
+                lda BMASK1,X            ; mask off pixel
+                ldy YOFSET              ; of the address
+                and (LO),Y              ; to be altered
+                ora HOLD                ; set the plot
+                sta (LO),Y              ; bits and store!
+PABORT          rts                     ; finis!
+                .endproc
+
+;--------------------------------------
 
 ;
 ; PLOT MASK TABLES
@@ -2016,109 +2131,111 @@ PABORT          rts                     ; FINIS!
 COLORS          .byte $00,$55,$AA,$FF
 BMASK1          .byte $3F,$CF,$F3,$FC
 BMASK2          .byte $C0,$30,$0C,$03
-COLOR1          .byte $40,$10,$04,$01
+COLR1          .byte $40,$10,$04,$01
 
 
 ;======================================
 ; DRAW HANDLER
 ;======================================
-DRAW            lda DRAWY
-                cmp PLOTY               ; IS DRAWY>PLOTY?
-                bcc YMINUS              ; NO!
+DRAW            .proc
+                lda DRAWY
+                cmp PLOTY               ; is drawy>ploty?
+                bcc YMINUS              ; no!
 
-                sec                     ; SUBTRACT
-                sbc PLOTY               ; PLOTY FROM DRAWY
-                sta DELTAY              ; AND SAVE DIFFERENCE.
-                lda #1                  ; Y INCREMENT
-                sta INCY                ; = 1 (DOWN)
-                bne XVEC                ; BRANCH!
+                sec                     ; subtract
+                sbc PLOTY               ; ploty from drawy
+                sta DELTAY              ; and save difference.
+                lda #1                  ; y increment
+                sta INCY                ; = 1 (down)
+                bne XVEC                ; branch!
 
-YMINUS          lda PLOTY               ; SUBTRACT
-                sec                     ; DRAWY
-                sbc DRAWY               ; FROM PLOTY
-                sta DELTAY              ; AND SAVE DIFFERENCE.
-                lda #255                ; Y INCREMENT
-                sta INCY                ; = -1 (UP)
-XVEC            lda DRAWX               ; IS DRAWX
-                cmp PLOTX               ; > PLOTX?
-                bcc XMINUS              ; NO!
+YMINUS          lda PLOTY               ; subtract
+                sec                     ; drawy
+                sbc DRAWY               ; from ploty
+                sta DELTAY              ; and save difference.
+                lda #255                ; y increment
+                sta INCY                ; = -1 (up)
+XVEC            lda DRAWX               ; is drawx
+                cmp PLOTX               ; > plotx?
+                bcc XMINUS              ; no!
 
-                sec                     ; SUBTRACT
-                sbc PLOTX               ; PLOTX FROM DRAWX
-                sta DELTAX              ; AND SAVE DIFFERENCE.
-                lda #1                  ; X INCREMENT
-                sta INCX                ; IS 1 (RIGHT)
-                bne VECSET              ; BRANCH!
+                sec                     ; subtract
+                sbc PLOTX               ; plotx from drawx
+                sta DELTAX              ; and save difference.
+                lda #1                  ; x increment
+                sta INCX                ; is 1 (right)
+                bne VECSET              ; branch!
 
-XMINUS          lda PLOTX               ; SUBTRACT
-                sec                     ; DRAWX FROM
-                sbc DRAWX               ; PLOTX
-                sta DELTAX              ; AND SAVE DIFFERENCE.
-                lda #255                ; X INCREMENT
-                sta INCX                ; IS -1 (LEFT)
-VECSET          lda #0                  ; ZERO OUT:
-                sta ACCY                ; Y ACCUMULATOR
-                sta ACCX                ; X ACCUMULATOR
-                lda DELTAX              ; IS DELTAX>
-                cmp DELTAY              ; DELTAY?
-                bcc YMAX                ; NO!
+XMINUS          lda PLOTX               ; subtract
+                sec                     ; drawx from
+                sbc DRAWX               ; plotx
+                sta DELTAX              ; and save difference.
+                lda #255                ; x increment
+                sta INCX                ; is -1 (left)
+VECSET          lda #0                  ; zero out:
+                sta ACCY                ; y accumulator
+                sta ACCX                ; x accumulator
+                lda DELTAX              ; is deltax>
+                cmp DELTAY              ; deltay?
+                bcc YMAX                ; no!
 
-                sta COUNTR              ; SAVE DELTAX
-                sta ENDPT               ; IN COUNTR, ENDPT.
-                lsr A                   ; DIVIDE BY 2 AND
-                sta ACCY                ; STORE IN Y ACCUM.
-                jmp DRAWGO              ; START DRAW
+                sta COUNTR              ; save deltax
+                sta ENDPT               ; in countr, endpt.
+                lsr A                   ; divide by 2 and
+                sta ACCY                ; store in y accum.
+                jmp DRAWGO              ; start draw
 
-YMAX            lda DELTAY              ; DELTAY LARGER,
-                sta COUNTR              ; STORE IT IN
-                sta ENDPT               ; COUNTR, ENDPT.
-                lsr A                   ; DIVIDE BY 2 AND
-                sta ACCX                ; STORE IN X ACCUM.
+YMAX            lda DELTAY              ; deltay larger,
+                sta COUNTR              ; store it in
+                sta ENDPT               ; countr, endpt.
+                lsr A                   ; divide by 2 and
+                sta ACCX                ; store in x accum.
 
 ; -----------------------
 ; NOW WE START THE ACTUAL
 ; DRAWTO FUNCTION!
 ; -----------------------
 
-DRAWGO          lda COUNTR              ; IF COUNTR=0...
-                beq DRWEND              ; NO DRAW!
+DRAWGO          lda COUNTR              ; if countr=0...
+                beq DRWEND              ; no draw!
 
-BEGIN           lda ACCY                ; ADD DELTAY
-                clc                     ; TO Y ACCUMULATOR
+BEGIN           lda ACCY                ; add deltay
+                clc                     ; to y accumulator
                 adc DELTAY
                 sta ACCY
-                cmp ENDPT               ; AT ENDPOINT YET?
-                bcc BEGIN2              ; NO, GO DO X.
+                cmp ENDPT               ; at endpoint yet?
+                bcc BEGIN2              ; no, go do x.
 
-                lda ACCY                ; SUBTRACT ENDPT
-                sec                     ; FROM Y ACCUMULATOR
+                lda ACCY                ; subtract endpt
+                sec                     ; from y accumulator
                 sbc ENDPT
                 sta ACCY
-                lda PLOTY               ; AND INCREMENT
-                clc                     ; THE Y POSITION!
+                lda PLOTY               ; and increment
+                clc                     ; the y position!
                 adc INCY
                 sta PLOTY
-BEGIN2          lda ACCX                ; ADD DELTAX TO
-                clc                     ; X ACCUMULATOR
+BEGIN2          lda ACCX                ; add deltax to
+                clc                     ; x accumulator
                 adc DELTAX
                 sta ACCX
-                cmp ENDPT               ; AT ENDPOINT YET?
-                bcc PLOTIT              ; NO, GO PLOT.
+                cmp ENDPT               ; at endpoint yet?
+                bcc PLOTIT              ; no, go plot.
 
-                lda ACCX                ; SUBTRACT ENDPT
-                sec                     ; FROM X ACCUMULATOR
+                lda ACCX                ; subtract endpt
+                sec                     ; from x accumulator
                 sbc ENDPT
                 sta ACCX
-                lda PLOTX               ; AND INCREMENT
-                clc                     ; PLOT X
+                lda PLOTX               ; and increment
+                clc                     ; plot x
                 adc INCX
                 sta PLOTX
-PLOTIT          jsr PLOTCL              ; PLOT THE POINT!
+PLOTIT          jsr PLOTCL              ; plot the point!
 
-                dec COUNTR              ; MORE TO DRAW?
-                bne BEGIN               ; YES!
+                dec COUNTR              ; more to draw?
+                bne BEGIN               ; yes!
 
-DRWEND          rts                     ; NO, EXIT!
+DRWEND          rts                     ; no, exit!
+                .endproc
 
 
 ;
@@ -2233,12 +2350,60 @@ SIZTBL          .byte 0,0,0,0,0,1,1,1
 ; PLAYER SHAPES
 ;
 
-PN1             .byte $10,$10,$10,$10,$10,$10,$10,$10
-                .byte $08,$08,$08,$08,$08,$08,$08,$08
-PN2             .byte $00,$00,$00,$00,$80,$40,$20,$10
-                .byte $08,$04,$02,$01,$00,$00,$00,$00
-PN3             .byte $00,$00,$01,$01,$02,$02,$04,$08
-                .byte $10,$20,$40,$40,$80,$80,$00,$00
+PN1             ;.byte $10,$10,$10,$10,$10,$10,$10,$10
+                ;.byte $08,$08,$08,$08,$08,$08,$08,$08
+                .byte %00010000         ; .A..
+                .byte %00010000         ; .A..
+                .byte %00010000         ; .A..
+                .byte %00010000         ; .A..
+                .byte %00010000         ; .A..
+                .byte %00010000         ; .A..
+                .byte %00010000         ; .A..
+                .byte %00010000         ; .A..
+                .byte %00001000         ; ..B.
+                .byte %00001000         ; ..B.
+                .byte %00001000         ; ..B.
+                .byte %00001000         ; ..B.
+                .byte %00001000         ; ..B.
+                .byte %00001000         ; ..B.
+                .byte %00001000         ; ..B.
+                .byte %00001000         ; ..B.
+PN2             ;.byte $00,$00,$00,$00,$80,$40,$20,$10
+                ;.byte $08,$04,$02,$01,$00,$00,$00,$00
+                .byte %00000000         ; ....
+                .byte %00000000         ; ....
+                .byte %00000000         ; ....
+                .byte %00000000         ; ....
+                .byte %10000000         ; B...
+                .byte %01000000         ; A...
+                .byte %00100000         ; .B..
+                .byte %00010000         ; .A..
+                .byte %00001000         ; ..B.
+                .byte %00000100         ; ..A.
+                .byte %00000010         ; ...B
+                .byte %00000001         ; ...A
+                .byte %00000000         ; ....
+                .byte %00000000         ; ....
+                .byte %00000000         ; ....
+                .byte %00000000         ; ....
+PN3             ;.byte $00,$00,$01,$01,$02,$02,$04,$08
+                ;.byte $10,$20,$40,$40,$80,$80,$00,$00
+                .byte %00000000         ; ....
+                .byte %00000000         ; ....
+                .byte %00000001         ; ...A
+                .byte %00000001         ; ...A
+                .byte %00000010         ; ...B
+                .byte %00000010         ; ...B
+                .byte %00000100         ; ..A.
+                .byte %00001000         ; ..B.
+                .byte %00010000         ; .A..
+                .byte %00100000         ; .B..
+                .byte %01000000         ; A...
+                .byte %01000000         ; A...
+                .byte %10000000         ; B...
+                .byte %10000000         ; B...
+                .byte %00000000         ; ....
+                .byte %00000000         ; ....
 
 ;
 ; SHAPE START/END POINTS
@@ -2253,8 +2418,8 @@ EPTBL           .byte 17,16,15,14,13,12,11,10
 ; JOYSTICK/PADDLE MESSAGE POINTERS
 ;
 
-JPLO            .byte JOYMSG&255,PADMSG&255
-JPHI            .byte JOYMSG/256,PADMSG/256
+JPLO            .byte <JOYMSG,<PADMSG
+JPHI            .byte >JOYMSG,>PADMSG
 
 ;
 ; GRID DATA TABLES
@@ -2318,8 +2483,8 @@ SHOIMG          .byte $88,$50,$20,$50,$88
                 .byte $20,$20,$F8,$20,$20
 CPYSTN          .byte 4,9
 
-ADDSUB          .byte 2,$FE               ; ADD/SUB. 2
-ADDSB1          .byte 1,$FF               ; ADD/SUB. 1
+ADDSUB          .byte 2,$FE               ; add/sub. 2
+ADDSB1          .byte 1,$FF               ; add/sub. 1
 
 ;
 ; SOUND DATA
