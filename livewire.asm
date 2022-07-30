@@ -40,6 +40,7 @@ BOOT            clc
 ; --------------------------------------
 
                 .include "interrupt.asm"
+                .include "platform_c256.asm"
 
                 .include "main.asm"
 
@@ -49,5 +50,16 @@ BOOT            clc
                 .include "grid.asm"
                 .include "render.asm"
                 .include "data.asm"
+
+
+;--------------------------------------
+                .align $100
+;--------------------------------------
+
+CharsetNorm     .include "FONT.asm"
+CharsetNorm_end
+
+Palette         .include "PALETTE.asm"
+Palette_end
 
                 .end

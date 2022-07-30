@@ -12,6 +12,44 @@ BITMAPTXT3      = $B31400
 
 
 ;======================================
+; Initialize SID
+;======================================
+InitSID         .proc
+                pha
+                phx
+
+;   reset the SID
+                lda #$00
+                ldx #$18
+_next1          sta $AF_E400,X
+                dex
+                bpl _next1
+
+                lda #$09                ; Attack/Decay = 9
+                sta SID_ATDCY1
+                sta SID_ATDCY2
+                sta SID_ATDCY3
+
+                lda #$00                ; Susatain/Release = 0
+                sta SID_SUREL1
+                sta SID_SUREL2
+                sta SID_SUREL3
+
+                ;lda #$21
+                ;sta SID_CTRL1
+                ;sta SID_CTRL2
+                ;sta SID_CTRL3
+
+                lda #$0F                ; Volume = 15 (max)
+                sta SID_SIGVOL
+
+                plx
+                pla
+                rts
+                .endproc
+
+
+;======================================
 ; Create the lookup table (LUT)
 ;======================================
 InitLUT         .proc
@@ -19,10 +57,10 @@ InitLUT         .proc
                 phb
 
                 .m16i16
-                lda #palette_end-palette ; Copy the palette to LUT0
-                ldx #<>palette
+                lda #Palette_end-Palette ; Copy the Palette to LUT0
+                ldx #<>Palette
                 ldy #<>GRPH_LUT0_PTR
-                mvn `palette,`GRPH_LUT0_PTR
+                mvn `Palette,`GRPH_LUT0_PTR
 
                 plb
                 plp
@@ -84,15 +122,15 @@ InitTiles       .proc
                 sta SIZE+2
 
                 lda #<>tiles            ; Set the source address
-                sta SOURCE
+                sta pSOURCE
                 lda #`tiles
-                sta SOURCE+2
+                sta pSOURCE+2
 
                 lda #<>(TILESET-VRAM)   ; Set the destination address
-                sta DEST
+                sta pDEST
                 sta TILESET0_ADDR       ; And set the Vicky register
                 lda #`(TILESET-VRAM)
-                sta DEST+2
+                sta pDEST+2
                 .m8
                 sta TILESET0_ADDR+2
 
@@ -179,7 +217,7 @@ _nextGlyph      lda TitleScreenData,Y   ; Get the tile code
                 cpy #MAPWIDTH*MAPHEIGHT-18  ; bottom lines are text
                 bne _nextGlyph
 
-                .setbank $03
+                .setbank $00
                 plp
                 rts
                 .endproc
@@ -221,6 +259,8 @@ InitUnitOverlay .proc
 
 ;======================================
 ; Initialize the Sprite layer
+;--------------------------------------
+; sprites dimensions are 32x32 (1024)
 ;======================================
 InitSprites     .proc
                 php
@@ -233,12 +273,12 @@ InitSprites     .proc
                 sta SIZE+2
 
                 lda #<>PLYR0            ; Set the source address
-                sta SOURCE
+                sta pSOURCE
                 lda #`PLYR0
-                sta SOURCE+2
+                sta pSOURCE+2
 
                 lda #<>(SPRITES-VRAM)   ; Set the destination address
-                sta DEST
+                sta pDEST
                 sta SP00_ADDR           ; And set the Vicky register
                 clc
                 adc #$400               ; 1024
@@ -248,7 +288,7 @@ InitSprites     .proc
                 sta SP02_ADDR
 
                 lda #`(SPRITES-VRAM)
-                sta DEST+2
+                sta pDEST+2
 
                 .m8
                 sta SP00_ADDR+2
@@ -292,16 +332,16 @@ InitBitmap      .proc
                 sta SIZE+2
 
                 lda #<>HeaderPanel      ; Set the source address
-                sta SOURCE
+                sta pSOURCE
                 lda #`HeaderPanel
-                sta SOURCE+2
+                sta pSOURCE+2
 
                 lda #<>(BITMAP-VRAM)   ; Set the destination address
-                sta DEST
+                sta pDEST
                 sta BITMAP0_START_ADDR ; And set the Vicky register
 
                 lda #`(BITMAP-VRAM)
-                sta DEST+2
+                sta pDEST+2
 
                 .m8
                 sta BITMAP0_START_ADDR+2
@@ -327,12 +367,16 @@ v_Empty         .var $00
 v_TextColor     .var $40
 ;---
 
+                php
+                .m16i8
+
 ;   reset the addresses to make this reentrant
                 lda #<>CS_TEXT_MEM_PTR
-                sta _setAddr1
+                sta _setAddr1+1
                 lda #<>CS_COLOR_MEM_PTR
-                sta _setAddr2
+                sta _setAddr2+1
 
+                .m8
                 ldx #$00
                 ldy #v_QtyPages
 
@@ -350,6 +394,7 @@ _setAddr2       sta CS_COLOR_MEM_PTR,x  ; SMC
                 dey
                 bne _clearNext
 
+                plp
                 rts
                 .endproc
 
@@ -358,7 +403,7 @@ _setAddr2       sta CS_COLOR_MEM_PTR,x  ; SMC
 ; Blit bitmap text to VRAM
 ;--------------------------------------
 ; on entry:
-;   DEST        set by caller
+;   pDEST       set by caller
 ;======================================
 BlitText        .proc
                 php
@@ -371,9 +416,9 @@ BlitText        .proc
                 sta SIZE+2
 
                 lda #<>Text2Bitmap      ; Set the source address
-                sta SOURCE
+                sta pSOURCE
                 lda #`Text2Bitmap
-                sta SOURCE+2
+                sta pSOURCE+2
 
                 jsr Copy2VRAM
 
@@ -387,8 +432,8 @@ BlitText        .proc
 ; Copying data from system RAM to VRAM
 ;--------------------------------------
 ; Inputs (pushed to stack, listed top down)
-;   SOURCE = address of source data (should be system RAM)
-;   DEST = address of destination (should be in video RAM)
+;   pSOURCE = address of source data (should be system RAM)
+;   pDEST = address of destination (should be in video RAM)
 ;   SIZE = number of bytes to transfer
 ;
 ; Outputs:
@@ -397,7 +442,7 @@ BlitText        .proc
 Copy2VRAM       .proc
                 php
                 .setbank `SDMA_SRC_ADDR
-                .setdp SOURCE
+                .setdp pSOURCE
                 .m8
 
     ; Set SDMA to go from system to video RAM, 1D copy
@@ -409,14 +454,14 @@ Copy2VRAM       .proc
                 sta VDMA_CTRL
 
                 .m16i8
-                lda SOURCE              ; Set the source address
+                lda pSOURCE             ; Set the source address
                 sta SDMA_SRC_ADDR
-                ldx SOURCE+2
+                ldx pSOURCE+2
                 stx SDMA_SRC_ADDR+2
 
-                lda DEST                ; Set the destination address
+                lda pDEST               ; Set the destination address
                 sta VDMA_DST_ADDR
-                ldx DEST+2
+                ldx pDEST+2
                 stx VDMA_DST_ADDR+2
 
                 .m16
@@ -451,11 +496,103 @@ wait_vdma       lda VDMA_STATUS         ; Get the VDMA status
                 sta SDMA0_CTRL
                 sta VDMA_CTRL
 
-                .setdp $0800
-                .setbank $03
+                .setdp $0000
+                .setbank $00
                 .m8i8
                 plp
                 rts
 
 vdma_err        brk
+                .endproc
+
+
+;======================================
+;
+;======================================
+InitIRQs        .proc
+                pha
+
+;   enable vertical blank interrupt
+
+                .m8i8
+                ldx #HandleIrq_END-HandleIrq
+_relocate       ;lda @l $024000,X        ; HandleIrq address
+                ;sta @l $002000,X        ; new address within Bank 00
+                ;dex
+                ;bpl _relocate
+
+                sei                     ; disable IRQ
+
+                .m16
+                ;lda @l vecIRQ
+                ;sta IRQ_PRIOR
+
+                lda #<>$002900
+                sta @l vecIRQ
+
+                .m8
+                lda #$07                ; reset consol
+                sta CONSOL
+
+                lda #$1F
+                sta InputFlags
+                stz InputType           ; joystick
+
+                lda @l INT_MASK_REG0
+                and #~FNX0_INT00_SOF    ; enable Start-of-Frame IRQ
+                sta @l INT_MASK_REG0
+
+                lda @l INT_MASK_REG1
+                and #~FNX1_INT00_KBD    ; enable Keyboard IRQ
+                sta @l INT_MASK_REG1
+
+                cli                     ; enable IRQ
+
+                pla
+                rts
+                .endproc
+
+
+;======================================
+;
+;======================================
+SetFont         .proc
+                php
+                pha
+                phx
+                phy
+
+                lda #<CharsetNorm
+                sta pSource
+                lda #>CharsetNorm
+                sta pSource+1
+                lda #`CharsetNorm
+                sta pSource+2
+
+                lda #<FONT_MEMORY_BANK0
+                sta pDest
+                lda #>FONT_MEMORY_BANK0
+                sta pDest+1
+                lda #`FONT_MEMORY_BANK0
+                sta pDest+2
+
+                ldx #$05                ; 5 pages
+_nextPage       ldy #$00                ; 128 characters * 8 bytes
+_next1          lda (pSource),Y
+                sta (pDest),Y
+
+                iny
+                bne _next1
+
+                inc pSource+1
+                inc pDest+1
+
+                dex
+                bne _nextPage
+
+                ply
+                plx
+                pla
+                plp
+                rts
                 .endproc

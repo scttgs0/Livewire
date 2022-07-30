@@ -106,3 +106,7 @@ itJoystick  = 0
 itKeyboard  = 1
 KEYCHAR         .byte ?                 ; last key pressed
 CONSOL          .byte ?                 ; state of OPTION,SELECT,START
+
+pSOURCE         .dword ?                ; Starting address for the source data (4 bytes)
+pDEST           .dword ?                ; Starting address for the destination block (4 bytes)
+SIZE            .dword ?                ; Number of bytes to copy (4 bytes)

@@ -3,7 +3,8 @@ LIVE            .proc
                 .frsMouse_off
                 .frsBorder_off
 
-                InitCharLUT
+                jsr InitLUT
+                jsr InitCharLUT
 
                 lda #<CharResX
                 sta COLS_PER_LINE
@@ -19,7 +20,8 @@ LIVE            .proc
                 lda #CharResY
                 sta LINES_VISIBLE
 
-                ClearScreen
+                jsr SetFont
+                jsr ClearScreen
 
                 cld
                 ;jsr SIOINV             ; init sound
