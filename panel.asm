@@ -125,18 +125,18 @@ RNDOBG          lda SID_RANDOM          ; get random
                 dec OBJNUM              ; more objects?
                 bpl ERSOBJ              ; yeah, do 'em
 
-                ;lda #$0F               ; show player
+                lda #$0F                ; show player
                 ;sta COLPM0             ; death here
-                ;sta AUDC1              ; start sound
-MOREWT          ;lda SID_RANDOM         ; set random
-                ;and #$1F               ; death sound
-                ;sta AUDF1              ; frequency
+                sta SID_CTRL1           ; start sound
+MOREWT          lda SID_RANDOM          ; set random
+                and #$1F                ; death sound
+                sta SID_FREQ1           ; frequency
                 lda #6                  ; wait 0.1 sec
                 jsr WAIT
 
                 ;dec COLPM0             ; dec brightness
                 ;lda COLPM0             ; now set
-                ;sta AUDC1              ; death volume
+                ;sta SID_CTRL1              ; death volume
                 ;bne MOREWT             ; more wait
 
                 lda LIVES               ; more lives?

@@ -276,8 +276,8 @@ MOVFRQ          .byte 0,20,30,20,30,20,30,20,30
 ; DATA TABLES
 ;
 
-SEGWK           .fill 17
-SEGX            .fill 256
-SEGY            .fill 256
-RIMX            .fill 256
-RIMY            .fill 256
+SEGWK           .fill 17,$00
+SEGX            .fill 256,$00
+SEGY            .fill 256,$00
+RIMX            .fill 256,$00
+RIMY            .fill 256,$00

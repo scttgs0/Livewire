@@ -233,10 +233,10 @@ ENDKEY          lda #0                  ; clear
                 lda PAUFLG              ; paused?
                 beq NOPAU               ; no, continue
 
-                ;lda #0                 ; turn off
-                ;sta AUDC1              ; all sounds
-                ;sta AUDC2              ; during
-                ;sta AUDC3              ; the
+                lda #0                  ; turn off
+                sta SID_CTRL1           ; all sounds
+                sta SID_CTRL2           ; during
+                sta SID_CTRL3           ; the
                 ;sta AUDC4              ; pause
                 rti                     ; then exit
 
@@ -245,19 +245,19 @@ NOPAU           lda FIRSOU              ; fire sound on?
 
                 dec FIRSOU              ; dec counter
                 ldx FIRSOU              ; put in index
-                ;lda FIRFRQ,X           ; get frequency
-                ;sta AUDF2
-                ;lda FIRCTL,X           ; get control
-                ;sta AUDC2
+                lda FIRFRQ,X            ; get frequency
+                sta SID_FREQ2
+                lda FIRCTL,X            ; get control
+                sta SID_CTRL2
 NOFSND          lda OBDSOU              ; obj death sound?
                 beq NOOSND              ; no!
 
                 dec OBDSOU              ; dec counter
                 ldx OBDSOU              ; put in index
-                ;lda OBDFRQ,X           ; get frequency
-                ;sta AUDF3
-                ;lda OBDCTL,X           ; get control
-                ;sta AUDC3
+                lda OBDFRQ,X            ; get frequency
+                sta SID_FREQ3
+                lda OBDCTL,X            ; get control
+                sta SID_CTRL3
 NOOSND          lda MOVSOU              ; move sound?
                 beq CYCCOL              ; no!
 

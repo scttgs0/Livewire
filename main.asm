@@ -24,7 +24,7 @@ LIVE            .proc
                 jsr ClearScreen
 
                 cld
-                ;jsr SIOINV             ; init sound
+                jsr InitSID             ; init sound
 
                 lda #0                  ; clear page 0
                 ldx #127
@@ -43,7 +43,7 @@ _next1          sta $80,X
 ;   turn off display, disable interrupts
                 lda #0                  ; init...
                 ;sta DMACTL             ; DMA
-                ;sta NMIEN               ; interrupts
+                ;sta NMIEN              ; interrupts
                 ;sta AUDCTL             ; audio
                 ;sta HITCLR             ; collision
                 ;sta COLBK              ; backgnd color
@@ -216,8 +216,7 @@ _wait1          lda PAUFLG              ; we paused?
 
                 jsr DECLIV              ; one less life!
 
-_plive          ;sta ATTRAC             ; cancel attract!
-                lda FLTIME              ; flash going?
+_plive          lda FLTIME              ; flash going?
                 bne _nofend             ; yes! store...
 
                 sta SP01_X_POS          ; flash position!
