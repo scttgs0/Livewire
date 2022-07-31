@@ -57,7 +57,7 @@ InitLUT         .proc
                 phb
 
                 .m16i16
-                lda #Palette_end-Palette ; Copy the Palette to LUT0
+                lda #Palette_end-Palette ; Copy the palette to LUT0
                 ldx #<>Palette
                 ldy #<>GRPH_LUT0_PTR
                 mvn `Palette,`GRPH_LUT0_PTR
