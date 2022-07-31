@@ -56,8 +56,8 @@ BOOT            clc
                 .align $100
 ;--------------------------------------
 
-CharsetNorm     .include "FONT.asm"
-CharsetNorm_end
+GameFont        .include "FONT.asm"
+GameFont_end
 
 Palette         .include "PALETTE.asm"
 Palette_end

@@ -562,11 +562,11 @@ SetFont         .proc
                 phx
                 phy
 
-                lda #<CharsetNorm
+                lda #<GameFont
                 sta pSource
-                lda #>CharsetNorm
+                lda #>GameFont
                 sta pSource+1
-                lda #`CharsetNorm
+                lda #`GameFont
                 sta pSource+2
 
                 lda #<FONT_MEMORY_BANK0
@@ -576,8 +576,8 @@ SetFont         .proc
                 lda #`FONT_MEMORY_BANK0
                 sta pDest+2
 
-                ldx #$05                ; 5 pages
-_nextPage       ldy #$00                ; 128 characters * 8 bytes
+                ldx #$08                ; 8 pages
+_nextPage       ldy #$00
 _next1          lda (pSource),Y
                 sta (pDest),Y
 
