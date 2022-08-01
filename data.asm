@@ -178,8 +178,8 @@ EPTBL           .byte 17,16,15,14,13,12,11,10
 ; JOYSTICK/PADDLE MESSAGE POINTERS
 ;
 
-JPLO            .byte <JOYMSG,<PADMSG
-JPHI            .byte >JOYMSG,>PADMSG
+JPLO            .byte <JoyMsg,<PadMsg
+JPHI            .byte >JoyMsg,>PadMsg
 
 ;
 ; GRID DATA TABLES

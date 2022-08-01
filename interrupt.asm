@@ -90,7 +90,7 @@ TITLDL          ;.byte AEMPTY8,AEMPTY8,AEMPTY8,AEMPTY8
                 ;.byte AEMPTY4
 
                 ;.byte $06+ALMS
-CONTRL          ;    .addr JOYMSG
+CONTRL          ;    .addr JoyMsg
                 ;.byte AVB+AJMP
                 ;    .addr TITLDL
 
@@ -448,12 +448,23 @@ Interrupt_DLI2  .proc
 ; SCREEN MESSAGES
 ;----------------
 
-INFOLN          .text '          lvl   '
-MAGMSG          .text 'ANALOG COMPUTING'
-TITLE           .text '    livewire    '
-AUTHOR          .text ' BY  TOM HUDSON '
-JOYMSG          .text '    joystick    '
-PADMSG          .text '     paddle     '
+INFOLN          .text '          LVL   '
+MAGMSG          .text '  ANALOG COMPUTING  '
+TitleMsg        ;.text '      LIVEWIRE      '
+;   top
+                .byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+                .byte $D4,$D5,$D0,$D1,$DC,$DD,$CC,$CD
+                .byte $E0,$E1,$D0,$D1,$D8,$D9,$CC,$CD
+                .byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+;   bottom
+                .byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+                .byte $D6,$D7,$D2,$D3,$DE,$DF,$CE,$CF
+                .byte $E2,$E3,$D2,$D3,$DA,$DB,$CE,$CF
+                .byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+
+AuthorMsg       .text '    BY TOM HUDSON   '
+JoyMsg          .text '      JOYSTICK      '
+PadMsg          .text '       PADDLE       '
 LASTSC          .text '                '
 
 

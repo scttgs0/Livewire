@@ -19,7 +19,7 @@
 
 ;--------------------------------------
 ;--------------------------------------
-                * = DLIST-40
+                * = LIVE-40
 ;--------------------------------------
                 .text "PGX"
                 .byte $01
@@ -30,6 +30,7 @@ BOOT            clc
                 .m8i8
                 .setdp $0000
                 .setbank $00
+                cld
 
                 jmp LIVE
 
@@ -39,10 +40,15 @@ BOOT            clc
                 * = $2000
 ; --------------------------------------
 
+                .include "main.asm"
+
+
+;--------------------------------------
+                .align $100
+;--------------------------------------
+
                 .include "interrupt.asm"
                 .include "platform_c256.asm"
-
-                .include "main.asm"
 
                 .include "object.asm"
                 .include "panel.asm"

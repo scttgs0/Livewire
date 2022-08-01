@@ -408,6 +408,185 @@ _setAddr2       sta CS_COLOR_MEM_PTR,x  ; SMC
 
 
 ;======================================
+; Render Publisher
+;======================================
+RenderPublisher .proc
+                php
+                .m8i8
+
+                ldx #$FF
+                ldy #$FF
+_nextChar       inx
+                iny
+                cpy #$14
+                beq _XIT
+
+                lda MAGMSG,Y
+                cmp #$20
+                beq _space
+
+                bra _letter
+
+_space          lda #$00
+                sta CS_COLOR_MEM_PTR+11*CharResX,X
+                sta CS_TEXT_MEM_PTR+11*CharResX,X
+                inx
+                sta CS_COLOR_MEM_PTR+11*CharResX,X
+                sta CS_TEXT_MEM_PTR+11*CharResX,X
+
+                bra _nextChar
+
+_letter         pha
+                phx
+                lda #$40
+                sta CS_COLOR_MEM_PTR+11*CharResX,X
+                inx
+                sta CS_COLOR_MEM_PTR+11*CharResX,X
+
+                plx
+                pla
+                sta CS_TEXT_MEM_PTR+11*CharResX,X
+                inx
+                clc
+                adc #$40
+                sta CS_TEXT_MEM_PTR+11*CharResX,X
+
+                bra _nextChar
+
+_XIT            plp
+                rts
+                .endproc
+
+
+;======================================
+; Render Title
+;======================================
+RenderTitle     .proc
+                php
+                .m8i8
+
+                ldx #$FF
+                ldy #$FF
+_nextChar       inx
+                iny
+                cpy #$50
+                beq _XIT
+
+                lda #$80
+                sta CS_COLOR_MEM_PTR+13*CharResX,X
+                lda TitleMsg,Y
+                sta CS_TEXT_MEM_PTR+13*CharResX,X
+
+                bra _nextChar
+
+_XIT            plp
+                rts
+                .endproc
+
+
+;======================================
+; Render Author
+;======================================
+RenderAuthor    .proc
+                php
+                .m8i8
+
+                ldx #$FF
+                ldy #$FF
+_nextChar       inx
+                iny
+                cpy #$14
+                beq _XIT
+
+                lda AuthorMsg,Y
+                cmp #$20
+                beq _space
+
+                bra _letter
+
+_space          lda #$00
+                sta CS_COLOR_MEM_PTR+16*CharResX,X
+                sta CS_TEXT_MEM_PTR+16*CharResX,X
+                inx
+                sta CS_COLOR_MEM_PTR+16*CharResX,X
+                sta CS_TEXT_MEM_PTR+16*CharResX,X
+
+                bra _nextChar
+
+_letter         pha
+                phx
+                lda #$70
+                sta CS_COLOR_MEM_PTR+16*CharResX,X
+                inx
+                sta CS_COLOR_MEM_PTR+16*CharResX,X
+
+                plx
+                pla
+                sta CS_TEXT_MEM_PTR+16*CharResX,X
+                inx
+                clc
+                adc #$40
+                sta CS_TEXT_MEM_PTR+16*CharResX,X
+
+                bra _nextChar
+
+_XIT            plp
+                rts
+                .endproc
+
+
+;======================================
+; Render SELECT (Qty of Players)
+;======================================
+RenderSelect    .proc
+                php
+                .m8i8
+
+                ldx #$FF
+                ldy #$FF
+_nextChar       inx
+                iny
+                cpy #$14
+                beq _XIT
+
+                lda JoyMsg,Y
+                cmp #$20
+                beq _space
+
+                bra _letter
+
+_space          lda #$00
+                sta CS_COLOR_MEM_PTR+19*CharResX,X
+                sta CS_TEXT_MEM_PTR+19*CharResX,X
+                inx
+                sta CS_COLOR_MEM_PTR+19*CharResX,X
+                sta CS_TEXT_MEM_PTR+19*CharResX,X
+
+                bra _nextChar
+
+_letter         pha
+                phx
+                lda #$C0
+                sta CS_COLOR_MEM_PTR+19*CharResX,X
+                inx
+                sta CS_COLOR_MEM_PTR+19*CharResX,X
+
+                plx
+                pla
+                sta CS_TEXT_MEM_PTR+19*CharResX,X
+                inx
+                clc
+                adc #$40
+                sta CS_TEXT_MEM_PTR+19*CharResX,X
+
+                bra _nextChar
+
+_XIT            plp
+                rts
+                .endproc
+
+
+;======================================
 ; Blit bitmap text to VRAM
 ;--------------------------------------
 ; on entry:
