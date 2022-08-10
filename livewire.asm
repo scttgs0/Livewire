@@ -15,6 +15,7 @@
                 .include "macros_65816.asm"
                 .include "macros_frs_graphic.asm"
                 .include "macros_frs_mouse.asm"
+                .include "macros_frs_random.asm"
 
 
 ;--------------------------------------

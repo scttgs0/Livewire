@@ -633,7 +633,7 @@ CYCCOL          ;lda COLPM2             ; cycle
 
 TRAN1           lda #0                  ; 0 or 2
 STOTRN          sta OBJHUE+4
-                lda SID_RANDOM
+                .randomByte
                 ora #$1F                ; reset
                 and #$3F                ; the
                 sta TRANTM              ; transient time

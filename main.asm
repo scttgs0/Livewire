@@ -1,4 +1,6 @@
 LIVE            .proc
+                jsr Random_Seed
+
                 .frsGraphics mcTextOn|mcOverlayOn|mcGraphicsOn|mcSpriteOn,mcVideoMode320
                 .frsMouse_off
                 .frsBorder_off
@@ -265,7 +267,7 @@ _next3          ora NUMOBJ,X            ; all objects
 _next4          lda OBJPRS,X            ; present?
                 bne _nxtogn             ; yes, try next.
 
-_next5          lda SID_RANDOM          ; let's try to
+_next5          .randomByte             ; let's try to
                 and #7                  ; start up a
                 cmp #5                  ; new object
                 bcs _next5              ; get a type
@@ -279,7 +281,7 @@ _next5          lda SID_RANDOM          ; let's try to
                 sta NUMOBJ,Y            ; waiting.
                 tya                     ; then set
                 sta OBJTYP,X            ; object type.
-_next6          lda SID_RANDOM          ; get a random
+_next6          .randomByte             ; get a random
                 and #$0F                ; sub-grid
                 cmp #15                 ; number
                 beq _next6

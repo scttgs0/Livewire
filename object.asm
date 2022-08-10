@@ -21,7 +21,7 @@ OBLIVE          lda OBJSEG,X            ; within 2 units
                 cmp #2                  ; of rim?
                 bcc NOOBFI              ; yes, don't fire
 
-                lda SID_RANDOM          ; random chance
+                .randomByte             ; random chance
                 and #$0F                ; of shooting
                 bne NOOBFI              ; don't shoot
 
@@ -97,7 +97,7 @@ OBHLP2          lda OBJTYP,X            ; is object
                 cmp #2                  ; type 2?
                 bne SETHUE              ; no, set color
 
-                lda SID_RANDOM          ; get random
+                .randomByte             ; get random
                 and #1                  ; direction
                 tay                     ; for type 2
                 lda OBJGRD,X            ; and
@@ -153,10 +153,10 @@ INISHO          lda OBJGRD,X            ; multiply the
                 sta SHORTX,Y            ; the short index
                 lda #1                  ; short is
                 sta SHORTF,Y            ; alive!
-                lda SID_RANDOM          ; randomize...
+                .randomByte             ; randomize...
                 and #1                  ; short...
                 sta SHORTD,Y            ; direction
-                lda SID_RANDOM          ; and that...
+                .randomByte             ; and that...
                 and #$3F                ; direction's...
                 sta SHORTT,Y            ; time!
 JOBHAN          jmp OBJHAN              ; next object
@@ -294,7 +294,7 @@ SHHANL          lda SHORTF,X            ; short alive?
                 dec SHORTT,X            ; direction change?
                 bpl HANNXS              ; no!
 
-RESSHD          lda SID_RANDOM          ; get a random
+RESSHD          .randomByte             ; get a random
                 and #$3F                ; direction time
                 sta SHORTT,X            ; 0-63 & save
                 and #1                  ; random direction

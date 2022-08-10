@@ -116,7 +116,7 @@ ERSOBJ          jsr DRWOBJ              ; erase it!
                 sta OBJSEG,X            ; seg #30
                 lda #1                  ; set up move
                 sta OBJINC,X            ; increment
-RNDOBG          lda SID_RANDOM          ; get random
+RNDOBG          .randomByte             ; get random
                 and #$0F                ; sub-grid #
                 cmp #$0F                ; 0-14
                 beq RNDOBG
@@ -128,7 +128,7 @@ RNDOBG          lda SID_RANDOM          ; get random
                 lda #$0F                ; show player
                 ;sta COLPM0             ; death here
                 sta SID_CTRL1           ; start sound
-MOREWT          lda SID_RANDOM          ; set random
+MOREWT          .randomByte             ; set random
                 and #$1F                ; death sound
                 sta SID_FREQ1           ; frequency
                 lda #6                  ; wait 0.1 sec
