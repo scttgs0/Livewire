@@ -2,7 +2,7 @@
 ; MAIN GAME DISPLAY LIST
 ; ----------------------
 
-DLIST           ;.byte AEMPTY8
+;DLIST          ;.byte AEMPTY8
                 ;.byte AEMPTY8+ADLI
                 ;.byte AEMPTY8
 
@@ -64,7 +64,7 @@ DLIST           ;.byte AEMPTY8
 ; TITLE SCREEN DISPLAY LIST
 ; -------------------------
 
-TITLDL          ;.byte AEMPTY8,AEMPTY8,AEMPTY8,AEMPTY8
+;TITLDL         ;.byte AEMPTY8,AEMPTY8,AEMPTY8,AEMPTY8
                 ;.byte AEMPTY8,AEMPTY8,AEMPTY8
 
                 ;.byte $07+ALMS
@@ -90,7 +90,7 @@ TITLDL          ;.byte AEMPTY8,AEMPTY8,AEMPTY8,AEMPTY8
                 ;.byte AEMPTY4
 
                 ;.byte $06+ALMS
-CONTRL          ;    .addr JoyMsg
+;CONTRL         ;    .addr JoyMsg
                 ;.byte AVB+AJMP
                 ;    .addr TITLDL
 
@@ -381,7 +381,7 @@ _8r             pla
                 stz KEYCHAR
                 bra _XIT
 
-_CleanUpXIT     ;stz KEYCHAR    HACK:
+_CleanUpXIT     stz KEYCHAR
                 pla
 
 _XIT            .m16i16
@@ -477,6 +477,8 @@ VbiHandler      .proc
                 phx
                 phy
 
+                cld                     ; clr decimal mode
+
                 .m8i8
                 .setbank $00
 
@@ -492,29 +494,17 @@ VbiHandler      .proc
                 sta InputFlags          ; joystick activity -- override keyboard input
                 lda #itJoystick
                 sta InputType
-                bra _1
 
 _1              ldx InputType
-                bne _XIT                ; keyboard, move on
+                bne _2                  ; keyboard, move on
 
                 sta InputFlags
 
-_XIT            .m16i16
-                ply
-                plx
-                pla
-
-                .m8i8
-                rtl
-
-;//////////
-
-                ;lda #<Interrupt_DLI1   ; point to
+_2              ;lda #<Interrupt_DLI1   ; point to
                 ;sta VDSLST             ; first
                 ;lda #>Interrupt_DLI1   ; display list
                 ;sta VDSLST+1           ; interrupt
 
-                cld                     ; clr decimal mode
                 lda OBTIM1              ; this section
                 beq NOOBTD              ; processes
 
@@ -535,7 +525,7 @@ NOFTIM          lda KILPLR              ; player dead?
 CHKINT          lda INTRFG              ; in intro?
                 beq NOTINT              ; no, continue!
 
-                rti                     ; exit if intro
+                jmp VBEND               ; exit if intro
 
 NOTINT          lda KEYCHAR             ; get keyboard
                 cmp #$1C                ; pause (esc)?
@@ -585,7 +575,7 @@ ENDKEY          lda #0                  ; clear
                 sta SID_CTRL2           ; during
                 sta SID_CTRL3           ; the
                 ;sta AUDC4              ; pause
-                rti                     ; then exit
+                jmp VBEND               ; then exit
 
 NOPAU           lda FIRSOU              ; fire sound on?
                 beq NOFSND              ; no!
@@ -661,7 +651,7 @@ FIRE            lda #4                  ; reset fire
                 ;lda PTRIG0             ; get padl trigger
                 ;jmp CMPTRG             ; check it
 
-RDSTRG          lda JOYSTICK0           ; get stick trigger
+RDSTRG          lda InputFlags          ; get stick trigger
                 and #$10
 CMPTRG          bne CHKPMV              ; not firing!
 
@@ -715,10 +705,7 @@ JVBC            jmp VBCONT              ; jmp to continue
 RDSTIK          lda #2                  ; reset stick timer
                 sta PMTIME              ; to 2 jiffies
 
-                .setbank $AF
-                ldx JOYSTICK0           ; get stick
-                .setbank $00
-
+                ldx InputFlags          ; get stick
                 lda PLRGRD              ; get plyr grid #
                 clc                     ; add the
                 adc STKADD,X            ; direction inc
@@ -1045,6 +1032,12 @@ NXTSHO          dec DESTNM              ; more?
                 jmp SHORLP              ; loop back.
 
 VBEND           ;sta HITCLR             ; clear collision
-                rti                     ; VBI done! (whew!)
 
+_XIT            .m16i16
+                ply
+                plx
+                pla
+
+                .m8i8
+                rtl                     ; VBI done! (whew!)
                 .endproc
