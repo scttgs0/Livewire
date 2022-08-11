@@ -654,14 +654,28 @@ RenderSelect    .proc
                 php
                 .m8i8
 
-                ldx #$FF
+                lda JOYPAD
+                bne _paddle
+
+                lda #<JoyMsg
+                sta zpSource
+                lda #>JoyMsg
+                sta zpSource+1
+                bra _1
+
+_paddle         lda #<PadMsg
+                sta zpSource
+                lda #>PadMsg
+                sta zpSource+1
+
+_1              ldx #$FF
                 ldy #$FF
 _nextChar       inx
                 iny
                 cpy #$14
                 beq _XIT
 
-                lda JoyMsg,Y
+                lda (zpSource),Y
                 cmp #$20
                 beq _space
 

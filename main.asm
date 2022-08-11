@@ -128,13 +128,9 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;lda #3                 ; graphics,
                 ;sta GRACTL             ; and
 
+    
 ;   enable VBI + DLI
-                ;lda #$C0               ; interrupt...
-                ;sta NMIEN              ; enable
-
-;   5th-player, Player > Playfield > Background
-                ;lda #$11               ; set p/m...
-                ;sta GPRIOR             ; priority
+                jsr InitIRQs
 
                 ;lda #$0F               ; put white...
                 ;sta COLPM1             ; in player 1,
@@ -144,43 +140,40 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;lda #$16               ; put yellow...
                 ;sta COLPM0             ; in player 0
 
-                .endproc
+                bra IntroScreen
 
-                ;[fall-through]
+                .endproc
 
 
 ;--------------------------------------
 ; INTRO SCREEN
 ;--------------------------------------
 IntroScreen     .proc
-                lda CONSOL              ; start key...
+_next1          lda CONSOL              ; start key...
                 and #1                  ; pressed?
-                bne _checkSELECT        ; no!
+                bne _checkSELECT        ;   no!
 
 _wait1          lda CONSOL              ; start key...
                 and #1                  ; released?
-                beq _wait1              ; no, wait.
+                beq _wait1              ;   no, wait.
 
                 jmp DIGIN               ; go dig in!!
 
 _checkSELECT    lda CONSOL              ; select key...
                 and #2                  ; pressed?
-                bne IntroScreen         ; naw, loop back.
+                bne _next1              ;   naw, loop back.
 
                 lda JOYPAD              ; toggle...
                 clc                     ; stick/paddle...
                 adc #1                  ; indicator...
                 and #1
                 sta JOYPAD
-                tax
-                lda JPLO,X              ; and show...
-                ;sta CONTRL              ; controller...
-                lda JPHI,X              ; message...
-                ;sta CONTRL+1            ; on screen!
+                jsr RenderSelect
+
                 lda #30                 ; 30 jiffy...
                 jsr WAIT                ; wait!
 
-                jmp IntroScreen         ; and loop.
+                bra _next1              ; and loop.
 
                 .endproc
 
