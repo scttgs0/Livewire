@@ -1,7 +1,7 @@
 ;======================================
 ; ADD TO SCORE
 ;======================================
-ADDSCO          .proc
+AddToScore      .proc
                 ldy #0                  ; get zero
                 sed                     ; set decimal mode
                 lda SCORE+2             ; this section
@@ -18,13 +18,13 @@ ADDSCO          .proc
                 sta SCORE               ; the
                 sty SCOADD              ; y register.
                 cld                     ; clr decimal mode
-                jsr SHOSCO              ; show score
+                jsr ShowScore           ; show score
 
                 lda SCORE               ; is score at
                 cmp BONUS               ; bonus level?
-                bne NOBONS              ; sorry!
+                bne _XIT                ; sorry!
 
-                jsr INCLIV              ; bonus, add life!
+                jsr IncrementLives      ; bonus, add life!
 
                 sed                     ; set decimal
                 lda BONUS               ; get old bonus
@@ -32,103 +32,103 @@ ADDSCO          .proc
                 adc #2                  ; to it
                 cld                     ; clr decimal
                 sta BONUS               ; and save bonus
-NOBONS          rts                     ; finis!
+_XIT            rts
                 .endproc
 
 
 ;======================================
 ; Show Score
 ;======================================
-SHOSCO          .proc
+ShowScore       .proc
                 lda #$10                ; set up color
-                sta SHCOLR              ; byte for show
+                sta zpShowColor         ; byte for show
+
                 ldx #0                  ; zero x
                 ldy #0                  ; & y regs
-SSCOLP          lda SCORE,Y             ; get score byte
-                jsr SHOBCD              ; show it
+_next1          lda SCORE,Y             ; get score byte
+                jsr ShowBCD             ; show it
 
                 inx                     ; increment show
                 inx                     ; pos. by 2
                 iny                     ; next score byte
                 cpy #3                  ; done?
-                bne SSCOLP              ; not yet!
+                bne _next1              ; not yet!
 
-                rts                     ; all done!
+                rts
                 .endproc
 
 
 ;======================================
 ; INCREMENT LIVES
 ;======================================
-INCLIV          .proc
+IncrementLives  .proc
                 lda LIVES               ; do we have
                 cmp #5                  ; 5 lives now?
-                beq NOMOLV              ; yup, no inc!
+                beq _XIT                ;   yup, no inc!
 
                 inc LIVES               ; one more life
-                jsr SHOLIV              ; show it
+                jsr ShowLives           ; show it
 
-NOMOLV          rts                     ; and exit!
+_XIT            rts
                 .endproc
 
 
 ;======================================
 ; DECREMENT LIVES
 ;======================================
-DECLIV          .proc
+DecrementLives  .proc
                 jsr SNDOFF              ; no sound
-
 
 ; ---------------------------
 ; WAIT FOR PROJECTILES TO END
 ; ---------------------------
 
-WAITPD          ldx #7                  ; 8 projectiles
+_WAITPD         ldx #7                  ; 8 projectiles
                 lda #0                  ; zero tally
-CKPRLV          ora PROJAC,X            ; check all
+_CKPRLV         ora PROJAC,X            ; check all
                 dex                     ; projectiles
-                bne CKPRLV              ; for activity
+                bne _CKPRLV             ; for activity
 
                 cmp #0                  ; any active?
-                bne WAITPD              ; yes! wait more!
+                bne _WAITPD             ; yes! wait more!
 
-;
+; -----------
 ; STOP SHORTS
-;
+; -----------
 
                 ldx #3                  ; 4 shorts (0-3)
-STPSHO          sta SHORTF,X            ; turn off
+_STPSHO         sta SHORTF,X            ; turn off
                 dex                     ; all of 'em
-                bpl STPSHO              ; loop until done
+                bpl _STPSHO             ; loop until done
 
-;
+; --------------------------
 ; PUT OBJECTS AT END OF GRID
-;
+; --------------------------
 
                 lda #0                  ; erase
                 sta COLOR               ; color
                 lda #5                  ; erase all 6
                 sta OBJNUM              ; objects
-ERSOBJ          jsr DRWOBJ              ; erase it!
+_ERSOBJ         jsr DRWOBJ              ; erase it!
 
                 ldx OBJNUM              ; get object #
                 lda #30                 ; place at
                 sta OBJSEG,X            ; seg #30
                 lda #1                  ; set up move
                 sta OBJINC,X            ; increment
-RNDOBG          .randomByte             ; get random
+_RNDOBG         .randomByte             ; get random
                 and #$0F                ; sub-grid #
                 cmp #$0F                ; 0-14
-                beq RNDOBG
+                beq _RNDOBG
 
                 sta OBJGRD,X
                 dec OBJNUM              ; more objects?
-                bpl ERSOBJ              ; yeah, do 'em
+                bpl _ERSOBJ             ; yeah, do 'em
 
                 lda #$0F                ; show player
                 ;sta COLPM0             ; death here
                 sta SID_CTRL1           ; start sound
-MOREWT          .randomByte             ; set random
+_MOREWT         .randomByte             ; set random
                 and #$1F                ; death sound
                 sta SID_FREQ1           ; frequency
                 lda #6                  ; wait 0.1 sec
@@ -136,14 +136,14 @@ MOREWT          .randomByte             ; set random
 
                 ;dec COLPM0             ; dec brightness
                 ;lda COLPM0             ; now set
-                ;sta SID_CTRL1              ; death volume
-                ;bne MOREWT             ; more wait
+                ;sta SID_CTRL1          ; death volume
+                ;bne _MOREWT            ; more wait
 
                 lda LIVES               ; more lives?
-                beq DEAD                ; no more life!
+                beq _DEAD               ; no more life!
 
                 dec LIVES               ; one less life
-                jsr SHOLIV              ; show it
+                jsr ShowLives           ; show it
 
                 lda #60                 ; wait 1 sec
                 jsr WAIT
@@ -154,7 +154,7 @@ MOREWT          .randomByte             ; set random
                 ;sta COLPM0             ; player color
                 rts                     ; and exit!
 
-DEAD            pla                     ; all dead, pull
+_DEAD           pla                     ; all dead, pull
                 pla                     ; return addr.
                 jmp LIVE                ; and restart game
 
@@ -164,23 +164,25 @@ DEAD            pla                     ; all dead, pull
 ;======================================
 ; SHOW LIVES
 ;======================================
-SHOLIV          .proc
-                lda #$90                ; select display
-                sta SHCOLR              ; color
+ShowLives       .proc
+                lda #$90                ; select display color
+                sta zpShowColor
+
                 lda LIVES               ; get lives
                 ldx #7                  ; 7th char on line
-                jsr SHOBCD              ; show it!
+                jsr ShowBCD             ; show it!
 
-                rts                     ; and exit
+                rts
                 .endproc
 
 
 ;======================================
 ; SHOW LEVEL
 ;======================================
-SHOLVL          .proc
-                ldy #$50                ; select display
-                sty SHCOLR              ; color
+ShowLevel       .proc
+                ldy #$50                ; select display color
+                sty zpShowColor
+
                 lda BCDLVL              ; get level#
                 ldx #14                 ; 14th char
 
@@ -191,18 +193,25 @@ SHOLVL          .proc
 
 ;======================================
 ; BCD CHAR DISPLAY
+;--------------------------------------
+; on entry
+;   A           BCD value
+;   X           display offset
 ;======================================
-SHOBCD          .proc
-                sta SHOBYT              ; save character
+ShowBCD         .proc
+                sta zpShowByte          ; save character
+
                 and #$0F                ; get num 1
-                ora SHCOLR              ; add color
+                ora zpShowColor         ; add color
                 sta INFOLN+1,X          ; show it
-                lda SHOBYT              ; get char.
+
+                lda zpShowByte          ; restore character
                 lsr A                   ; shift right
                 lsr A                   ; to get
                 lsr A                   ; num 2
                 lsr A
-                ora SHCOLR              ; add color
+                ora zpShowColor         ; add color
                 sta INFOLN,X            ; show it
-                rts                     ; and exit!
+
+                rts
                 .endproc

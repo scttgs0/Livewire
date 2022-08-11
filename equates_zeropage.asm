@@ -45,8 +45,8 @@ PRADV1          .byte ?                 ; proj. timer
 TIMER           .byte ?                 ; general timer
 INTRFG          .byte ?                 ; intro flag
 BCDLVL          .byte ?                 ; level #
-SHCOLR          .byte ?                 ; char. color
-SHOBYT          .byte ?                 ; char. byte pos.
+zpShowColor     .byte ?                 ; char. color [placed in high nibble]
+zpShowByte      .byte ?                 ; char. byte pos.
 YOFSET          .byte ?                 ; plot y offset
 OBTIM1          .byte ?                 ; object move timer
 OBJNUM          .byte ?                 ; object #

@@ -67,7 +67,7 @@ NOOBFI          lda #0                  ; set color 0
                 sta SCOADD+1            ; and ready
                 lda POINT2,Y            ; the score
                 sta SCOADD+2            ; add value
-                jsr ADDSCO              ; add to score!
+                jsr AddToScore          ; add to score!
 
                 ldx OBJNUM
                 jmp KILOBJ              ; then kill obj.

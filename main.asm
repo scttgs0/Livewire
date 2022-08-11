@@ -82,7 +82,7 @@ _next7          sta OBJSEG,X            ; segment # 29
                 dex
                 bpl _next7
 
-                jsr SHOSCO              ; show score
+                jsr ShowScore           ; show score
                 jsr SNDOFF              ; no sounds
 
                 lda #6                  ; 6 projectiles
@@ -90,7 +90,7 @@ _next7          sta OBJSEG,X            ; segment # 29
                 lda #2                  ; set...
                 sta BONUS               ; bonus=20000
                 sta LIVES               ; 2 extra lives
-                jsr SHOLIV              ; show lives left
+                jsr ShowLives           ; show lives remaining
 
                 lda #5                  ; set up...
                 sta SP2IX               ; player...
@@ -199,7 +199,7 @@ _forever        lda #1                  ; we want...
                 tax                     ; grid shape...
                 lda GRDTBL,X            ; to draw...
                 sta GRDNUM              ; and store
-                jsr SHOLVL              ; show level#
+                jsr ShowLevel           ; show level#
                 jsr DRGRID              ; draw grid!
 
 _wait1          lda PAUFLG              ; we paused?
@@ -208,7 +208,7 @@ _wait1          lda PAUFLG              ; we paused?
                 lda KILPLR              ; player dead?
                 beq _plive              ; nope!
 
-                jsr DECLIV              ; one less life!
+                jsr DecrementLives      ; one less life!
 
 _plive          lda FLTIME              ; flash going?
                 bne _nofend             ; yes! store...
@@ -237,7 +237,7 @@ _next1          lda OBDEAD,X            ; copies the
                 beq _nomsco             ; no!
 
                 sta SCOADD+1            ; set score add...
-                jsr ADDSCO              ; and add it!
+                jsr AddToScore          ; and add it!
 
                 lda #0                  ; then reset the
                 sta MISCAD              ; add value.
