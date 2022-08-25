@@ -1,7 +1,7 @@
 LIVE            .proc
                 jsr Random_Seed
 
-                .frsGraphics mcTextOn|mcOverlayOn|mcGraphicsOn|mcSpriteOn,mcVideoMode320
+                .frsGraphics mcTextOn|mcOverlayOn|mcGraphicsOn|mcBitmapOn|mcSpriteOn,mcVideoMode320
                 .frsMouse_off
                 .frsBorder_off
 
@@ -111,15 +111,6 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;sta PMBASE             ; base address
                 jsr PMCLR               ; clear p/m
 
-                ;lda #$74               ; put blue...
-                ;sta COLPF0             ; in color 0
-                ;lda #$C4               ; put green...
-                ;sta COLPF1             ; in color 1
-                ;lda #$0A               ; put white...
-                ;sta COLPF2             ; in color 2
-                ;lda #$34               ; put red...
-                ;sta COLPF3             ; in color 3
-
 ;   fetch instruction, single-line player, sprite DMA, normal playfield
                 ;lda #$3D               ; set up...
                 ;sta DMACTL             ; DMA,
@@ -127,7 +118,6 @@ _next7          sta OBJSEG,X            ; segment # 29
 ;   enable sprites
                 ;lda #3                 ; graphics,
                 ;sta GRACTL             ; and
-
     
 ;   enable VBI + DLI
                 jsr InitIRQs

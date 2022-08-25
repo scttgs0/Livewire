@@ -11,10 +11,16 @@ GRDTBL          .byte 0,1,2,3,4,1,5,3
 
 C0TBL           .byte $C4,$36,$74,$F6
                 .byte $54,$06,$00,$26
+                ;; 088814, f85054, 444cdc, bc7430
+                ;; 8838a8, a8a8a8, 000000, fc801c
 C1TBL           .byte $86,$0C,$36,$56
                 .byte $26,$C6,$98,$18
+                ;; 6864fc, f0f0f0, f85054, c048dc
+                ;; fc801c, 08ac1c, 54b4fc, fcc41c
 C2TBL           .byte $98,$46,$A8,$36
                 .byte $84,$18,$C6,$38
+                ;; 54b4fc, cc3ccc, 60d070, f85054
+                ;; 584cd8, fcc41c, 08ac1c, fc706c
 
 ;
 ; OBJECT COUNT TABLES (DIFFICULTY)
