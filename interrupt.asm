@@ -98,16 +98,16 @@
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-HandleIrq       .m16i16
+HandleIrq       .proc
+                .m16i16
                 pha
                 phx
                 phy
 
                 .m8i8
                 lda @l INT_PENDING_REG1
-                and #FNX1_INT00_KBD
-                cmp #FNX1_INT00_KBD
-                bne _1
+                bit #FNX1_INT00_KBD
+                beq _1
 
                 jsl KeyboardHandler
 
@@ -115,9 +115,8 @@ HandleIrq       .m16i16
                 sta @l INT_PENDING_REG1
 
 _1              lda @l INT_PENDING_REG0
-                and #FNX0_INT00_SOF
-                cmp #FNX0_INT00_SOF
-                bne _XIT
+                bit #FNX0_INT00_SOF
+                beq _XIT
 
                 jsl VbiHandler
 
@@ -132,6 +131,8 @@ _XIT            .m16i16
                 .m8i8
 HandleIrq_END   rti
                 ;jmp IRQ_PRIOR
+
+                .endproc
 
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -424,13 +425,16 @@ Interrupt_DLI2  .proc
                 pha                     ; save accum
 
                 ;lda #$0A               ; get white
+                ;;   e4e4e4
                 ;sta WSYNC              ; wait for sync
                 ;sta COLPF0             ; put in color 0
 
                 ;lda #$74               ; put blue...
+                ;;   444cdc
                 ;sta COLPF1             ; in color 1
 
                 ;lda #$28               ; put orange...
+                ;;   fc982c
                 ;sta COLPF2             ; in color 2
 
 ;   fetch instruction, single-line player, sprite DMA, normal playfield
