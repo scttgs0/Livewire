@@ -4,11 +4,16 @@ TILESET         = VRAM
 TILEMAP         = $B20000
 TILEMAPUNITS    = $B22000
 SPRITES         = $B24000
-BITMAP          = $B30000
-BITMAPTXT0      = $B6F200
-BITMAPTXT1      = $B71A00
-BITMAPTXT2      = $B74C00
-BITMAPTXT3      = $B31400
+
+BITMAP          = VRAM+$2000
+BITMAP0         = $2000+$1E00
+BITMAP1         = BITMAP0+$1E00
+BITMAP2         = BITMAP1+$1E00
+BITMAP3         = BITMAP2+$1E00
+BITMAP4         = BITMAP3+$1E00
+BITMAP5         = BITMAP4+$1E00
+BITMAP6         = BITMAP5+$1E00
+BITMAP7         = BITMAP6+$1E00
 
 
 ;======================================
@@ -104,7 +109,10 @@ _next1          sta $AF_E400,X
 ;======================================
 InitLUT         .proc
                 php
-                phb
+                phb                     ; required for mvn
+                pha
+                phx
+                phy
 
                 .m16i16
                 lda #Palette_end-Palette ; Copy the palette to LUT0
@@ -113,6 +121,9 @@ InitLUT         .proc
                 mvn `Palette,`GRPH_LUT0_PTR
 
                 .m8i8
+                ply
+                plx
+                pla
                 plb
                 plp
                 rts
@@ -162,45 +173,6 @@ Custom_LUT      .dword $00282828        ; 0: Dark Jungle Green  [Editor Text bg]
                 .dword $0062C36B        ; E: Mantis Green       [Highlight]
                 .dword $00BC605E        ; F: Medium Carmine     [Warning]
 
-                .endproc
-
-
-;======================================
-; Load the tiles into VRAM
-;======================================
-InitTiles       .proc
-                php
-                phb
-
-                .m16i16
-                lda #$FFFF              ; Set the size
-                sta zpSize
-                lda #$00
-                sta zpSize+2
-
-                lda #<>tiles            ; Set the source address
-                sta zpSource
-                lda #`tiles
-                sta zpSource+2
-
-                lda #<>(TILESET-VRAM)   ; Set the destination address
-                sta zpDest
-                sta TILESET0_ADDR       ; And set the Vicky register
-                lda #`(TILESET-VRAM)
-                sta zpDest+2
-                .m8
-                sta TILESET0_ADDR+2
-
-                jsr Copy2VRAM
-
-                ; set tileset layout to linear-vertical (16x4096)
-                .m8
-                lda #tclVertical
-                sta TILESET0_ADDR_CFG
-
-                plb
-                plp
-                rts
                 .endproc
 
 
@@ -281,57 +253,23 @@ _nextGlyph      lda TitleScreenData,Y   ; Get the tile code
 
 
 ;======================================
-; Initialize the Unit layer (troops)
-;======================================
-InitUnitOverlay .proc
-                php
-
-                jsr RefreshUnitOverlay
-
-                .m16
-                lda #<>(TILEMAPUNITS-VRAM)   ; Set the pointer to the tile map
-                sta TILE2_START_ADDR
-                .m8
-                lda #`(TILEMAPUNITS-VRAM)
-                sta TILE2_START_ADDR+2
-
-                .m16
-                lda #MAPWIDTH           ; Set the size of the tile map
-                sta TILE2_X_SIZE
-                lda #MAPHEIGHT
-                sta TILE2_Y_SIZE
-
-                lda #$00
-                sta TILE2_WINDOW_X_POS
-                sta TILE2_WINDOW_Y_POS
-
-                .m8
-                lda #tcEnable           ; Enable the tileset, LUT0
-                sta TILE2_CTRL
-
-                plp
-                rts
-                .endproc
-
-
-;======================================
 ; Initialize the Sprite layer
 ;--------------------------------------
 ; sprites dimensions are 32x32 (1024)
 ;======================================
 InitSprites     .proc
                 php
-                phb
+                pha
 
                 .m16i16
-                lda #$1800              ; Set the size
+                lda #Stamps_end-Stamps  ; Set the size
                 sta zpSize
                 lda #$00
                 sta zpSize+2
 
-                lda #<>PLYR0            ; Set the source address
+                lda #<>Stamps           ; Set the source address
                 sta zpSource
-                lda #`PLYR0
+                lda #`Stamps
                 sta zpSource+2
 
                 lda #<>(SPRITES-VRAM)   ; Set the destination address
@@ -355,7 +293,7 @@ InitSprites     .proc
                 jsr Copy2VRAM
 
                 .m16
-                lda #$00
+                lda #0
                 sta SP00_X_POS
                 sta SP00_Y_POS
                 sta SP01_X_POS
@@ -369,7 +307,7 @@ InitSprites     .proc
                 sta SP01_CTRL
                 sta SP02_CTRL
 
-                plb
+                pla
                 plp
                 rts
                 .endproc
@@ -380,7 +318,7 @@ InitSprites     .proc
 ;======================================
 InitBitmap      .proc
                 php
-                phb
+                pha
 
                 .m16i16
                 lda #$B000              ; Set the size
@@ -408,9 +346,216 @@ InitBitmap      .proc
                 lda #bmcEnable
                 sta BITMAP0_CTRL
 
-                plb
+                pla
                 plp
                 rts
+                .endproc
+
+
+;======================================
+; Unpack the playfield into Video RAM
+;======================================
+SetVideoRam     .proc
+                php
+                pha
+                phx
+                phy
+
+                .m16
+                lda #<>Video8K          ; Set the destination address
+                sta zpDest
+                lda #`Video8K
+                sta zpDest+2
+                .m8
+
+                stz zpTemp2     ; HACK:
+
+                .i16
+                ldx #0
+                stx zpIndex1
+                stx zpIndex2
+                stx zpIndex3
+
+_nextByte       ldy zpIndex1
+                lda [zpSource],Y
+
+                inc zpIndex1            ; increment the byte counter (source pointer)
+                bne _1
+
+                inc zpIndex1+1
+_1              inc zpIndex3            ; increment the column counter
+
+                ldx #3
+_nextPixel      stz zpTemp1             ; extract 2-bit pixel color
+                asl A
+                rol zpTemp1
+                asl A
+                rol zpTemp1
+                pha
+
+                lda zpTemp1
+                ldy zpIndex2
+                sta [zpDest],Y
+
+;   duplicate this in the next line down (double-height)
+                phy
+                pha
+                .m16
+                tya
+                clc
+                adc #320
+                tay
+                .m8
+                pla
+                sta [zpDest],Y          ; double-height
+                ply
+;---
+
+                iny
+                sta [zpDest],Y          ; double-pixel
+
+;   duplicate this in the next line down (double-height)
+                phy
+                pha
+                .m16
+                tya
+                clc
+                adc #320
+                tay
+                .m8
+                pla
+                sta [zpDest],Y          ; double-height
+                ply
+;---
+
+                iny
+                sty zpIndex2
+                pla
+
+                dex
+                bpl _nextPixel
+
+                ldx zpIndex3
+                cpx #40
+                bcc _checkEnd
+
+                inc zpTemp2     ; HACK: exit criterian
+                lda zpTemp2
+                cmp #12
+                beq _XIT
+
+                .m16
+                lda zpIndex2            ; we already processed the next line (double-height)...
+                clc
+                adc #320                ; so move down one additional line
+                sta zpIndex2
+
+                lda #0
+                sta zpIndex3            ; reset the column counter
+                .m8
+
+_checkEnd       ldx zpIndex1
+                cpx #$1E0               ; 12 source lines (40 bytes/line)... = 24 destination lines (~8K)
+                bcc _nextByte 
+
+_XIT            .i8
+
+                ply
+                plx
+                pla
+                plp
+                rts
+                .endproc
+
+
+;======================================
+; 
+;======================================
+BlitVideoRam    .proc
+                php
+                pha
+
+                .m16
+
+                lda #$1E00              ; 24 lines (320 bytes/line)
+                sta zpSize
+                lda #0
+                sta zpSize+2
+
+                lda #<>Video8K          ; Set the source address
+                sta zpSource
+                lda #`Video8K
+                sta zpSource+2
+
+                .m8
+                jsr Copy2VRAM
+
+                pla
+                plp
+                rts
+                .endproc
+
+
+;======================================
+; 
+;======================================
+BlitPlayfield   .proc
+                php
+                pha
+                phx
+                phy
+
+                ldy #7                  ; 8 chuncks of 24 lines
+                ldx #0
+
+_nextBank       .m16
+                lda _data_Source,X    ; Set the source address
+                sta zpSource
+                lda _data_Source+2,X
+                and #$FF
+                sta zpSource+2
+                .m8
+
+                jsr SetVideoRam
+
+                .m16
+                lda _data_Dest,X      ; Set the destination address
+                sta zpDest
+                lda _data_Dest+2,X
+                and #$FF
+                sta zpDest+2
+                .m8
+
+                phx
+                phy
+                jsr BlitVideoRam
+                ply
+                plx
+
+                inx
+                inx
+                inx
+                dey
+                bpl _nextBank
+
+                ply
+                plx
+                pla
+                plp
+                rts
+
+;--------------------------------------
+
+_data_Source    .long Playfield+$0000,Playfield+$01E0
+                .long Playfield+$03C0,Playfield+$05A0
+                .long Playfield+$0780,Playfield+$0960
+                .long Playfield+$0B40,Playfield+$0D20
+
+_data_Dest      .long BITMAP0,BITMAP1
+                .long BITMAP2,BITMAP3
+                .long BITMAP4,BITMAP5
+                .long BITMAP6,BITMAP7
+
                 .endproc
 
 
@@ -418,7 +563,7 @@ InitBitmap      .proc
 ; Clear the play area of the screen
 ;======================================
 ClearScreen     .proc
-v_QtyPages      .var $05                ; 40x30 = $4B0... 4 pages + 176 bytes
+v_QtyPages      .var $04                ; 40x30 = $4B0... 4 pages + 176 bytes
                                         ; remaining 176 bytes cleared via ClearGamePanel
 
 v_EmptyText     .var $00
@@ -426,6 +571,9 @@ v_TextColor     .var $40
 ;---
 
                 php
+                pha
+                phx
+                phy
                 .m8i8
 
 ;   clear color
@@ -468,6 +616,9 @@ _next1T         sta [zpDest],Y
                 dex
                 bne _nextPageT
 
+                ply
+                plx
+                pla
                 plp
                 rts
                 .endproc
@@ -479,16 +630,19 @@ _next1T         sta [zpDest],Y
 ClearGamePanel  .proc
 v_EmptyText     .var $00
 v_TextColor     .var $40
+v_RenderLine    .var 24*CharResX
 ;---
 
                 php
+                pha
+                phy
                 .m8i8
 
-                lda #<CS_COLOR_MEM_PTR+24*CharResX
+                lda #<CS_COLOR_MEM_PTR+v_RenderLine
                 sta zpDest
-                lda #>CS_COLOR_MEM_PTR+24*CharResX
+                lda #>CS_COLOR_MEM_PTR+v_RenderLine
                 sta zpDest+1
-                lda #`CS_COLOR_MEM_PTR+24*CharResX
+                lda #`CS_COLOR_MEM_PTR+v_RenderLine
                 sta zpDest+2
 
                 lda #v_TextColor
@@ -499,11 +653,11 @@ _next1          sta [zpDest],Y
                 cpy #$F0                ; 6 lines
                 bne _next1
 
-                lda #<CS_TEXT_MEM_PTR+24*CharResX
+                lda #<CS_TEXT_MEM_PTR+v_RenderLine
                 sta zpDest
-                lda #>CS_TEXT_MEM_PTR+24*CharResX
+                lda #>CS_TEXT_MEM_PTR+v_RenderLine
                 sta zpDest+1
-                lda #`CS_TEXT_MEM_PTR+24*CharResX
+                lda #`CS_TEXT_MEM_PTR+v_RenderLine
                 sta zpDest+2
 
                 lda #v_EmptyText
@@ -514,6 +668,8 @@ _next2          sta [zpDest],Y
                 cpy #$F0                ; 6 lines
                 bne _next2
 
+                ply
+                pla
                 plp
                 rts
                 .endproc
@@ -720,7 +876,7 @@ _XIT            plp
 ;======================================
 BlitText        .proc
                 php
-                phb
+                pha
                 .m16i16
 
                 lda #640*16             ; Set the size
@@ -735,7 +891,7 @@ BlitText        .proc
 
                 jsr Copy2VRAM
 
-                plb
+                pla
                 plp
                 rts
                 .endproc
@@ -754,6 +910,7 @@ BlitText        .proc
 ;======================================
 Copy2VRAM       .proc
                 php
+                phb
                 .setbank `SDMA_SRC_ADDR
                 .setdp zpSource
                 .m8
@@ -812,6 +969,7 @@ wait_vdma       lda VDMA_STATUS         ; Get the VDMA status
                 .setdp $0000
                 .setbank $00
                 .m8i8
+                plb
                 plp
                 rts
 
@@ -828,7 +986,7 @@ InitIRQs        .proc
 ;   enable vertical blank interrupt
 
                 .m8i8
-                ldx #HandleIrq_END-HandleIrq
+                ldx #HandleIrq.HandleIrq_END-HandleIrq
 _relocate       ;lda @l $024000,X        ; HandleIrq address
                 ;sta @l $002000,X        ; new address within Bank 00
                 ;dex
@@ -875,6 +1033,8 @@ SetFont         .proc
                 phx
                 phy
 
+                ; bra _XIT  ; DEBUG: helpful if you need to see the trace
+
                 .m8i8
                 lda #<GameFont
                 sta zpSource
@@ -904,7 +1064,7 @@ _next1          lda [zpSource],Y
                 dex
                 bne _nextPage
 
-                ply
+_XIT            ply
                 plx
                 pla
                 plp
