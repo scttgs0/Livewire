@@ -109,14 +109,6 @@ _next7          sta OBJSEG,X            ; segment # 29
 
                 jsr InitSprites
                 jsr PMCLR               ; clear p/m
-
-;   fetch instruction, single-line player, sprite DMA, normal playfield
-                ;lda #$3D               ; set up...
-                ;sta DMACTL             ; DMA,
-
-;   enable sprites
-                ;lda #3                 ; graphics,
-                ;sta GRACTL             ; and
     
 ;   enable VBI + DLI
                 jsr InitIRQs

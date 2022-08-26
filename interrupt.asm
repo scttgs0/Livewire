@@ -2,11 +2,11 @@
 ; MAIN GAME DISPLAY LIST
 ; ----------------------
 
-;DLIST          ;.byte AEMPTY8
+;DLIST          ;.byte AEMPTY8              ; 24 scanlines
                 ;.byte AEMPTY8+ADLI
                 ;.byte AEMPTY8
 
-                ;.byte $0E+ALMS
+                ;.byte $0E+ALMS             ; 160 scanlines; 4 color; 160 pixels wide
                 ;    .addr DISP
                 ;.byte $0E,$0E,$0E,$0E
                 ;.byte $0E,$0E,$0E,$0E
@@ -51,48 +51,14 @@
                 ;.byte $0E,$0E,$0E,$0E
                 ;.byte $0E,$0E,$0E
 
-                ;.byte AEMPTY1+ADLI
+                ;.byte AEMPTY1+ADLI         ; 2 scanlines
                 ;.byte AEMPTY1
 
-                ;.byte $07+ALMS
+                ;.byte $07+ALMS             ; 16 scanlines; 20 bytes
                 ;    .addr INFOLN
 
                 ;.byte AVB+AJMP
                 ;    .addr DLIST
-
-; -------------------------
-; TITLE SCREEN DISPLAY LIST
-; -------------------------
-
-;TITLDL         ;.byte AEMPTY8,AEMPTY8,AEMPTY8,AEMPTY8
-                ;.byte AEMPTY8,AEMPTY8,AEMPTY8
-
-                ;.byte $07+ALMS
-                ;    .addr LASTSC
-
-                ;.byte AEMPTY8,AEMPTY8
-
-                ;.byte $06+ALMS
-                ;    .addr MAGMSG
-
-                ;.byte AEMPTY8
-
-                ;.byte $07+ALMS
-                ;    .addr TITLE
-
-                ;.byte AEMPTY4
-
-                ;.byte $06+ALMS
-                ;    .addr AUTHOR
-
-                ;.byte AEMPTY8,AEMPTY8
-
-                ;.byte AEMPTY4
-
-                ;.byte $06+ALMS
-;CONTRL         ;    .addr JoyMsg
-                ;.byte AVB+AJMP
-                ;    .addr TITLDL
 
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1044,5 +1010,5 @@ _XIT            .m16i16
                 pla
 
                 .m8i8
-                rtl                     ; VBI done! (whew!)
+                rtl
                 .endproc
