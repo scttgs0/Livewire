@@ -52,7 +52,7 @@ _next1          lda SCORE,Y             ; get score byte
                 inx                     ; pos. by 2
                 iny                     ; next score byte
                 cpy #3                  ; done?
-                bne _next1              ; not yet!
+                bne _next1              ;   not yet!
 
                 rts
                 .endproc
@@ -90,7 +90,7 @@ _CKPRLV         ora PROJAC,X            ; check all
                 bne _CKPRLV             ; for activity
 
                 cmp #0                  ; any active?
-                bne _WAITPD             ; yes! wait more!
+                bne _WAITPD             ;   yes! wait more!
 
 ; -----------
 ; STOP SHORTS
@@ -140,7 +140,7 @@ _MOREWT         .randomByte             ; set random
                 ;bne _MOREWT            ; more wait
 
                 lda LIVES               ; more lives?
-                beq _DEAD               ; no more life!
+                beq _DEAD               ;   no more life!
 
                 dec LIVES               ; one less life
                 jsr ShowLives           ; show it
@@ -152,7 +152,7 @@ _MOREWT         .randomByte             ; set random
                 sta KILPLR              ; kill flag
                 ;lda #$16               ; and
                 ;sta COLPM0             ; player color
-                rts                     ; and exit!
+                rts
 
 _DEAD           pla                     ; all dead, pull
                 pla                     ; return addr.

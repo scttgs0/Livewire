@@ -81,7 +81,7 @@ GRDLIN          lda CX,X                ; get close x
                 sta DRAWY
                 
                 ;lda COLPF0              ; invisible?
-                ;beq NOGRD1              ; yes, don't draw
+                ;beq NOGRD1              ;  yes, don't draw
 
                 jsr PLOTCL              ; plot close point
                 jsr DRAW                ; draw to far
@@ -120,13 +120,13 @@ GRDBL1          lda CX,X                ; get close x
                 jsr GRIDSV              ; and save them
 
                 ;lda COLPF0             ; invisible grid?
-                ;beq NOGRD2             ; yes, don't draw
+                ;beq NOGRD2             ;   yes, don't draw
 
                 jsr PLOTCL              ; plot close point1
                 jsr DRAW                ; draw to point 2
 
 NOGRD2          dec GRDWK2              ; more lines?
-                beq GRDBO2              ; no!
+                beq GRDBO2              ;   no!
 
                 inc GRDWK               ; increment to
                 ldx GRDWK               ; next line
@@ -160,13 +160,13 @@ GRDBL2          lda FX,X                ; get far x
                 jsr GRIDSV              ; and save them
 
                 ;lda COLPF0             ; invisible grid?
-                ;beq NOGRD3             ; yes, don't draw
+                ;beq NOGRD3             ;   yes, don't draw
 
                 jsr PLOTCL              ; plot far point 1
                 jsr DRAW                ; draw to point 2
 
 NOGRD3          dec GRDWK2              ; more lines?
-                beq GENCOO              ; no!
+                beq GENCOO              ;   no!
 
                 inc GRDWK               ; increment to
                 ldx GRDWK               ; next line
@@ -276,7 +276,7 @@ ENDDVC          lda #$3D                ; restart
                 sta GRAC1               ; is drawn
                 lda #0                  ; no more
                 sta INTRFG              ; intro status
-                rts                     ; finis!
+                rts
                 .endproc
 
 
@@ -361,5 +361,5 @@ GRIDSV          .proc
                 sta RIMX+15,X           ; and save
                 lda DRAWY               ; get drawy
                 sta RIMY+15,X           ; and save
-SAVEND          rts                     ; all done!
+SAVEND          rts
                 .endproc

@@ -6,33 +6,33 @@ OBJHAN          .proc
                 clc                     ; object #
                 adc #1
                 cmp #6                  ; done?
-                bne STONUM              ; no, continue.
+                bne STONUM              ;   no, continue.
 
                 lda #$FF                ; reset
                 sta OBJNUM              ; object #
-                rts                     ; and exit.
+                rts
 
 STONUM          sta OBJNUM              ; save obj #
 OBHLP1          ldx OBJNUM              ; get obj #
                 lda OBJPRS,X            ; obj present?
-                beq OBJHAN              ; no!
+                beq OBJHAN              ;   no!
 
 OBLIVE          lda OBJSEG,X            ; within 2 units
                 cmp #2                  ; of rim?
-                bcc NOOBFI              ; yes, don't fire
+                bcc NOOBFI              ;   yes, don't fire
 
                 .randomByte             ; random chance
                 and #$0F                ; of shooting
                 bne NOOBFI              ; don't shoot
 
                 lda PROJAC              ; proj. 0 active?
-                bne TRYPR1              ; yes, ignore!
+                bne TRYPR1              ;   yes, ignore!
 
                 ldy #0                  ; force branch
                 beq STOBFI              ; to store it
 
 TRYPR1          lda PROJAC+1            ; proj. 1 active?
-                bne NOOBFI              ; yes, no fire
+                bne NOOBFI              ;    yes, no fire
 
                 ldy #1                  ; set index
 STOBFI          lda OBJSEG,X            ; initialize
@@ -57,7 +57,7 @@ NOOBFI          lda #0                  ; set color 0
 
                 ldx OBJNUM
                 lda OBDED2,X            ; obj dead?
-                beq NOOKIL              ; yes! start
+                beq NOOKIL              ;   yes! start
 
                 jsr FLASH               ; death flash
 
@@ -79,23 +79,23 @@ NOOKIL          lda OBJSEG,X            ; increment
                 bmi KILOBJ              ; past rim!
 
                 cmp #30                 ; type 3 past end?
-                bne NOTOT3              ; nope!
+                bne NOTOT3              ;   nope!
 
                 inc NUMOBJ+2            ; start type 2
                 bne KILOBJ              ; force branch
 
 NOTOT3          cmp #10                 ; at type 3 turn?
-                bne OBHLP2              ; no!
+                bne OBHLP2              ;   no!
 
                 lda OBJTYP,X            ; is it
                 cmp #3                  ; type 3?
-                bne OBHLP2              ; no!
+                bne OBHLP2              ;   no!
 
                 lda #$FF                ; reverse object
                 sta OBJINC,X            ; increment
 OBHLP2          lda OBJTYP,X            ; is object
                 cmp #2                  ; type 2?
-                bne SETHUE              ; no, set color
+                bne SETHUE              ;   no, set color
 
                 .randomByte             ; get random
                 and #1                  ; direction
@@ -104,7 +104,7 @@ OBHLP2          lda OBJTYP,X            ; is object
                 clc                     ; add or
                 adc ADDSB1,Y            ; subtract 1
                 cmp #15                 ; past limit?
-                bcs SETHUE              ; yes!
+                bcs SETHUE              ;   yes!
 
                 sta OBJGRD,X            ; save new pos.
 SETHUE          lda OBJTYP,X            ; get obj. type
@@ -132,7 +132,7 @@ KILOBJ          lda #0                  ; object is no
 
 CKSHOR          lda OBJTYP,X            ; object
                 cmp #1                  ; type 1?
-                bne JOBHAN              ; nope!
+                bne JOBHAN              ;   nope!
 
                 ldy #3                  ; try short:
 TRYSHO          lda SHORTF,Y            ; short available?
@@ -265,13 +265,13 @@ NOPLT1          lda PLOTY               ; increment y
                 jsr PLOTCL              ; plot point
 
 NOPLT2          dec LENGTH              ; end of line?
-                bpl PLOTOB              ; nope!
+                bpl PLOTOB              ;   nope!
 
                 inc SHAPIX              ; next line
                 dec SHAPCT              ; last line?
-                bne DOBLP               ; not yet!
+                bne DOBLP               ;   not yet!
 
-ENDOBJ          rts                     ; all done!
+ENDOBJ          rts
                 .endproc
 
 
@@ -281,18 +281,18 @@ ENDOBJ          rts                     ; all done!
 SHOHAN          .proc
                 ldx #3                  ; max. 4 shorts
 SHHANL          lda SHORTF,X            ; short alive?
-                beq HANNXS              ; no, do next
+                beq HANNXS              ;   no, do next
 
                 ldy SHORTD,X            ; get short dir.
                 lda SHORTX,X            ; get x pos.
                 clc                     ; and adjust
                 adc ADDSUB,Y            ; position
                 cmp #240                ; on grid?
-                bcs RESSHD              ; no! don't move
+                bcs RESSHD              ;   no! don't move
 
                 sta SHORTX,X            ; ok, save pos.
                 dec SHORTT,X            ; direction change?
-                bpl HANNXS              ; no!
+                bpl HANNXS              ;   no!
 
 RESSHD          .randomByte             ; get a random
                 and #$3F                ; direction time
@@ -302,5 +302,5 @@ RESSHD          .randomByte             ; get a random
 HANNXS          dex                     ; more shorts?
                 bpl SHHANL              ; yup!
 
-                rts                     ; all done!
+                rts
                 .endproc
