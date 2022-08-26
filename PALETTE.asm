@@ -112,8 +112,8 @@ palColorF       .dword $00bc7430
                 .dword $00eaeaea
                 .dword $00ffff00
                 .dword $00c2ffff
-Text0           .dword $00c3b057    ; [72]
-Text1           .dword $002f0000    ; [73]
+Text0           .dword $00fc901c    ; [72]
+Text1           .dword $00082cc8    ; [73]
 Text2           .dword $00af69cb    ; [74]
 Text4           .dword $00ffff40    ; [75]
 Text5           .dword $00ffffff    ; [76]

@@ -418,7 +418,12 @@ Interrupt_DLI2  .proc
 ; SCREEN MESSAGES
 ;----------------
 
-INFOLN          .text '          LVL   '
+INFOLN          .text '000000 00 LVL 01'
+InfoLineColor   .byte $76,$76,$76,$76
+                .byte $76,$76,$00,$72
+                .byte $72,$00,$73,$73
+                .byte $73,$00,$73,$73
+
 MAGMSG          .text '  ANALOG COMPUTING  '
 TitleMsg        ;.text '      LIVEWIRE      '
 ;   top

@@ -456,7 +456,7 @@ _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
 
 _checkEnd       ldx zpIndex1
                 cpx #$1E0               ; 12 source lines (40 bytes/line)... = 24 destination lines (~8K)
-                bcc _nextByte 
+                bcc _nextByte
 
 _XIT            .i8
 
@@ -469,7 +469,7 @@ _XIT            .i8
 
 
 ;======================================
-; 
+;
 ;======================================
 BlitVideoRam    .proc
                 php
@@ -497,7 +497,7 @@ BlitVideoRam    .proc
 
 
 ;======================================
-; 
+;
 ;======================================
 BlitPlayfield   .proc
                 php
@@ -630,7 +630,7 @@ _next1T         sta [zpDest],Y
 ClearGamePanel  .proc
 v_EmptyText     .var $00
 v_TextColor     .var $40
-v_RenderLine    .var 24*CharResX
+v_RenderLine    .var 23*CharResX
 ;---
 
                 php
@@ -645,12 +645,13 @@ v_RenderLine    .var 24*CharResX
                 lda #`CS_COLOR_MEM_PTR+v_RenderLine
                 sta zpDest+2
 
+                .i16
                 lda #v_TextColor
                 ldy #$00
 _next1          sta [zpDest],Y
 
                 iny
-                cpy #$F0                ; 6 lines
+                cpy #$118                ; 7 lines
                 bne _next1
 
                 lda #<CS_TEXT_MEM_PTR+v_RenderLine
@@ -665,10 +666,117 @@ _next1          sta [zpDest],Y
 _next2          sta [zpDest],Y
 
                 iny
-                cpy #$F0                ; 6 lines
+                cpy #$118                ; 7 lines
                 bne _next2
 
+                .i8
                 ply
+                pla
+                plp
+                rts
+                .endproc
+
+
+;======================================
+; Render Game Panel
+;======================================
+RenderGamePanel .proc
+v_RenderLine    .var 23*CharResX+4
+;---
+
+                php
+                pha
+                phx
+                phy
+
+;   reset color for the 40-char line
+                ldx #$FF
+                ldy #$FF
+_nextColor      inx
+                iny
+                cpy #$10
+                beq _processText
+
+                lda InfoLineColor,Y
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine+40,X
+                inx
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine+40,X
+                bra _nextColor
+
+;   process the text
+_processText    ldx #$FF
+                ldy #$FF
+_nextChar       inx
+                iny
+                cpy #$10
+                beq _XIT
+
+                lda INFOLN,Y
+                beq _space
+                cmp #$20
+                beq _space
+
+                cmp #$41
+                bcc _number
+                bra _letter
+
+_space          sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine+40,X
+                inx
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine+40,X
+
+                bra _nextChar
+
+;   (ascii-30)*2+$A0
+_number         sec
+                sbc #$30
+                asl A
+                asl A
+
+                clc
+                adc #$A0
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                phx
+                inx
+                inc A
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+
+                plx
+                inc A
+                sta CS_TEXT_MEM_PTR+v_RenderLine+40,X
+                inx
+                inc A
+                sta CS_TEXT_MEM_PTR+v_RenderLine+40,X
+                bra _nextChar
+
+_letter         cmp #$56
+                beq _V
+
+                lda #$D4
+                bra _1
+
+_V              lda #$DC
+
+_1              sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                phx
+                inx
+                inc A
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+
+                plx
+                inc A
+                sta CS_TEXT_MEM_PTR+v_RenderLine+40,X
+                inx
+                inc A
+                sta CS_TEXT_MEM_PTR+v_RenderLine+40,X
+
+                bra _nextChar
+
+_XIT            ply
+                plx
                 pla
                 plp
                 rts

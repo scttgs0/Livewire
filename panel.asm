@@ -40,7 +40,7 @@ _XIT            rts
 ; Show Score
 ;======================================
 ShowScore       .proc
-                lda #$10                ; set up color
+                lda #$30                ; set up color
                 sta zpShowColor         ; byte for show
 
                 ldx #0                  ; zero x
@@ -165,7 +165,7 @@ _DEAD           pla                     ; all dead, pull
 ; SHOW LIVES
 ;======================================
 ShowLives       .proc
-                lda #$90                ; select display color
+                lda #$30                ; select display color
                 sta zpShowColor
 
                 lda LIVES               ; get lives
@@ -180,7 +180,7 @@ ShowLives       .proc
 ; SHOW LEVEL
 ;======================================
 ShowLevel       .proc
-                ldy #$50                ; select display color
+                ldy #$30                ; select display color
                 sty zpShowColor
 
                 lda BCDLVL              ; get level#
