@@ -522,18 +522,18 @@ NOTIMR          lda FLTIME
 
                 dec FLTIME
 NOFTIM          lda KILPLR              ; player dead?
-                beq CHKINT              ; no, continue!
+                beq CHKINT              ;   no, continue!
 
                 jmp VBCONT              ; skip player stuff
 
 CHKINT          lda INTRFG              ; in intro?
-                beq NOTINT              ; no, continue!
+                beq NOTINT              ;   no, continue!
 
                 jmp VBEND               ; exit if intro
 
 NOTINT          lda KEYCHAR             ; get keyboard
                 cmp #$1C                ; pause (esc)?
-                bne CKZAP               ; no, check zap
+                bne CKZAP               ;   no, check zap
 
                 lda PAUFLG              ; get pause flag
                 eor #$FF                ; and flip
@@ -544,7 +544,7 @@ CKZAP           cmp #$21                ; space bar?
                 bne ENDKEY              ; naw, done w/key
 
                 lda ZAP                 ; used zap yet?
-                beq ENDKEY              ; yes, no zap
+                beq ENDKEY              ;   yes, no zap
 
                 dec ZAP                 ; zap now used
                 ldx #5                  ; time to kill
@@ -572,7 +572,7 @@ ENDKEY          lda #0                  ; clear
                 sta KEYCHAR             ; keypress.
 
                 lda PAUFLG              ; paused?
-                beq NOPAU               ; no, continue
+                beq NOPAU               ;   no, continue
 
                 lda #0                  ; turn off
                 sta SID_CTRL1           ; all sounds
@@ -582,7 +582,7 @@ ENDKEY          lda #0                  ; clear
                 jmp VBEND               ; then exit
 
 NOPAU           lda FIRSOU              ; fire sound on?
-                beq NOFSND              ; no!
+                beq NOFSND              ;   no!
 
                 dec FIRSOU              ; dec counter
                 ldx FIRSOU              ; put in index
@@ -591,7 +591,7 @@ NOPAU           lda FIRSOU              ; fire sound on?
                 lda FIRCTL,X            ; get control
                 sta SID_CTRL2
 NOFSND          lda OBDSOU              ; obj death sound?
-                beq NOOSND              ; no!
+                beq NOOSND              ;   no!
 
                 dec OBDSOU              ; dec counter
                 ldx OBDSOU              ; put in index
@@ -600,7 +600,7 @@ NOFSND          lda OBDSOU              ; obj death sound?
                 lda OBDCTL,X            ; get control
                 sta SID_CTRL3
 NOOSND          lda MOVSOU              ; move sound?
-                beq CYCCOL              ; no!
+                beq CYCCOL              ;   no!
 
                 dec MOVSOU              ; dec counter
                 ldx MOVSOU              ; put in index
@@ -617,7 +617,7 @@ CYCCOL          ;lda COLPM2             ; cycle
                 ;sta COLPF3             ; pf3 for missiles
 
                 dec TRANTM              ; transient time
-                bne NOTRAN              ; no change
+                bne NOTRAN              ;   no change
 
                 lda OBJHUE+4            ; flip
                 bne TRAN1               ; transient
@@ -634,7 +634,7 @@ STOTRN          sta OBJHUE+4
 NOTRAN          inc PSCNT               ; inc plyr timer
                 lda PSCNT               ; ready to
                 cmp #3                  ; change shape?
-                bne NOPSIN              ; not yet!
+                bne NOPSIN              ;   not yet!
 
                 lda #0                  ; better reset
                 sta PSCNT               ; index
@@ -650,7 +650,7 @@ NOPSIN          lda PFTIME              ; see if we're
 FIRE            lda #4                  ; reset fire
                 sta PFTIME              ; timer
                 lda JOYPAD              ; using stick?
-                beq RDSTRG              ; yes!
+                beq RDSTRG              ;   yes!
 
                 ;lda PTRIG0             ; get padl trigger
                 ;jmp CMPTRG             ; check it
@@ -660,7 +660,7 @@ RDSTRG          lda InputFlags          ; get stick trigger
 CMPTRG          bne CHKPMV              ; not firing!
 
                 lda PAVAIL              ; any proj avail?
-                beq CHKPMV              ; no!
+                beq CHKPMV              ;   no!
 
                 ldx #7                  ; find an
 PRSCAN          lda PROJAC,X            ; available
@@ -686,7 +686,7 @@ GOTPRN          dec PAVAIL              ; 1 less available
                 lda #1                  ; initialize
                 sta PROINC,X            ; proj increment
 CHKPMV          lda JOYPAD              ; using stick?
-                beq GOSTIK              ; yes!
+                beq GOSTIK              ;   yes!
 
                 ;lda POT0               ; get paddle
                 ;lsr A                  ; divide by
@@ -694,14 +694,14 @@ CHKPMV          lda JOYPAD              ; using stick?
                 ;lsr A                  ; usable value
                 ;lsr A
                 ;cmp #15                ; > 14?
-                ;bmi STOPOS             ; no, go store
+                ;bmi STOPOS             ;   no, go store
                 bra STOPOS  ; HACK:
 
                 lda #14                 ; max. is 14
                 bne STOPOS              ; and go store
 
 GOSTIK          lda PMTIME              ; ready for stick?
-                beq RDSTIK              ; yes!
+                beq RDSTIK              ;   yes!
 
                 dec PMTIME              ; dec timer
 JVBC            jmp VBCONT              ; jmp to continue
@@ -720,7 +720,7 @@ RDSTIK          lda #2                  ; reset stick timer
 
 SAMPOS          lda PLRGRD              ; get grid#
 STOPOS          cmp PLRGRD              ; same as last?
-                beq NOPSTO              ; yes, don't store
+                beq NOPSTO              ;   yes, don't store
 
                 ldx #9                  ; start up
                 stx MOVSOU              ; move sound
@@ -733,7 +733,7 @@ NOPSTO          asl A                   ; multiply
 
                 ;lda P0PL
                 ;and #$0C               ; hit p2/p3?
-                ;beq NOHSHO             ; no!
+                ;beq NOHSHO             ;   no!
                 bra NOHSHO  ; HACK:
 
                 lda #1                  ; oops! hit short!
@@ -749,12 +749,13 @@ NOHSHO          lda SEGX,X              ; get player's
                 clc                     ; adjust for p/m
                 adc #32                 ; by adding 32
                 sta PLRY                ; set y pos
-                lda #0                  ; clear out
-                ldx #15                 ; old player
-CLRPS           sta PL0-8,Y             ; image
-                iny
-                dex
-                bpl CLRPS
+
+;                lda #0                  ; clear out
+;                ldx #15                 ; old player
+;CLRPS           sta PL0-8,Y             ; image
+;                iny
+;                dex
+;                bpl CLRPS
 
                 lda #15                 ; now copy
                 sta SPIX                ; 16-byte
@@ -808,14 +809,14 @@ NOSP3           lda PLRY
                 sbc #8
                 tay
                 lda PLTBYT              ; get image byte
-                sta PL0,Y               ; put in p/m area
+                ;sta PL0,Y               ; put in p/m area
                 dec SPIX                ; more image?
-                bpl SPLOOP              ; yes!
+                bpl SPLOOP              ;   yes!
 
 VBCONT          lda PRADV1              ; advance proj?
-                beq SETPRA              ; yes!
+                beq SETPRA              ;   yes!
 
-                dec PRADV1              ; no, dec timer
+                dec PRADV1              ;   no, dec timer
                 jmp FLIPIT              ; go flip display
 
 SETPRA          inc PRADVT
@@ -847,44 +848,44 @@ PROJLP          lda PROJAC,X            ; is proj. active?
 
 GOTPRJ          ldx MISNUM              ; get missile #
                 ldy PRYHLD,X            ; get last position
-                lda MISSLS-1,Y          ; erase old
-                and MISLOF,X            ; projectile
-                sta MISSLS-1,Y          ; image
-                lda MISSLS,Y
-                and MISLOF,X
-                sta MISSLS,Y
-                lda MISSLS+1,Y
-                and MISLOF,X
-                sta MISSLS+1,Y
+                ;lda MISSLS-1,Y          ; erase old
+                ;and MISLOF,X            ; projectile
+                ;sta MISSLS-1,Y          ; image
+                ;lda MISSLS,Y
+                ;and MISLOF,X
+                ;sta MISSLS,Y
+                ;lda MISSLS+1,Y
+                ;and MISLOF,X
+                ;sta MISSLS+1,Y
                 ldx VBXHLD
                 lda PRADVT              ; ready to
                 and #1                  ; advance proj?
-                bne NOPADV              ; not yet
+                bne NOPADV              ;   not yet
 
                 lda PROJSG,X            ; get proj seg#
                 clc                     ; and
                 adc PROINC,X            ; add increment
                 sta PROJSG,X            ; then save
 NOPADV          lda PROINC,X            ; enemy shot?
-                bmi NOOHCK              ; no obj hit check
+                bmi NOOHCK              ;   no obj hit check
 
                 ldy #5
 OBKILP          lda OBDEAD,Y            ; already dead?
-                bne NXTOCK              ; yes!
+                bne NXTOCK              ;   yes!
 
                 lda OBJPRS,Y            ; object there?
-                beq NXTOCK              ; no!
+                beq NXTOCK              ;   no!
 
                 lda OBJTYP,Y            ; transient?
                 cmp #4
-                bne NOTRNC              ; no!
+                bne NOTRNC              ;   no!
 
                 lda OBJHUE+4            ; invisible?
-                beq NXTOCK              ; yes!
+                beq NXTOCK              ;   yes!
 
 NOTRNC          lda OBJGRD,Y            ; same grid #
                 cmp PROGRD,X            ; as proj?
-                bne NXTOCK              ; no!
+                bne NXTOCK              ;   no!
 
                 lda OBJSEG,Y            ; same seg #
                 lsr A
@@ -893,10 +894,10 @@ NOTRNC          lda OBJGRD,Y            ; same grid #
                 beq HITOBJ
 
                 cmp #254
-                bcc NXTOCK              ; no!
+                bcc NXTOCK              ;   no!
 
 HITOBJ          lda OBJTYP,Y            ; resistor?
-                beq CGPRDR              ; yes!
+                beq CGPRDR              ;   yes!
 
                 lda #1                  ; kill object
                 sta OBDEAD,Y
@@ -908,10 +909,10 @@ NXTOCK          dey                     ; next object
                 bpl OBKILP              ; more to do!
 
 NOOHCK          lda PROJSG,X            ; is proj seg# =0?
-                beq KILLPR              ; yes, kill it!
+                beq KILLPR              ;   yes, kill it!
 
                 cmp #16                 ; =16?
-                beq KILLPR              ; yes, kill it!
+                beq KILLPR              ;   yes, kill it!
 
                 clc                     ; now add proj
                 adc PROJGN,X            ; grid index
@@ -927,38 +928,38 @@ NOOHCK          lda PROJSG,X            ; is proj seg# =0?
                 adc #32                 ; y coord for
                 tay                     ; p/m vert
                 sty PRYHLD,X            ; and save.
-                lda MISSLS-1,Y          ; now draw
-                ora MISLON,X            ; projectile in
-                sta MISSLS-1,Y          ; new position
-                lda MISSLS,Y
-                ora MISLON,X
-                sta MISSLS,Y
-                lda MISSLS+1,Y
-                ora MISLON,X
-                sta MISSLS+1,Y
+                ;lda MISSLS-1,Y          ; now draw
+                ;ora MISLON,X            ; projectile in
+                ;sta MISSLS-1,Y          ; new position
+                ;lda MISSLS,Y
+                ;ora MISLON,X
+                ;sta MISSLS,Y
+                ;lda MISSLS+1,Y
+                ;ora MISLON,X
+                ;sta MISSLS+1,Y
 CKPEND          dec MISNUM              ; next missile #
                 dec VBXHLD              ; next proj.
                 ldx VBXHLD
                 cpx ENDVAL              ; done?
-                beq SHORTS              ; yes!
+                beq SHORTS              ;   yes!
 
                 jmp PROJLP              ; do next proj.
 
 KILLPR          lda #0                  ; kill proj.
                 sta PROJAC,X
                 cpx #2                  ; enemy proj?
-                bcc NOAVIN              ; yes don't inc
+                bcc NOAVIN              ;   yes don't inc
 
                 inc PAVAIL              ; another avail
 NOAVIN          lda PROJSG,X            ; segment 0?
-                bne NOKILP              ; no!
+                bne NOKILP              ;   no!
 
                 lda PROINC,X            ; toward rim?
-                bpl NOKILP              ; no!
+                bpl NOKILP              ;   no!
 
                 lda PROGRD,X            ; same grid...
                 cmp PLRGRD              ; as player?
-                bne NOKILP              ; no!
+                bne NOKILP              ;   no!
 
                 lda #1                  ; the player
                 sta KILPLR              ; is dead!
@@ -982,10 +983,10 @@ SHORTS          inc SHFLIP              ; toggle flip
                 lda SHFLIP              ; get flip,
                 and #1                  ; mask and
                 tay                     ; put in y
-                lda #>PL3               ; put player 3
-                sta DESTHI              ; in destination
-                lda #<PL3               ; address
-                sta DESTLO              ; hi & lo
+                ;lda #>PL3               ; put player 3
+                ;sta DESTHI              ; in destination
+                ;lda #<PL3               ; address
+                ;sta DESTLO              ; hi & lo
                 lda #1                  ; set dest #
                 sta DESTNM
                 lda SHSTRT,Y            ; get start
@@ -1001,7 +1002,7 @@ ERSSHO          sta (DESTLO),Y          ; previous
 
                 ldx VBXHLD
                 lda SHORTF,X            ; short alive?
-                beq NXTSHO              ; no!
+                beq NXTSHO              ;   no!
 
                 lda SHORTX,X            ; get index of
                 tax                     ; short's pos.
@@ -1029,7 +1030,7 @@ SHOCOP          lda SHOIMG,X            ; now copy
                 bpl SHOCOP
 
 NXTSHO          dec DESTNM              ; more?
-                bmi VBEND               ; no, exit!
+                bmi VBEND               ;   no, exit!
 
                 dec DESTHI              ; next player
                 inc VBXHLD

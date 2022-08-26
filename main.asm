@@ -107,8 +107,7 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;lda #7                 ; blank...
                 ;jsr SETVBV             ; interrupt
 
-                ;lda #>PMAREA           ; set up p/m...
-                ;sta PMBASE             ; base address
+                jsr InitSprites
                 jsr PMCLR               ; clear p/m
 
 ;   fetch instruction, single-line player, sprite DMA, normal playfield
@@ -196,16 +195,16 @@ _wait1          lda PAUFLG              ; we paused?
                 bne _wait1              ; yup, loop.
 
                 lda KILPLR              ; player dead?
-                beq _plive              ; nope!
+                beq _plive              ;   nope!
 
                 jsr DecrementLives      ; one less life!
 
 _plive          lda FLTIME              ; flash going?
-                bne _nofend             ; yes! store...
+                bne _nofend             ;   yes! store...
 
                 sta SP01_X_POS          ; flash position!
 _nofend         lda OBTIM1              ; objects moving?
-                bne _noohan             ; not yet!
+                bne _noohan             ;   not yet!
 
                 lda OBJSPD              ; reset move...
                 sta OBTIM1              ; timer
@@ -224,7 +223,7 @@ _next1          lda OBDEAD,X            ; copies the
 
 
                 lda MISCAD              ; misc.score?
-                beq _nomsco             ; no!
+                beq _nomsco             ;   no!
 
                 sta SCOADD+1            ; set score add...
                 jsr AddToScore          ; and add it!
@@ -243,12 +242,12 @@ _next3          ora NUMOBJ,X            ; all objects
                 bpl _next3              ; on grid yet
 
                 cmp #0                  ; any objects?
-                beq _lvlend             ; no, end of level!
+                beq _lvlend             ;   no, end of level!
 
 
                 ldx #5                  ; is object
 _next4          lda OBJPRS,X            ; present?
-                bne _nxtogn             ; yes, try next.
+                bne _nxtogn             ;   yes, try next.
 
 _next5          .randomByte             ; let's try to
                 and #7                  ; start up a
@@ -257,7 +256,7 @@ _next5          .randomByte             ; let's try to
 
                 tay                     ; any of that
                 lda NUMOBJ,Y            ; type waiting?
-                beq _nxtogn             ; no, try next
+                beq _nxtogn             ;   no, try next
 
                 sec                     ; decrement #
                 sbc #1                  ; of objects
@@ -283,15 +282,15 @@ _nxtogn         dex                     ; loop back to do
 
 _noohan         lda CONSOL              ; any console
                 cmp #7                  ; keys pressed?
-                beq _jconwt             ; nope!
+                beq _jconwt             ;   nope!
 
-                jmp LIVE                ; yes, restart game
+                jmp LIVE                ;   yes, restart game
 
 _jconwt         jmp _wait1              ; indirect jump
 
 _lvlend         lda GRIDIX              ; are we on
                 cmp #63                 ; grid #63?
-                beq _nogrdi             ; yes, don't inc!
+                beq _nogrdi             ;   yes, don't inc!
 
                 clc                     ; increment
                 adc #1                  ; grid #

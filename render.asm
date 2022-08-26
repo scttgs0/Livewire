@@ -2,17 +2,17 @@
 ; CLEAR Player-MISSILES
 ;======================================
 PMCLR           .proc
-                lda #0                  ; put 255
-                tax                     ; zeros in
-PMCLP           sta MISSLS,X            ; each p/m
-                sta PL0,X               ; area
-                sta PL1,X
-                sta PL2,X
-                sta PL3,X
-                dex
-                bne PMCLP
+;                lda #0                  ; put 255
+;                tax                     ; zeros in
+;PMCLP           sta MISSLS,X            ; each p/m
+;                sta PL0,X               ; area
+;                sta PL1,X
+;                sta PL2,X
+;                sta PL3,X
+;                dex
+;                bne PMCLP
 
-                rts                     ; finis!
+                rts
                 .endproc
 
 
@@ -91,7 +91,7 @@ PLOTCL          .proc
                 and (LO),Y              ; to be altered
                 ora HOLD                ; set the plot
                 sta (LO),Y              ; bits and store!
-PABORT          rts                     ; finis!
+PABORT          rts
                 .endproc
 
 ;--------------------------------------
@@ -112,7 +112,7 @@ COLR1           .byte $40,$10,$04,$01
 DRAW            .proc
                 lda DRAWY
                 cmp PLOTY               ; is drawy>ploty?
-                bcc YMINUS              ; no!
+                bcc YMINUS              ;   no!
 
                 sec                     ; subtract
                 sbc PLOTY               ; ploty from drawy
@@ -129,7 +129,7 @@ YMINUS          lda PLOTY               ; subtract
                 sta INCY                ; = -1 (up)
 XVEC            lda DRAWX               ; is drawx
                 cmp PLOTX               ; > plotx?
-                bcc XMINUS              ; no!
+                bcc XMINUS              ;   no!
 
                 sec                     ; subtract
                 sbc PLOTX               ; plotx from drawx
@@ -149,7 +149,7 @@ VECSET          lda #0                  ; zero out:
                 sta ACCX                ; x accumulator
                 lda DELTAX              ; is deltax>
                 cmp DELTAY              ; deltay?
-                bcc YMAX                ; no!
+                bcc YMAX                ;   no!
 
                 sta COUNTR              ; save deltax
                 sta ENDPT               ; in countr, endpt.
@@ -176,7 +176,7 @@ BEGIN           lda ACCY                ; add deltay
                 adc DELTAY
                 sta ACCY
                 cmp ENDPT               ; at endpoint yet?
-                bcc BEGIN2              ; no, go do x.
+                bcc BEGIN2              ;   no, go do x.
 
                 lda ACCY                ; subtract endpt
                 sec                     ; from y accumulator
@@ -191,7 +191,7 @@ BEGIN2          lda ACCX                ; add deltax to
                 adc DELTAX
                 sta ACCX
                 cmp ENDPT               ; at endpoint yet?
-                bcc PLOTIT              ; no, go plot.
+                bcc PLOTIT              ;   no, go plot.
 
                 lda ACCX                ; subtract endpt
                 sec                     ; from x accumulator
@@ -204,7 +204,7 @@ BEGIN2          lda ACCX                ; add deltax to
 PLOTIT          jsr PLOTCL              ; plot the point!
 
                 dec COUNTR              ; more to draw?
-                bne BEGIN               ; yes!
+                bne BEGIN               ;   yes!
 
-DRWEND          rts                     ; no, exit!
+DRWEND          rts
                 .endproc

@@ -275,20 +275,20 @@ InitSprites     .proc
                 lda #<>(SPRITES-VRAM)   ; Set the destination address
                 sta zpDest
                 sta SP00_ADDR           ; And set the Vicky register
-                clc
-                adc #$400               ; 1024
-                sta SP01_ADDR
-                clc
-                adc #$1000              ; 1024*4
-                sta SP02_ADDR
+                ;clc
+                ;adc #$400               ; 1024
+                ;sta SP01_ADDR
+                ;clc
+                ;adc #$1000              ; 1024*4
+                ;sta SP02_ADDR
 
                 lda #`(SPRITES-VRAM)
                 sta zpDest+2
 
                 .m8
                 sta SP00_ADDR+2
-                sta SP01_ADDR+2
-                sta SP02_ADDR+2
+                ;sta SP01_ADDR+2
+                ;sta SP02_ADDR+2
 
                 jsr Copy2VRAM
 
@@ -296,16 +296,16 @@ InitSprites     .proc
                 lda #0
                 sta SP00_X_POS
                 sta SP00_Y_POS
-                sta SP01_X_POS
-                sta SP01_Y_POS
-                sta SP02_X_POS
-                sta SP02_Y_POS
+                ;sta SP01_X_POS
+                ;sta SP01_Y_POS
+                ;sta SP02_X_POS
+                ;sta SP02_Y_POS
 
                 .m8
                 lda #scEnable
                 sta SP00_CTRL
-                sta SP01_CTRL
-                sta SP02_CTRL
+                ;sta SP01_CTRL
+                ;sta SP02_CTRL
 
                 pla
                 plp

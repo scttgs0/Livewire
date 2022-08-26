@@ -69,4 +69,22 @@ GameFont_end
 Palette         .include "PALETTE.asm"
 Palette_end
 
+
+;--------------------------------------
+                .align $100
+;--------------------------------------
+
+Stamps          .include "SPRITES.asm"
+Stamps_end
+
+Playfield       .fill 86*40,$00
+                .fill 10*40,$00         ; overflow to prevent screen artifacts
+
+;--------------------------------------
+;--------------------------------------
+                .align $100
+;--------------------------------------
+
+Video8K         .fill 8192,$00
+
                 .end
