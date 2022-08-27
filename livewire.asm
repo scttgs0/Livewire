@@ -77,8 +77,8 @@ Palette_end
 Stamps          .include "SPRITES.asm"
 Stamps_end
 
-Playfield       .fill 86*40,$00
-                .fill 10*40,$00         ; overflow to prevent screen artifacts
+Playfield       .fill 160*40,$00
+                .fill 8*40,$00          ; overflow to prevent screen artifacts
 
 ;--------------------------------------
 ;--------------------------------------

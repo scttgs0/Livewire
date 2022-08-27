@@ -20,9 +20,9 @@ PMCLR           .proc
 ; CLEAR SCREEN
 ;======================================
 CLRSC           .proc
-                lda #>DISP              ; initial
+                lda #>Playfield         ; initial
                 sta HI                  ; display
-                lda #<DISP              ; address
+                lda #<Playfield         ; address
                 sta LO                  ; work area
                 ldx #20                 ; clear 20 groups
 CLRSC2          ldy #0                  ; of 256 bytes
@@ -34,6 +34,8 @@ CLRSC3          sta (LO),Y
                 dex
                 bne CLRSC4
 
+                lda #TRUE
+                sta isDirtyPlayfield
                 rts
 
 CLRSC4          inc HI
@@ -62,11 +64,11 @@ PLOTCL          .proc
                 rol HI                  ; *16
                 asl LO
                 rol HI                  ; *32
-                lda #<DISP              ; add the display
+                lda #<Playfield         ; add the display
                 clc                     ; address to get
                 adc LO                  ; the actual
                 sta LO                  ; address of the
-                lda #>DISP              ; byte that will
+                lda #>Playfield         ; byte that will
                 adc HI                  ; be altered for
                 sta HI                  ; the plot.
                 lda PLOTX               ; mask plotx for
@@ -91,7 +93,10 @@ PLOTCL          .proc
                 and (LO),Y              ; to be altered
                 ora HOLD                ; set the plot
                 sta (LO),Y              ; bits and store!
-PABORT          rts
+
+PABORT          lda #TRUE
+                sta isDirtyPlayfield
+                rts
                 .endproc
 
 ;--------------------------------------

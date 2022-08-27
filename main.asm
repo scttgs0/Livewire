@@ -107,9 +107,10 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;lda #7                 ; blank...
                 ;jsr SETVBV             ; interrupt
 
+                ;jsr InitBitmap
                 jsr InitSprites
                 jsr PMCLR               ; clear p/m
-    
+
 ;   enable VBI + DLI
                 jsr InitIRQs
 
@@ -166,7 +167,6 @@ DIGIN           .proc
                 jsr ClearScreen
                 jsr RenderGamePanel
 
-_endless        bra _endless
 
                 ;lda #<DLIST            ; point to...
                 ;sta DLISTL             ; game...
@@ -303,6 +303,12 @@ _nodifi         sed                     ; increment
                 adc #1
                 sta BCDLVL
                 cld                     ; now go to
-_nogrdi         jmp _forever            ; draw new grid.
+_nogrdi         lda isDirtyPlayfield
+                beq _1
+
+                ;jsr BlitPlayfield
+                stz isDirtyPlayfield
+
+_1              jmp _forever            ; draw new grid.
 
                 .endproc

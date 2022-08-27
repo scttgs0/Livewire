@@ -321,19 +321,19 @@ InitBitmap      .proc
                 pha
 
                 .m16i16
-                lda #$B000              ; Set the size
+                lda #$1E00              ; Set the size
                 sta zpSize
-                lda #$04
+                lda #$00
                 sta zpSize+2
 
-                lda #<>HeaderPanel      ; Set the source address
+                lda #<>Video8K          ; Set the source address
                 sta zpSource
-                lda #`HeaderPanel
+                lda #`Video8K
                 sta zpSource+2
 
-                lda #<>(BITMAP-VRAM)   ; Set the destination address
+                lda #<>(BITMAP-VRAM)    ; Set the destination address
                 sta zpDest
-                sta BITMAP0_START_ADDR ; And set the Vicky register
+                sta BITMAP0_START_ADDR  ; And set the Vicky register
 
                 lda #`(BITMAP-VRAM)
                 sta zpDest+2
@@ -397,36 +397,8 @@ _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
                 ldy zpIndex2
                 sta [zpDest],Y
 
-;   duplicate this in the next line down (double-height)
-                phy
-                pha
-                .m16
-                tya
-                clc
-                adc #320
-                tay
-                .m8
-                pla
-                sta [zpDest],Y          ; double-height
-                ply
-;---
-
                 iny
                 sta [zpDest],Y          ; double-pixel
-
-;   duplicate this in the next line down (double-height)
-                phy
-                pha
-                .m16
-                tya
-                clc
-                adc #320
-                tay
-                .m8
-                pla
-                sta [zpDest],Y          ; double-height
-                ply
-;---
 
                 iny
                 sty zpIndex2
@@ -445,17 +417,12 @@ _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
                 beq _XIT
 
                 .m16
-                lda zpIndex2            ; we already processed the next line (double-height)...
-                clc
-                adc #320                ; so move down one additional line
-                sta zpIndex2
-
                 lda #0
                 sta zpIndex3            ; reset the column counter
                 .m8
 
 _checkEnd       ldx zpIndex1
-                cpx #$1E0               ; 12 source lines (40 bytes/line)... = 24 destination lines (~8K)
+                cpx #$3C0               ; 24 source lines (40 bytes/line)... = 24 destination lines (~8K)
                 bcc _nextByte
 
 _XIT            .i8
@@ -505,11 +472,11 @@ BlitPlayfield   .proc
                 phx
                 phy
 
-                ldy #7                  ; 8 chuncks of 24 lines
+                ldy #6                  ; 7 chuncks of 24 lines
                 ldx #0
 
 _nextBank       .m16
-                lda _data_Source,X    ; Set the source address
+                lda _data_Source,X      ; Set the source address
                 sta zpSource
                 lda _data_Source+2,X
                 and #$FF
@@ -519,7 +486,7 @@ _nextBank       .m16
                 jsr SetVideoRam
 
                 .m16
-                lda _data_Dest,X      ; Set the destination address
+                lda _data_Dest,X        ; Set the destination address
                 sta zpDest
                 lda _data_Dest+2,X
                 and #$FF
@@ -546,10 +513,10 @@ _nextBank       .m16
 
 ;--------------------------------------
 
-_data_Source    .long Playfield+$0000,Playfield+$01E0
-                .long Playfield+$03C0,Playfield+$05A0
-                .long Playfield+$0780,Playfield+$0960
-                .long Playfield+$0B40,Playfield+$0D20
+_data_Source    .long Playfield+$0000,Playfield+$03C0
+                .long Playfield+$0780,Playfield+$0B40
+                .long Playfield+$0F00,Playfield+$12C0
+                .long Playfield+$1680
 
 _data_Dest      .long BITMAP0,BITMAP1
                 .long BITMAP2,BITMAP3
@@ -787,6 +754,9 @@ _XIT            ply
 ; Render Publisher
 ;======================================
 RenderPublisher .proc
+v_RenderLine    .var 11*CharResX
+;---
+
                 php
                 .m8i8
 
@@ -804,28 +774,28 @@ _nextChar       inx
                 bra _letter
 
 _space          lda #$00
-                sta CS_COLOR_MEM_PTR+11*CharResX,X
-                sta CS_TEXT_MEM_PTR+11*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
                 inx
-                sta CS_COLOR_MEM_PTR+11*CharResX,X
-                sta CS_TEXT_MEM_PTR+11*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
 _letter         pha
                 phx
                 lda #$40
-                sta CS_COLOR_MEM_PTR+11*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
                 inx
-                sta CS_COLOR_MEM_PTR+11*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
 
                 plx
                 pla
-                sta CS_TEXT_MEM_PTR+11*CharResX,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
                 inx
                 clc
                 adc #$40
-                sta CS_TEXT_MEM_PTR+11*CharResX,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
@@ -838,6 +808,9 @@ _XIT            plp
 ; Render Title
 ;======================================
 RenderTitle     .proc
+v_RenderLine    .var 13*CharResX
+;---
+
                 php
                 .m8i8
 
@@ -849,9 +822,9 @@ _nextChar       inx
                 beq _XIT
 
                 lda #$80
-                sta CS_COLOR_MEM_PTR+13*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
                 lda TitleMsg,Y
-                sta CS_TEXT_MEM_PTR+13*CharResX,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
@@ -864,6 +837,9 @@ _XIT            plp
 ; Render Author
 ;======================================
 RenderAuthor    .proc
+v_RenderLine    .var 16*CharResX
+;---
+
                 php
                 .m8i8
 
@@ -881,28 +857,28 @@ _nextChar       inx
                 bra _letter
 
 _space          lda #$00
-                sta CS_COLOR_MEM_PTR+16*CharResX,X
-                sta CS_TEXT_MEM_PTR+16*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
                 inx
-                sta CS_COLOR_MEM_PTR+16*CharResX,X
-                sta CS_TEXT_MEM_PTR+16*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
 _letter         pha
                 phx
                 lda #$70
-                sta CS_COLOR_MEM_PTR+16*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
                 inx
-                sta CS_COLOR_MEM_PTR+16*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
 
                 plx
                 pla
-                sta CS_TEXT_MEM_PTR+16*CharResX,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
                 inx
                 clc
                 adc #$40
-                sta CS_TEXT_MEM_PTR+16*CharResX,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
@@ -915,6 +891,9 @@ _XIT            plp
 ; Render SELECT (Qty of Players)
 ;======================================
 RenderSelect    .proc
+v_RenderLine    .var 19*CharResX
+;---
+
                 php
                 .m8i8
 
@@ -946,61 +925,32 @@ _nextChar       inx
                 bra _letter
 
 _space          lda #$00
-                sta CS_COLOR_MEM_PTR+19*CharResX,X
-                sta CS_TEXT_MEM_PTR+19*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
                 inx
-                sta CS_COLOR_MEM_PTR+19*CharResX,X
-                sta CS_TEXT_MEM_PTR+19*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
 _letter         pha
                 phx
                 lda #$C0
-                sta CS_COLOR_MEM_PTR+19*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
                 inx
-                sta CS_COLOR_MEM_PTR+19*CharResX,X
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
 
                 plx
                 pla
-                sta CS_TEXT_MEM_PTR+19*CharResX,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
                 inx
                 clc
                 adc #$40
-                sta CS_TEXT_MEM_PTR+19*CharResX,X
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
 _XIT            plp
-                rts
-                .endproc
-
-
-;======================================
-; Blit bitmap text to VRAM
-;--------------------------------------
-; on entry:
-;   zpDest      set by caller
-;======================================
-BlitText        .proc
-                php
-                pha
-                .m16i16
-
-                lda #640*16             ; Set the size
-                sta zpSize
-                lda #$00
-                sta zpSize+2
-
-                lda #<>Text2Bitmap      ; Set the source address
-                sta zpSource
-                lda #`Text2Bitmap
-                sta zpSource+2
-
-                jsr Copy2VRAM
-
-                pla
-                plp
                 rts
                 .endproc
 
