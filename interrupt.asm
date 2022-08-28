@@ -389,24 +389,24 @@ Interrupt_DLI1  .proc
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Interrupt_DLI2  .proc
                 pha                     ; save accum
+                .m16
 
-                ;lda #$0A               ; get white
-                ;;   e4e4e4
-                ;sta WSYNC              ; wait for sync
-                ;sta COLPF0             ; put in color 0
+                lda #$e4e4              ; get white
+                sta PfColor0            ; put in color 0
+                lda #$00e4
+                sta PfColor0+2
 
-                ;lda #$74               ; put blue...
-                ;;   444cdc
-                ;sta COLPF1             ; in color 1
+                lda #$4cdc              ; put blue...
+                sta PfColor1            ; in color 1
+                lda #$0044
+                sta PfColor1+2
 
-                ;lda #$28               ; put orange...
-                ;;   fc982c
-                ;sta COLPF2             ; in color 2
+                lda #$982c              ; put orange...
+                sta PfColor2            ; in color 2
+                lda #$00fc
+                sta PfColor2+2
 
-;   fetch instruction, single-line player, sprite DMA, normal playfield
-                ;lda #$3D               ; set up...
-                ;sta DMACTL             ; DMA ctrl
-
+                .m8
                 pla                     ; get accum.
                 rti                     ; and exit
                 .endproc
@@ -497,7 +497,7 @@ NOFTIM          lda KILPLR              ; player dead?
 
                 jmp VBCONT              ; skip player stuff
 
-CHKINT          lda INTRFG              ; in intro?
+CHKINT          lda isIntro             ; in intro?
                 beq NOTINT              ;   no, continue!
 
                 jmp VBEND               ; exit if intro

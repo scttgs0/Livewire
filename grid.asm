@@ -2,15 +2,17 @@
 ; Draw Grid
 ;======================================
 DrawGrid        .proc
-                lda #1                  ; tell interrupt
-                sta INTRFG              ; it's intro
+                lda #TRUE               ; tell interrupt it's intro -- WHY????
+                sta isIntro
+
                 jsr SNDOFF              ; turn off sound
 
-                lda #$20                ; turn off top
-                sta DMAC1               ; of screen by
-                lda #0                  ; shutting off
-                sta GRAC1               ; DMA & graphics
+                ;lda #$20                ; turn off top
+                ;sta DMAC1               ; of screen by
+                ;lda #0                  ; shutting off
+                ;sta GRAC1               ; DMA & graphics
 
+                lda #0
                 ldx #3                  ; turn off shorts
 _clrShorts      sta SHORTF,X
                 dex
@@ -24,20 +26,22 @@ _clrPrjct       sta PROJAC,X
                 jsr PMCLR               ; clear p/m area
 
                 sta OFFSET              ; zero offset
+
                 lda #6                  ; set 6 project.
                 sta PAVAIL              ; available
+
                 lda GRIDIX              ; get grid #
-                lsr A                   ; divide
-                lsr A                   ; by
-                lsr A                   ; 8
+                lsr A                   ; /8
+                lsr A
+                lsr A
                 tax                     ; load appropriate
 
                 ;lda C0TBL,X            ; grid color
-                ;sta COLPF0
+                ;sta PfColor0
                 ;lda C1TBL,X            ; object color 1
-                ;sta COLPF1
+                ;sta PfColor1
                 ;lda C2TBL,X            ; object color 2
-                ;sta COLPF2
+                ;sta PfColor2
 
                 lda OBSTBL,X            ; object speed
                 sta OBJSPD
@@ -54,6 +58,7 @@ _clrPrjct       sta PROJAC,X
                 sta NUMOBJ+3            ; object count
                 lda OBCNT4,X            ; type 4
                 sta NUMOBJ+4            ; object count
+
                 ldx #4                  ; adjust all
 DIFFAD          lda NUMOBJ,X            ; object counts
                 clc                     ; by adding
@@ -63,8 +68,8 @@ DIFFAD          lda NUMOBJ,X            ; object counts
                 bpl DIFFAD
 
                 lda GRDNUM              ; get grid #
-                asl A                   ; multiply
-                asl A                   ; by 16
+                asl A                   ; *16
+                asl A
                 asl A
                 asl A
                 sta GRDADJ              ; save
@@ -72,6 +77,7 @@ DIFFAD          lda NUMOBJ,X            ; object counts
                 tax                     ; set x index
                 lda #16                 ; load 16 bytes
                 sta GRDWK2
+
 GRDLIN          lda CX,X                ; get close x
                 sta PLOTX
                 lda CY,X                ; get close y
@@ -81,8 +87,8 @@ GRDLIN          lda CX,X                ; get close x
                 lda FY,X                ; get far y
                 sta DRAWY
 
-                ;lda COLPF0              ; invisible?
-                ;beq NOGRD1              ;  yes, don't draw
+                lda PfColor0            ; invisible?
+                beq NOGRD1              ;  yes, don't draw
 
                 jsr PLOTCL              ; plot close point
                 jsr DRAW                ; draw to far
@@ -92,7 +98,7 @@ NOGRD1          dec GRDWK2              ; continue drawing
 
                 inc GRDWK               ; lines are done
                 ldx GRDWK
-                jmp GRDLIN
+                bra GRDLIN
 
 GRDBO1          ldx GRDADJ              ; now draw 15
                 stx GRDWK               ; close grid
@@ -120,8 +126,8 @@ GRDBL1          lda CX,X                ; get close x
                 sta GRID                ; between lines
                 jsr GridCoordSave       ; and save them
 
-                ;lda COLPF0             ; invisible grid?
-                ;beq NOGRD2             ;   yes, don't draw
+                lda PfColor0            ; invisible grid?
+                beq NOGRD2              ;   yes, don't draw
 
                 jsr PLOTCL              ; plot close point1
                 jsr DRAW                ; draw to point 2
@@ -131,7 +137,7 @@ NOGRD2          dec GRDWK2              ; more lines?
 
                 inc GRDWK               ; increment to
                 ldx GRDWK               ; next line
-                jmp GRDBL1              ; and loop
+                bra GRDBL1              ; and loop
 
 GRDBO2          ldx GRDADJ              ; now draw 15
                 stx GRDWK               ; far grid
@@ -142,26 +148,29 @@ GRDBL2          lda FX,X                ; get far x
                 sta PLOTX
                 lda FY,X                ; get far y
                 sta PLOTY
+
                 lda FX+1,X              ; next far x
                 sta DRAWX
                 clc                     ; and find
                 adc PLOTX               ; midpoint
                 ror A                   ; between them
                 sta XWORK               ; and save it!
+
                 lda FY+1,X              ; next far y
                 sta DRAWY
                 clc                     ; and find
                 adc PLOTY               ; midpoint
                 ror A                   ; between them
                 sta YWORK               ; and save it!
+
                 lda #15                 ; use the same
                 sec                     ; work area
                 sbc GRDWK2              ; to hold the
                 sta GRID                ; midpoints
                 jsr GridCoordSave       ; and save them
 
-                ;lda COLPF0             ; invisible grid?
-                ;beq NOGRD3             ;   yes, don't draw
+                lda PfColor0            ; invisible grid?
+                beq NOGRD3              ;   yes, don't draw
 
                 jsr PLOTCL              ; plot far point 1
                 jsr DRAW                ; draw to point 2
@@ -171,7 +180,7 @@ NOGRD3          dec GRDWK2              ; more lines?
 
                 inc GRDWK               ; increment to
                 ldx GRDWK               ; next line
-                jmp GRDBL2              ; and loop
+                bra GRDBL2              ; and loop
 
                 .endproc
 
@@ -274,8 +283,8 @@ ENDDVC          ;lda #$3D               ; restart the display
                 ;lda #$03
                 ;sta GRAC1
 
-                lda #0                  ; no more intro status
-                sta INTRFG
+                lda #FALSE              ; no more intro status
+                sta isIntro
                 rts
                 .endproc
 

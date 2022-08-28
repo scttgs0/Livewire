@@ -9,18 +9,21 @@ GRDTBL          .byte 0,1,2,3,4,1,5,3
 ; COLORS (0=GRID, 1=OBJ1 2=OBJ2)
 ; ------------------------------
 
-C0TBL           .byte $C4,$36,$74,$F6
-                .byte $54,$06,$00,$26
-                ;; 088814, f85054, 444cdc, bc7430
-                ;; 8838a8, a8a8a8, 000000, fc801c
-C1TBL           .byte $86,$0C,$36,$56
-                .byte $26,$C6,$98,$18
-                ;; 6864fc, f0f0f0, f85054, c048dc
-                ;; fc801c, 08ac1c, 54b4fc, fcc41c
-C2TBL           .byte $98,$46,$A8,$36
-                .byte $84,$18,$C6,$38
-                ;; 54b4fc, cc3ccc, 60d070, f85054
-                ;; 584cd8, fcc41c, 08ac1c, fc706c
+C0TBL           ;.byte $C4,$36,$74,$F6
+                ;.byte $54,$06,$00,$26
+                .dword $00088814,$00f85054,$00444cdc,$00bc7430
+                .dword $008838a8,$00a8a8a8,$00000000,$00fc801c
+
+C1TBL           ;.byte $86,$0C,$36,$56
+                ;.byte $26,$C6,$98,$18
+                .dword $006864fc,$00f0f0f0,$00f85054,$00c048dc
+                .dword $00fc801c,$0008ac1c,$0054b4fc,$00fcc41c
+
+C2TBL           ;.byte $98,$46,$A8,$36
+                ;.byte $84,$18,$C6,$38
+                .dword $0054b4fc,$00cc3ccc,$0060d070,$00f85054
+                .dword $00584cd8,$00fcc41c,$0008ac1c,$00fc706c
+
 
 ; --------------------------------
 ; OBJECT COUNT TABLES (DIFFICULTY)

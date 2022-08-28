@@ -43,7 +43,7 @@ PRFLIP              .byte ?             ; proj. flip flag
 PRADVT              .byte ?             ; proj. move timer
 PRADV1              .byte ?             ; proj. timer
 TIMER               .byte ?             ; general timer
-INTRFG              .byte ?             ; intro flag
+isIntro             .byte ?             ; intro flag
 BCDLVL              .byte ?             ; level #
 zpShowColor         .byte ?             ; char. color [placed in high nibble]
 zpShowByte          .byte ?             ; char. byte pos.
