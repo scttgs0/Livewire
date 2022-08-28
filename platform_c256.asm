@@ -1,9 +1,6 @@
 VRAM            = $B00000               ; First byte of video RAM
 
-TILESET         = VRAM
-TILEMAP         = $B20000
-TILEMAPUNITS    = $B22000
-SPRITES         = $B24000
+SPRITES         = VRAM
 
 BITMAP          = VRAM+$2000
 BITMAP0         = $2000+$1E00
@@ -177,82 +174,6 @@ Custom_LUT      .dword $00282828        ; 0: Dark Jungle Green  [Editor Text bg]
 
 
 ;======================================
-; Initialize the Title Screen layer
-;======================================
-InitTitleScreen .proc
-                php
-                phb
-
-                jsr RefreshTitleScreen
-
-                .m16
-                lda #<>(TILEMAP-VRAM)   ; Set the pointer to the tile map
-                sta TILE3_START_ADDR
-                .m8
-                lda #`(TILEMAP-VRAM)
-                sta TILE3_START_ADDR+2
-
-                .m16
-                lda #MAPWIDTH                ; Set the size of the tile map
-                sta TILE3_X_SIZE
-                lda #MAPHEIGHT
-                sta TILE3_Y_SIZE
-
-                lda #$00
-                sta TILE3_WINDOW_X_POS
-                sta TILE3_WINDOW_Y_POS
-
-                .m8
-                lda #tcEnable           ; Enable the tileset, LUT0
-                sta TILE3_CTRL
-
-                plb
-                plp
-                rts
-                .endproc
-
-
-;======================================
-;
-;======================================
-RefreshTitleScreen .proc
-                php
-                .setbank `TitleScreenData
-
-                .m8i16
-                ldx #0
-                ldy #0
-_nextTile       lda TitleScreenData,Y   ; Get the tile code
-                and #$7F
-                sta TILEMAP,X           ; save it to the tile map
-                inx                     ; Note: writes to video RAM need to be 8-bit only
-                lda #0
-                sta TILEMAP,X
-
-                inx                     ; move to the next tile
-                iny
-                cpy #MAPWIDTH*18        ; top 18 lines are graphic
-                bne _nextTile
-
-_nextGlyph      lda TitleScreenData,Y   ; Get the tile code
-                ora #$80
-                sta TILEMAP,X           ; save it to the tile map
-                inx                     ; Note: writes to video RAM need to be 8-bit only
-                lda #0
-                sta TILEMAP,X
-
-                inx                     ; move to the next tile
-                iny
-                cpy #MAPWIDTH*MAPHEIGHT-18  ; bottom lines are text
-                bne _nextGlyph
-
-                .setbank $00
-                plp
-                rts
-                .endproc
-
-
-;======================================
 ; Initialize the Sprite layer
 ;--------------------------------------
 ; sprites dimensions are 32x32 (1024)
@@ -368,13 +289,13 @@ SetVideoRam     .proc
                 sta zpDest+2
                 .m8
 
-                stz zpTemp2     ; HACK:
+                ;stz zpTemp2     ; HACK:
 
                 .i16
                 ldx #0
-                stx zpIndex1
-                stx zpIndex2
-                stx zpIndex3
+                stx zpIndex1            ; source offset         [0-960]
+                stx zpIndex2            ; destination offset    [0-7680]
+                stx zpIndex3            ; column offset         [0-39]
 
 _nextByte       ldy zpIndex1
                 lda [zpSource],Y
@@ -396,10 +317,8 @@ _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
                 lda zpTemp1
                 ldy zpIndex2
                 sta [zpDest],Y
-
                 iny
                 sta [zpDest],Y          ; double-pixel
-
                 iny
                 sty zpIndex2
                 pla
@@ -411,15 +330,13 @@ _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
                 cpx #40
                 bcc _checkEnd
 
-                inc zpTemp2     ; HACK: exit criterian
-                lda zpTemp2
-                cmp #12
-                beq _XIT
+                ;inc zpTemp2     ; HACK: exit criterian
+                ;lda zpTemp2
+                ;cmp #24
+                ;beq _XIT
 
-                .m16
-                lda #0
-                sta zpIndex3            ; reset the column counter
-                .m8
+                ldx #0
+                stx zpIndex3            ; reset the column counter
 
 _checkEnd       ldx zpIndex1
                 cpx #$3C0               ; 24 source lines (40 bytes/line)... = 24 destination lines (~8K)

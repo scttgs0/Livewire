@@ -107,7 +107,7 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;lda #7                 ; blank...
                 ;jsr SETVBV             ; interrupt
 
-                ;jsr InitBitmap
+                jsr InitBitmap
                 jsr InitSprites
                 jsr PMCLR               ; clear p/m
 
@@ -166,7 +166,7 @@ _checkSELECT    lda CONSOL              ; select key...
 DIGIN           .proc
                 jsr ClearScreen
                 jsr RenderGamePanel
-
+                jsr BlitPlayfield
 
                 ;lda #<DLIST            ; point to...
                 ;sta DLISTL             ; game...
@@ -186,7 +186,7 @@ _forever        lda #1                  ; we want...
                 lda GRDTBL,X            ; to draw...
                 sta GRDNUM              ; and store
                 jsr ShowLevel           ; show level#
-                jsr DRGRID              ; draw grid!
+                jsr DrawGrid            ; draw grid!
 
 _wait1          lda PAUFLG              ; we paused?
                 bne _wait1              ; yup, loop.
@@ -306,7 +306,7 @@ _nodifi         sed                     ; increment
 _nogrdi         lda isDirtyPlayfield
                 beq _1
 
-                ;jsr BlitPlayfield
+                jsr BlitPlayfield
                 stz isDirtyPlayfield
 
 _1              jmp _forever            ; draw new grid.

@@ -1,7 +1,7 @@
 ;======================================
-; DRAW GRID
+; Draw Grid
 ;======================================
-DRGRID          .proc
+DrawGrid        .proc
                 lda #1                  ; tell interrupt
                 sta INTRFG              ; it's intro
                 jsr SNDOFF              ; turn off sound
@@ -10,15 +10,16 @@ DRGRID          .proc
                 sta DMAC1               ; of screen by
                 lda #0                  ; shutting off
                 sta GRAC1               ; DMA & graphics
-                ldx #3                  ; turn off shorts
-CLSHRT          sta SHORTF,X
-                dex
-                bpl CLSHRT
 
-                ldx #7                  ; turn off
-CLPRJC          sta PROJAC,X            ; all projectiles
+                ldx #3                  ; turn off shorts
+_clrShorts      sta SHORTF,X
                 dex
-                bpl CLPRJC
+                bpl _clrShorts
+
+                ldx #7                  ; turn off all projectiles
+_clrPrjct       sta PROJAC,X
+                dex
+                bpl _clrPrjct
 
                 jsr PMCLR               ; clear p/m area
 
@@ -79,7 +80,7 @@ GRDLIN          lda CX,X                ; get close x
                 sta DRAWX
                 lda FY,X                ; get far y
                 sta DRAWY
-                
+
                 ;lda COLPF0              ; invisible?
                 ;beq NOGRD1              ;  yes, don't draw
 
@@ -117,7 +118,7 @@ GRDBL1          lda CX,X                ; get close x
                 sec                     ; area to hold
                 sbc GRDWK2              ; the points
                 sta GRID                ; between lines
-                jsr GRIDSV              ; and save them
+                jsr GridCoordSave       ; and save them
 
                 ;lda COLPF0             ; invisible grid?
                 ;beq NOGRD2             ;   yes, don't draw
@@ -157,7 +158,7 @@ GRDBL2          lda FX,X                ; get far x
                 sec                     ; work area
                 sbc GRDWK2              ; to hold the
                 sta GRID                ; midpoints
-                jsr GRIDSV              ; and save them
+                jsr GridCoordSave       ; and save them
 
                 ;lda COLPF0             ; invisible grid?
                 ;beq NOGRD3             ;   yes, don't draw
@@ -166,7 +167,7 @@ GRDBL2          lda FX,X                ; get far x
                 jsr DRAW                ; draw to point 2
 
 NOGRD3          dec GRDWK2              ; more lines?
-                beq GENCOO              ;   no!
+                beq GenCoordTbl         ;   no!
 
                 inc GRDWK               ; increment to
                 ldx GRDWK               ; next line
@@ -175,19 +176,17 @@ NOGRD3          dec GRDWK2              ; more lines?
                 .endproc
 
 
-; -----------------------------
-; NOW GENERATE COORDINATE TABLE
-;
-; THIS SECTION BUILDS THE SEGX,
-; SEGY, RIMX AND RIMY TABLES.
-; THE SEGX&Y TABLES ARE POINTS
-; UP AND DOWN THE GRID FOR PRO-
-; JECTILES AND OBJECTS.  THE
-; RIMX&Y TABLES ARE FOR THE
-; POSITIONING OF SHORTS.
-; -----------------------------
-
-GENCOO          .proc
+;======================================
+; Generate Coordinate Table
+;--------------------------------------
+; This section builds the SEGX, SEGY,
+; RIMX and RIMY tables. The SEGX/Y
+; tables are points up and down the
+; grid for projectiles and objects.
+; The RIMX/Y tables are for the
+; positioning of shorts.
+;======================================
+GenCoordTbl     .proc
                 lda #0
                 sta GRIDNO
 DIVCTL          tax
@@ -195,12 +194,12 @@ DIVCTL          tax
                 sta SEGWK               ; with end
                 lda SEGX+15,X           ; coordinates
                 sta SEGWK+16
-                jsr DIVIDE              ; divide segwk
+                jsr DivideSEGWK         ; divide segwk
 
                 ldx GRIDNO
                 ldy #0
-COPY1           lda SEGWK,Y             ; copy segwk
-                sta SEGX,X              ; table to segx
+COPY1           lda SEGWK,Y             ; copy segwk table to segx
+                sta SEGX,X
                 inx
                 iny
                 cpy #16
@@ -212,12 +211,12 @@ COPY1           lda SEGWK,Y             ; copy segwk
                 sta SEGWK               ; with end
                 lda SEGY+15,X           ; coordinates
                 sta SEGWK+16
-                jsr DIVIDE              ; divide segwk
+                jsr DivideSEGWK         ; divide segwk
 
                 ldx GRIDNO
                 ldy #0
-COPY2           lda SEGWK,Y             ; copy segwk
-                sta SEGY,X              ; table to segy
+COPY2           lda SEGWK,Y             ; copy segwk table to segy
+                sta SEGY,X
                 inx
                 iny
                 cpy #16
@@ -233,12 +232,12 @@ COPY2           lda SEGWK,Y             ; copy segwk
                 sta SEGWK               ; with end
                 lda RIMX+15,X           ; coordinates
                 sta SEGWK+16
-                jsr DIVIDE              ; divide segwk
+                jsr DivideSEGWK         ; divide segwk
 
                 ldx GRIDNO
                 ldy #0
-COPY3           lda SEGWK,Y             ; copy segwk
-                sta RIMX,X              ; table to rimx
+COPY3           lda SEGWK,Y             ; copy segwk table to rimx
+                sta RIMX,X
                 inx
                 iny
                 cpy #16
@@ -250,38 +249,39 @@ COPY3           lda SEGWK,Y             ; copy segwk
                 sta SEGWK               ; with end
                 lda RIMY+15,X           ; coordinates
                 sta SEGWK+16
-                jsr DIVIDE              ; divide segwk
+                jsr DivideSEGWK         ; divide segwk
 
                 ldx GRIDNO
                 ldy #0
-COPY4           lda SEGWK,Y             ; copy segwk
-                sta RIMY,X              ; table to rimy
+COPY4           lda SEGWK,Y             ; copy segwk table to rimy
+                sta RIMY,X
                 inx
                 iny
                 cpy #16
                 bne COPY4
 
-                lda GRIDNO              ; do all 15
-                clc                     ; grid lines
+                lda GRIDNO              ; do all 15 grid lines
+                clc
                 adc #16
                 sta GRIDNO
                 cmp #240                ; all done?
-                beq ENDDVC              ; you bet!
+                beq ENDDVC              ;   you bet!
 
-                jmp DIVCTL              ; loop back!
+                jmp DIVCTL              ;   loop back!
 
-ENDDVC          lda #$3D                ; restart
-                sta DMAC1               ; the display
-                lda #$03                ; after grid
-                sta GRAC1               ; is drawn
-                lda #0                  ; no more
-                sta INTRFG              ; intro status
+ENDDVC          ;lda #$3D               ; restart the display
+                ;sta DMAC1              ; after grid is drawn
+                ;lda #$03
+                ;sta GRAC1
+
+                lda #0                  ; no more intro status
+                sta INTRFG
                 rts
                 .endproc
 
 
 ;======================================
-; DIVIDE SEGWK TABLE
+; Divide SEGWK Table
 ;--------------------------------------
 ; This routine examines the first
 ; and last bytes in the SEGWK
@@ -289,7 +289,7 @@ ENDDVC          lda #$3D                ; restart
 ; between with an even transition
 ; from one endpoint to the other
 ;======================================
-DIVIDE          .proc
+DivideSEGWK     .proc
                 lda #16
                 sta STEP
                 sta NEXT
@@ -335,31 +335,33 @@ ENDDIV          rts
 
 
 ;======================================
-; GRID COORDINATES SAVE
+; Grid Coordinates Save
 ;======================================
-GRIDSV          .proc
+GridCoordSave   .proc
                 lda GRID
-                asl A                   ; *2
-                asl A                   ; *4
-                asl A                   ; *8
                 asl A                   ; *16
-                clc                     ; add the
-                adc OFFSET              ; offset value
+                asl A
+                asl A
+                asl A
+                clc                     ; add the offset value
+                adc OFFSET
                 tax                     ; save in index
-                lda XWORK               ; get x work
-                sta SEGX,X              ; and save
-                lda YWORK               ; get y work
-                sta SEGY,X              ; and save
-                lda OFFSET              ; don't continue
-                bne SAVEND              ; if offset >0
 
-                lda PLOTX               ; get plotx
-                sta RIMX,X              ; and save
-                lda PLOTY               ; get ploty
-                sta RIMY,X              ; and save
-                lda DRAWX               ; get drawx
-                sta RIMX+15,X           ; and save
-                lda DRAWY               ; get drawy
-                sta RIMY+15,X           ; and save
-SAVEND          rts
+                lda XWORK               ; get x work and save
+                sta SEGX,X
+                lda YWORK               ; get y work and save
+                sta SEGY,X
+
+                lda OFFSET              ; don't continue if offset >0
+                bne _XIT
+
+                lda PLOTX               ; get plotx and save
+                sta RIMX,X
+                lda PLOTY               ; get ploty and save
+                sta RIMY,X
+                lda DRAWX               ; get drawx and save
+                sta RIMX+15,X
+                lda DRAWY               ; get drawy and save
+                sta RIMY+15,X
+_XIT            rts
                 .endproc
