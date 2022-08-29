@@ -419,10 +419,10 @@ Interrupt_DLI2  .proc
 ;----------------
 
 INFOLN          .text '000000 00 LVL 01'
-InfoLineColor   .byte $76,$76,$76,$76
-                .byte $76,$76,$00,$72
-                .byte $72,$00,$73,$73
-                .byte $73,$00,$73,$73
+InfoLineColor   .byte $10,$10,$10,$10
+                .byte $10,$10,$00,$20
+                .byte $20,$00,$30,$30
+                .byte $30,$00,$30,$30
 
 MAGMSG          .text '  ANALOG COMPUTING  '
 TitleMsg        ;.text '      LIVEWIRE      '

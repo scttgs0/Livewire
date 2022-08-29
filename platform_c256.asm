@@ -153,22 +153,22 @@ _next1          lda Custom_LUT,x
 
 ;--------------------------------------
 
-Custom_LUT      .dword $00282828        ; 0: Dark Jungle Green  [Editor Text bg]
-                .dword $00DDDDDD        ; 1: Gainsboro          [Editor Text fg]
-                .dword $00143382        ; 2: Saint Patrick Blue [Editor Info bg][Dialog bg]
-                .dword $006B89D7        ; 3: Blue Gray          [Editor Info fg][Dialog fg]
-                .dword $00693972        ; 4: Indigo             [Monitor Info bg]
-                .dword $00B561C2        ; 5: Deep Fuchsia       [Monitor Info fg][Window Split]
-                .dword $0076ADEB        ; 6: Maya Blue          [Reserved Word]
-                .dword $007A7990        ; 7: Fern Green         [Comment]
-                .dword $0074D169        ; 8: Moss Green         [Constant]
-                .dword $00D5CD6B        ; 9: Medium Spring Bud  [String]
-                .dword $00C563BD        ; A: Pastel Violet      [Loop Control]
-                .dword $005B8B46        ; B: Han Blue           [ProcFunc Name]
-                .dword $00BC605E        ; C: Medium Carmine     [Define]
-                .dword $00C9A765        ; D: Satin Sheen Gold   [Type]
-                .dword $0062C36B        ; E: Mantis Green       [Highlight]
-                .dword $00BC605E        ; F: Medium Carmine     [Warning]
+Custom_LUT      .dword $00282828        ; 0: Dark Jungle Green  
+                .dword $00DDDDDD        ; 1: Gainsboro          
+                .dword $00fc901c        ; 2: Orange
+                .dword $00082cc8        ; 3: Blue Gray          
+                .dword $00693972        ; 4: Indigo             
+                .dword $00B561C2        ; 5: Deep Fuchsia       
+                .dword $0076ADEB        ; 6: Maya Blue          
+                .dword $007A7990        ; 7: Fern Green         
+                .dword $0074D169        ; 8: Moss Green         
+                .dword $00D5CD6B        ; 9: Medium Spring Bud  
+                .dword $00C563BD        ; A: Pastel Violet      
+                .dword $005B8B46        ; B: Han Blue           
+                .dword $00BC605E        ; C: Medium Carmine     
+                .dword $00C9A765        ; D: Satin Sheen Gold   
+                .dword $0062C36B        ; E: Mantis Green       
+                .dword $00BC605E        ; F: Medium Carmine     
 
                 .endproc
 
@@ -595,8 +595,13 @@ v_RenderLine    .var 23*CharResX+4
                 phx
                 phy
 
+                lda isIntro
+                beq _cont
+
+                jmp _XIT
+
 ;   reset color for the 40-char line
-                ldx #$FF
+_cont           ldx #$FF
                 ldy #$FF
 _nextColor      inx
                 iny

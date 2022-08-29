@@ -206,12 +206,14 @@ ShowBCD         .proc
                 sta INFOLN+1,X          ; show it
 
                 lda zpShowByte          ; restore character
-                lsr A                   ; shift right
-                lsr A                   ; to get
-                lsr A                   ; num 2
+                lsr A                   ; /16 -- get num 0
+                lsr A
+                lsr A
                 lsr A
                 ora zpShowColor         ; add color
                 sta INFOLN,X            ; show it
+
+                jsr RenderGamePanel
 
                 rts
                 .endproc
