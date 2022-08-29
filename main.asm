@@ -1,3 +1,6 @@
+;--------------------------------------
+; Start of Code
+;--------------------------------------
 LIVE            .proc
                 jsr Random_Seed
 
@@ -143,7 +146,7 @@ _wait1          lda CONSOL              ; start key...
                 and #1                  ; released?
                 beq _wait1              ;   no, wait.
 
-                jmp DIGIN               ; go dig in!!
+                jmp DigIn               ; go dig in!!
 
 _checkSELECT    lda CONSOL              ; select key...
                 and #2                  ; pressed?
@@ -167,7 +170,7 @@ _checkSELECT    lda CONSOL              ; select key...
 ;--------------------------------------
 ; HERE'S WHERE PROGRAM STARTS
 ;--------------------------------------
-DIGIN           .proc
+DigIn           .proc
                 jsr ClearScreen
                 jsr RenderGamePanel
                 ;jsr BlitPlayfield
