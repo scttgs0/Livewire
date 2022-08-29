@@ -123,6 +123,9 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;lda #$16               ; put yellow...
                 ;sta COLPM0             ; in player 0
 
+                ;lda #3          ; DEBUG: [0-7] to display specific grid
+                ;sta GridIndex
+
                 bra IntroScreen
 
                 .endproc

@@ -26,9 +26,15 @@ _clrPrjct       sta PROJAC,X
                 sta ProjAvail
 
                 lda GridIndex           ; get grid #
-                lsr A                   ; /8 *4 = /2
+                lsr A                   ; /8
+                lsr A
+                lsr A
+                tax
+                phx                     ; save this for later
+
+                asl A                   ; *4    (convert to 4-byte color index)
+                asl A
                 tax                     ; load appropriate colors
-                phx
 
                 ldy #0
 _nextColor      lda Color0Tbl,X         ; grid color
@@ -44,11 +50,7 @@ _nextColor      lda Color0Tbl,X         ; grid color
                 cpy #4
                 bne _nextColor
 
-                plx
-                txa
-                lsr A                   ; /4
-                lsr A
-                tax
+                plx                     ; restore GridIndex/8
 
                 lda ObjectSpdTbl,X      ; object speed
                 sta ObjectSpeed
