@@ -109,7 +109,7 @@ _STPSHO         sta SHORTF,X            ; turn off
                 sta COLOR               ; color
                 lda #5                  ; erase all 6
                 sta OBJNUM              ; objects
-_ERSOBJ         jsr DRWOBJ              ; erase it!
+_ERSOBJ         jsr DrawObject          ; erase it!
 
                 ldx OBJNUM              ; get object #
                 lda #30                 ; place at

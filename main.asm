@@ -277,8 +277,8 @@ _next6          .randomByte             ; get a random
 _nxtogn         dex                     ; loop back to do
                 bpl _next4              ; next object
 
-                jsr OBJHAN              ; handle objects
-                jsr SHOHAN              ; handle shorts
+                jsr ObjectHandler       ; handle objects
+                jsr ShortHandler        ; handle shorts
 
 _noohan         lda CONSOL              ; any console
                 cmp #7                  ; keys pressed?
