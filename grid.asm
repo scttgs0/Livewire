@@ -70,12 +70,12 @@ _nextColor      lda Color0Tbl,X         ; grid color
                 sta NUMOBJ+4            ; object count
 
                 ldx #4                  ; adjust all
-DIFFAD          lda NUMOBJ,X            ; object counts
+_difficulty     lda NUMOBJ,X            ; object counts
                 clc                     ; by adding
                 adc DIFF                ; difficulty
                 sta NUMOBJ,X            ; and save
                 dex
-                bpl DIFFAD
+                bpl _difficulty
 
                 lda GRDNUM              ; get grid #
                 asl A                   ; *16
@@ -88,7 +88,7 @@ DIFFAD          lda NUMOBJ,X            ; object counts
                 lda #16                 ; load 16 bytes
                 sta GRDWK2
 
-GRDLIN          lda CX,X                ; get close x
+_gridline       lda CX,X                ; get close x
                 sta PLOTX
                 lda CY,X                ; get close y
                 sta PLOTY
@@ -98,24 +98,24 @@ GRDLIN          lda CX,X                ; get close x
                 sta DRAWY
 
                 lda PfColor0            ; invisible?
-                beq NOGRD1              ;  yes, don't draw
+                beq _nogrid1            ;  yes, don't draw
 
                 jsr PlotPoint           ; plot close point
                 jsr DrawLine            ; draw to far
                 jsr BlitPlayfield
 
-NOGRD1          dec GRDWK2              ; continue drawing
-                beq GRDBO1              ; until all 16
+_nogrid1        dec GRDWK2              ; continue drawing
+                beq _gridborder1        ; until all 16
 
                 inc GRDWK               ; lines are done
                 ldx GRDWK
-                bra GRDLIN
+                bra _gridline
 
-GRDBO1          ldx GRDADJ              ; now draw 15
+_gridborder1    ldx GRDADJ              ; now draw 15
                 stx GRDWK               ; close grid
                 lda #15                 ; border lines
                 sta GRDWK2
-GRDBL1          lda CX,X                ; get close x
+_gridborderLn1  lda CX,X                ; get close x
                 sta PLOTX
                 lda CY,X                ; get close y
                 sta PLOTY
@@ -138,25 +138,25 @@ GRDBL1          lda CX,X                ; get close x
                 jsr GridCoordSave       ; and save them
 
                 lda PfColor0            ; invisible grid?
-                beq NOGRD2              ;   yes, don't draw
+                beq _nogrid2            ;   yes, don't draw
 
                 jsr PlotPoint           ; plot close point1
                 jsr DrawLine            ; draw to point 2
                 jsr BlitPlayfield
 
-NOGRD2          dec GRDWK2              ; more lines?
-                beq GRDBO2              ;   no!
+_nogrid2        dec GRDWK2              ; more lines?
+                beq _gridborder2        ;   no!
 
                 inc GRDWK               ; increment to
                 ldx GRDWK               ; next line
-                bra GRDBL1              ; and loop
+                bra _gridborderLn1      ; and loop
 
-GRDBO2          ldx GRDADJ              ; now draw 15
+_gridborder2    ldx GRDADJ              ; now draw 15
                 stx GRDWK               ; far grid
                 lda #15                 ; border lines
                 sta GRDWK2
                 sta OFFSET              ; and set offset
-GRDBL2          lda FX,X                ; get far x
+_gridborderLn2  lda FX,X                ; get far x
                 sta PLOTX
                 lda FY,X                ; get far y
                 sta PLOTY
@@ -182,18 +182,18 @@ GRDBL2          lda FX,X                ; get far x
                 jsr GridCoordSave       ; and save them
 
                 lda PfColor0            ; invisible grid?
-                beq NOGRD3              ;   yes, don't draw
+                beq _nogrid3            ;   yes, don't draw
 
                 jsr PlotPoint           ; plot far point 1
                 jsr DrawLine            ; draw to point 2
                 jsr BlitPlayfield
 
-NOGRD3          dec GRDWK2              ; more lines?
+_nogrid3        dec GRDWK2              ; more lines?
                 beq GenCoordTbl         ;   no!
 
                 inc GRDWK               ; increment to
                 ldx GRDWK               ; next line
-                bra GRDBL2              ; and loop
+                bra _gridborderLn2      ; and loop
 
                 .endproc
 
@@ -211,7 +211,7 @@ NOGRD3          dec GRDWK2              ; more lines?
 GenCoordTbl     .proc
                 lda #0
                 sta GRIDNO
-DIVCTL          tax
+_next1          tax
                 lda SEGX,X              ; set up segwk
                 sta SEGWK               ; with end
                 lda SEGX+15,X           ; coordinates
@@ -220,12 +220,12 @@ DIVCTL          tax
 
                 ldx GRIDNO
                 ldy #0
-COPY1           lda SEGWK,Y             ; copy segwk table to segx
+_next2          lda SEGWK,Y             ; copy segwk table to segx
                 sta SEGX,X
                 inx
                 iny
                 cpy #16
-                bne COPY1
+                bne _next2
 
 ; NOW THE Y COORDS
                 ldx GRIDNO
@@ -237,12 +237,12 @@ COPY1           lda SEGWK,Y             ; copy segwk table to segx
 
                 ldx GRIDNO
                 ldy #0
-COPY2           lda SEGWK,Y             ; copy segwk table to segy
+_next3          lda SEGWK,Y             ; copy segwk table to segy
                 sta SEGY,X
                 inx
                 iny
                 cpy #16
-                bne COPY2
+                bne _next3
 
 
 ; ----------------------------
@@ -258,12 +258,12 @@ COPY2           lda SEGWK,Y             ; copy segwk table to segy
 
                 ldx GRIDNO
                 ldy #0
-COPY3           lda SEGWK,Y             ; copy segwk table to rimx
+_next4          lda SEGWK,Y             ; copy segwk table to rimx
                 sta RIMX,X
                 inx
                 iny
                 cpy #16
-                bne COPY3
+                bne _next4
 
 ; NOW THE RIM Y COORDS
                 ldx GRIDNO
@@ -275,28 +275,23 @@ COPY3           lda SEGWK,Y             ; copy segwk table to rimx
 
                 ldx GRIDNO
                 ldy #0
-COPY4           lda SEGWK,Y             ; copy segwk table to rimy
+_next5          lda SEGWK,Y             ; copy segwk table to rimy
                 sta RIMY,X
                 inx
                 iny
                 cpy #16
-                bne COPY4
+                bne _next5
 
                 lda GRIDNO              ; do all 15 grid lines
                 clc
                 adc #16
                 sta GRIDNO
                 cmp #240                ; all done?
-                beq ENDDVC              ;   you bet!
+                beq _XIT                ;   you bet!
 
-                jmp DIVCTL              ;   loop back!
+                jmp _next1              ;   loop back!
 
-ENDDVC          ;lda #$3D               ; restart the display
-                ;sta DMAC1              ; after grid is drawn
-                ;lda #$03
-                ;sta GRAC1
-
-                lda #FALSE              ; no more intro status
+_XIT            lda #FALSE              ; no more intro status
                 sta isIntro
                 rts
                 .endproc
@@ -317,9 +312,9 @@ DivideSEGWK     .proc
                 sta NEXT
                 lsr A
                 sta DEST
-DIVLP2          lda #0
+_next1          lda #0
                 sta LAST
-DIVLP1          ldx LAST
+_next2          ldx LAST
                 lda SEGWK,X
                 ldx NEXT
                 clc
@@ -333,26 +328,26 @@ DIVLP1          ldx LAST
                 sta LAST
                 adc STEP
                 cmp #17
-                bcs NOSTEP
+                bcs _nostep
 
                 sta NEXT
                 lda DEST
                 clc
                 adc STEP
                 sta DEST
-                jmp DIVLP1
+                jmp _next2
 
-NOSTEP          lda STEP
+_nostep         lda STEP
                 lsr A
                 sta STEP
                 sta NEXT
                 lsr A
-                beq ENDDIV
+                beq _XIT
 
                 sta DEST
-                jmp DIVLP2
+                bra _next1
 
-ENDDIV          rts
+_XIT            rts
                 .endproc
 
 
