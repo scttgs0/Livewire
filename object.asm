@@ -59,7 +59,7 @@ NOOBFI          lda #0                  ; set color 0
                 lda OBDED2,X            ; obj dead?
                 beq NOOKIL              ;   yes! start
 
-                jsr FLASH               ; death flash
+                jsr Flash               ; death flash
 
                 ldx OBJNUM
                 ldy OBJTYP,X            ; get object type

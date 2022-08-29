@@ -77,7 +77,7 @@ _XIT            rts
 ; DECREMENT LIVES
 ;======================================
 DecrementLives  .proc
-                jsr SNDOFF              ; no sound
+                jsr SoundOff            ; no sound
 
 ; ---------------------------
 ; WAIT FOR PROJECTILES TO END

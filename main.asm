@@ -86,7 +86,7 @@ _next7          sta OBJSEG,X            ; segment # 29
                 bpl _next7
 
                 jsr ShowScore           ; show score
-                jsr SNDOFF              ; no sounds
+                jsr SoundOff            ; no sounds
 
                 lda #6                  ; 6 projectiles available
                 sta ProjAvail

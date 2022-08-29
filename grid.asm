@@ -5,7 +5,7 @@ DrawGrid        .proc
                 lda #TRUE               ; tell interrupt it's intro -- WHY????
                 sta isIntro
 
-                jsr SNDOFF              ; turn off sound
+                jsr SoundOff            ; turn off sound
 
                 lda #0
                 ldx #3                  ; turn off shorts

@@ -1,14 +1,14 @@
 ;======================================
 ; FLASH OBJECT WHEN DEAD
 ;======================================
-FLASH           .proc
+Flash           .proc
                 ldy FLASHY              ; get y pos.
                 lda #0                  ; get ready to
                 ldx #14                 ; clear old flash
-CLFLSH          ;sta PL1,Y               ; zero out each
+_clrFlash       ;sta PL1,Y               ; zero out each
                 iny                     ; byte of flash
                 dex                     ; done yet?
-                bne CLFLSH              ;   no, loop.
+                bne _clrFlash           ;   no, loop.
 
                 lda SAVEX               ; get object's
                 clc                     ; x pos. and
@@ -21,11 +21,11 @@ CLFLSH          ;sta PL1,Y               ; zero out each
                 sty FLASHY              ; and save
 
                 ldx #13                 ; flash = 14 bytes
-SEFLSH          lda FLBYTE,X            ; get image
+_setFlash       lda FLBYTE,X            ; get image
                 ;sta PL1,Y               ; put in player 1
                 iny                     ; next p/m byte
                 dex                     ; next image byte
-                bpl SEFLSH              ; loop.
+                bpl _setFlash           ; loop.
 
                 lda #1                  ; set flash
                 sta FLTIME              ; duration
@@ -38,8 +38,8 @@ SEFLSH          lda FLBYTE,X            ; get image
 ;======================================
 WAIT            .proc
                 sta TIMER               ; set timer
-WAITLP          lda TIMER               ; timer = 0?
-                bne WAITLP              ;   nope!
+_wait1          lda TIMER               ; timer = 0?
+                bne _wait1              ;   nope!
 
                 rts                     ; timer finished!
                 .endproc
@@ -48,7 +48,7 @@ WAITLP          lda TIMER               ; timer = 0?
 ;======================================
 ; TURN SOUNDS OFF
 ;======================================
-SNDOFF          .proc
+SoundOff        .proc
                 lda #0                  ; zero out:
                 sta FIRSOU              ; fire sound
                 sta OBDSOU              ; obj death sound
