@@ -23,11 +23,11 @@ Color2Tbl       .dword $0054b4fc,$00cc3ccc,$0060d070,$00f85054
 ; OBJECT COUNT TABLES (DIFFICULTY)
 ; --------------------------------
 
-OBCNT0          .byte 0,0,0,0,4,6,8,10
-OBCNT1          .byte 0,0,0,6,8,9,10,11
-OBCNT2          .byte 8,10,12,14,16,18,20,22
-OBCNT3          .byte 6,8,10,11,12,14,15,16
-OBCNT4          .byte 0,0,4,8,10,12,14,16
+OBCNT0          .byte 0,0,0,0,4,6,8,10              ; resistance
+OBCNT1          .byte 0,0,0,6,8,9,10,11             ; voltage spike
+OBCNT2          .byte 8,10,12,14,16,18,20,22        ; arc
+OBCNT3          .byte 6,8,10,11,12,14,15,16         ; surge
+OBCNT4          .byte 0,0,4,8,10,12,14,16           ; transient
 
 ; ----------------
 ; STICK ADD VALUES
@@ -61,7 +61,7 @@ FLBYTE          .byte $28,$28,$28,$92,$54,$28,$10
 ; OBJECT POINTS (250,200,50,100,150)
 ; ----------------------------------
 
-POINT1          .byte $02,$02,$00,$01,$01
+POINT1          .byte $02,$02,$00,$01,$01       ; BCD score points
 POINT2          .byte $50,$00,$50,$00,$50
 
 ; ----------
@@ -91,11 +91,50 @@ PYINC           .byte $FF,1,0,0,$FF,1,1,$FF
 
 ObjectSpdTbl    .byte 18,15,14,12,11,10,9,7     ; object speed for each grid #
 
-OBJDIR          .byte 4,3,1,2,0,5,$FF,0
-                .byte 4,5,0,6,0,$FF,0,0
-                .byte 0,5,6,4,7,1,$FF,0
-                .byte 6,0,3,1,2,7,$FF,0
-                .byte 4,6,5,7,5,6,4,$FF
+; RESISTANCE
+;   * ----- *
+;   |     / =
+;   |   +   |
+;   | %     |
+;   * ----- *
+
+;VOLTAGE SPIKE
+;           *
+;         /
+;       +
+;       |   =
+;       *   |
+;         \ |
+;           *
+
+;   ARC
+;       *  =
+;    /  |   \
+;   *   +   *
+;    \  %  /
+;       *
+
+;   SURGE
+;   *-------*
+;   | %     |
+;   |   +   |
+;   |     \ |
+;   *----=  *
+
+;   TRANSIENT
+;           *
+;         /   \
+;       +       *
+;     /   \   /
+;   *       *
+;     \   %  
+;       =
+
+OBJDIR          .byte 4,3,1,2,0,5,$FF,0         ; resistance        +(1,-1)(-1,0)(0,1)(1,0) =(0,-1) %(-1,1)
+                .byte 4,5,0,6,0,$FF,0,0         ; voltage spike     +(1,-1)(-1,1)(0,-1) =(1,1) %(0,-1)
+                .byte 0,5,6,4,7,1,$FF,0         ; arc               +(0,-1)(-1,1)(1,1)(1,-1) =(-1,-1) %(0,1)
+                .byte 6,0,3,1,2,7,$FF,0         ; surge             +(1,1)(0,-1)(-1,0)(0,1) =(1,0) %(-1,-1)
+                .byte 4,6,5,7,5,6,4,$FF         ; transient         +(1,-1)(1,1)(-1,1)(-1,-1)(-1,1) =(1,1) %(1,-1)
 OBJLEN          .byte 3,7,7,7,7,7,0,0
                 .byte 3,7,7,7,7,0,0,0
                 .byte 3,3,3,3,3,7,0,0
@@ -189,7 +228,7 @@ JPHI            .byte >JoyMsg,>PadMsg
 ; GRID DATA TABLES
 ; ----------------
 
-CX              .byte 14,14,14,14,14,14,14,14
+CX              .byte 14,14,14,14,14,14,14,14           ; close points
                 .byte 26,39,51,64,75,88,100,113
                 .byte 14,14,14,14,14,14,14,14
                 .byte 14,14,14,14,14,14,14,14
@@ -215,7 +254,7 @@ CY              .byte 18,34,52,70,88,105,123,141
                 .byte 141,110,80,61,38,18,18,18
                 .byte 18,18,18,43,68,92,117,141
 
-FX              .byte 55,55,55,55,55,55,55,55
+FX              .byte 55,55,55,55,55,55,55,55           ; far points
                 .byte 58,60,62,64,66,68,70,73
                 .byte 55,55,55,55,55,55,55,55
                 .byte 55,55,55,55,55,55,55,55
@@ -241,14 +280,25 @@ FY              .byte 67,71,74,77,81,84,87,90
                 .byte 90,85,80,75,71,67,67,67
                 .byte 67,67,67,73,78,82,86,90
 
-SHSTRT          .byte 0,2
-SHYHLD          .fill 2,$00
-SHOIMG          .byte $88,$50,$20,$50,$88
-                .byte $20,$20,$F8,$20,$20
-CPYSTN          .byte 4,9
+ShortStart      .byte 0,2
+ShortHoldY      .fill 2,$00
 
-ADDSUB          .byte 2,$FE               ; add/sub. 2
-ADDSB1          .byte 1,$FF               ; add/sub. 1
+ShortImage      .byte $88    ; #...#...
+                .byte $50    ; .#.#....
+                .byte $20    ; ..#.....
+                .byte $50    ; .#.#....
+                .byte $88    ; #...#...
+
+                .byte $20    ; ..#.....
+                .byte $20    ; ..#.....
+                .byte $F8    ; #####...
+                .byte $20    ; ..#.....
+                .byte $20    ; ..#.....
+
+ShortStartIdx   .byte 4,9                   ; index to bottom row of ShortImage
+
+AddOrSub2       .byte 2,$FE                 ; add/sub. 2
+AddOrSub1       .byte 1,$FF                 ; add/sub. 1
 
 ; ----------
 ; SOUND DATA

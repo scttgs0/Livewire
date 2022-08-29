@@ -743,8 +743,9 @@ SPLOOP          lda #0                  ; player image
                 bcs NOSP1
 
                 tax
-                lda PN1,X               ; get image 1
-                sta PLTBYT              ; and save
+                lda PN1,X               ; get image 1 and save
+                sta PLTBYT
+
 NOSP1           lda SP2IX
                 and #15
                 tax
@@ -949,7 +950,7 @@ SHORTS          inc SHFLIP              ; toggle flip
                 lsr A                   ; to either
                 and #1                  ; 0 or 1
                 tay                     ; put in y
-                lda CPYSTN,Y            ; and get image
+                lda ShortStartIdx,Y     ; and get image
                 sta CPYST               ; to use (+/x)
                 lda SHFLIP              ; get flip,
                 and #1                  ; mask and
@@ -960,14 +961,16 @@ SHORTS          inc SHFLIP              ; toggle flip
                 ;sta DESTLO              ; hi & lo
                 lda #1                  ; set dest #
                 sta DESTNM
-                lda SHSTRT,Y            ; get start
+
+                lda ShortStart,Y        ; get start
                 sta VBXHLD              ; short #
 SHORLP          lda #0
                 ldx DESTNM
-                ldy SHYHLD,X            ; get last index
-                ldx #9                  ; now erase
-ERSSHO          sta (DESTLO),Y          ; previous
-                iny                     ; short
+                ldy ShortHoldY,X        ; get last index
+
+                ldx #9
+ERSSHO          sta (DESTLO),Y          ; erase previous short
+                iny
                 dex
                 bpl ERSSHO
 
@@ -986,15 +989,15 @@ ERSSHO          sta (DESTLO),Y          ; previous
                 tya
                 clc
                 adc #28                 ; adjust y
-                sta SHYHLD,X            ; save it
+                sta ShortHoldY,X        ; save it
                 tay
                 ldx CPYST
                 lda #4
                 sta CPYCNT
-SHOCOP          lda SHOIMG,X            ; now copy
-                sta (DESTLO),Y          ; short image
-                iny                     ; to p/m
-                sta (DESTLO),Y          ; area
+SHOCOP          lda ShortImage,X        ; now copy short image
+                sta (DESTLO),Y          ; to p/m area
+                iny
+                sta (DESTLO),Y
                 iny
                 dex
                 dec CPYCNT

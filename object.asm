@@ -101,8 +101,8 @@ _1              lda OBJTYP,X            ; is object
                 and #1                  ; direction
                 tay                     ; for type 2
                 lda OBJGRD,X            ; and
-                clc                     ; add or
-                adc ADDSB1,Y            ; subtract 1
+                clc
+                adc AddOrSub1,Y         ; add or subtract 1
                 cmp #15                 ; past limit?
                 bcs _setHue             ;   yes!
 
@@ -205,6 +205,7 @@ _oddSeg         clc                     ; it's odd, add
                 ror A                   ; get average
                 sta PLOTY               ; put in plot y
                 sta SAVEY               ; and save
+
 _oddSkip        lda #30                 ; now calculate
                 sec                     ; the object's
                 sbc OBJSEG,X            ; size based on
@@ -286,7 +287,7 @@ _next1          lda SHORTF,X            ; short alive?
                 ldy SHORTD,X            ; get short dir.
                 lda SHORTX,X            ; get x pos.
                 clc                     ; and adjust
-                adc ADDSUB,Y            ; position
+                adc AddOrSub2,Y         ; position
                 cmp #240                ; on grid?
                 bcs _resetShort         ;   no! don't move
 
