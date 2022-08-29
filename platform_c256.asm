@@ -297,6 +297,17 @@ SetVideoRam     .proc
                 stx zpIndex2            ; destination offset    [0-7680]
                 stx zpIndex3            ; column offset         [0-39]
 
+;   32 pixel border
+                lda #0
+                ldx #31
+                ldy #0
+_nextBorder     sta [zpDest],Y
+                iny
+                dex
+                bpl _nextBorder
+
+                sty zpIndex2
+
 _nextByte       ldy zpIndex1
                 lda [zpSource],Y
 
@@ -327,7 +338,7 @@ _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
                 bpl _nextPixel
 
                 ldx zpIndex3
-                cpx #40
+                cpx #32
                 bcc _checkEnd
 
                 ;inc zpTemp2     ; HACK: exit criterian
@@ -335,11 +346,22 @@ _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
                 ;cmp #24
                 ;beq _XIT
 
+;   32 pixel border (x2)
+                lda #0
+                ldx #63                 ; 32-byte right-edge border & 32-bytes left-edge border
+                ldy zpIndex2
+_nextBorder2    sta [zpDest],Y
+                iny
+                dex
+                bpl _nextBorder2
+
+                sty zpIndex2
+
                 ldx #0
                 stx zpIndex3            ; reset the column counter
 
 _checkEnd       ldx zpIndex1
-                cpx #$3C0               ; 24 source lines (40 bytes/line)... = 24 destination lines (~8K)
+                cpx #$300               ; 24 source lines (32 bytes/line)... = 24 destination lines (~8K)
                 bcc _nextByte
 
 _XIT            .i8
@@ -430,10 +452,10 @@ _nextBank       .m16
 
 ;--------------------------------------
 
-_data_Source    .long Playfield+$0000,Playfield+$03C0
-                .long Playfield+$0780,Playfield+$0B40
-                .long Playfield+$0F00,Playfield+$12C0
-                .long Playfield+$1680
+_data_Source    .long Playfield+$0000,Playfield+$0300
+                .long Playfield+$0600,Playfield+$0900
+                .long Playfield+$0C00,Playfield+$0F00
+                .long Playfield+$1200
 
 _data_Dest      .long BITMAP0,BITMAP1
                 .long BITMAP2,BITMAP3

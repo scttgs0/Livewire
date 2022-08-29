@@ -253,7 +253,7 @@ PLOTOB          lda PLOTX               ; this section
                 lda SHAPIX              ; don't plot
                 beq NOPLT1              ; first line!
 
-                jsr PLOTCL              ; plot point
+                jsr PlotPoint           ; plot point
 
 NOPLT1          lda PLOTY               ; increment y
                 clc                     ; again to adjust
@@ -262,7 +262,7 @@ NOPLT1          lda PLOTY               ; increment y
                 lda SHAPIX              ; don't plot
                 beq NOPLT2              ; first line
 
-                jsr PLOTCL              ; plot point
+                jsr PlotPoint           ; plot point
 
 NOPLT2          dec LENGTH              ; end of line?
                 bpl PLOTOB              ;   nope!

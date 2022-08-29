@@ -102,9 +102,6 @@ PlotPoint       .proc
                 ora HOLD
                 sta (LO),Y              ; and store!
 
-                lda #TRUE
-                sta isDirtyPlayfield
-
 _XIT            rts
                 .endproc
 
@@ -241,6 +238,9 @@ _plotIt         jsr PlotPoint           ; plot the point!
 
                 dec COUNTR              ; more to draw?
                 bne _next1              ;   yes!
+
+                lda #TRUE
+                sta isDirtyPlayfield
 
 _XIT            rts
                 .endproc

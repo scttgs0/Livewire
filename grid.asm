@@ -7,11 +7,6 @@ DrawGrid        .proc
 
                 jsr SNDOFF              ; turn off sound
 
-                ;lda #$20                ; turn off top
-                ;sta DMAC1               ; of screen by
-                ;lda #0                  ; shutting off
-                ;sta GRAC1               ; DMA & graphics
-
                 lda #0
                 ldx #3                  ; turn off shorts
 _clrShorts      sta SHORTF,X
@@ -23,29 +18,42 @@ _clrPrjct       sta PROJAC,X
                 dex
                 bpl _clrPrjct
 
-                jsr PMCLR               ; clear p/m area
+                jsr ClearSprites        ; clear sprites
 
                 sta OFFSET              ; zero offset
 
-                lda #6                  ; set 6 project.
-                sta PAVAIL              ; available
+                lda #6                  ; 6 projectiles available
+                sta ProjAvail
 
-                lda GRIDIX              ; get grid #
-                lsr A                   ; /8
+                lda GridIndex           ; get grid #
+                lsr A                   ; /8 *4 = /2
+                tax                     ; load appropriate colors
+                phx
+
+                ldy #0
+_nextColor      lda Color0Tbl,X         ; grid color
+                sta PfColor0,Y
+                lda Color1Tbl,X         ; object color 1
+                sta PfColor1,Y
+                lda Color2Tbl,X         ; object color 2
+                sta PfColor2,Y
+                jsr InitLUT
+
+                inx
+                iny
+                cpy #4
+                bne _nextColor
+
+                plx
+                txa
+                lsr A                   ; /4
                 lsr A
-                lsr A
-                tax                     ; load appropriate
+                tax
 
-                ;lda C0TBL,X            ; grid color
-                ;sta PfColor0
-                ;lda C1TBL,X            ; object color 1
-                ;sta PfColor1
-                ;lda C2TBL,X            ; object color 2
-                ;sta PfColor2
+                lda ObjectSpdTbl,X      ; object speed
+                sta ObjectSpeed
 
-                lda OBSTBL,X            ; object speed
-                sta OBJSPD
-                lda GRIDIX              ; get grid
+                lda GridIndex           ; get grid
                 and #7                  ; shape index
                 tax                     ; load:
                 lda OBCNT0,X            ; type 0
@@ -90,8 +98,9 @@ GRDLIN          lda CX,X                ; get close x
                 lda PfColor0            ; invisible?
                 beq NOGRD1              ;  yes, don't draw
 
-                jsr PLOTCL              ; plot close point
-                jsr DRAW                ; draw to far
+                jsr PlotPoint           ; plot close point
+                jsr DrawLine            ; draw to far
+                jsr BlitPlayfield
 
 NOGRD1          dec GRDWK2              ; continue drawing
                 beq GRDBO1              ; until all 16
@@ -129,8 +138,9 @@ GRDBL1          lda CX,X                ; get close x
                 lda PfColor0            ; invisible grid?
                 beq NOGRD2              ;   yes, don't draw
 
-                jsr PLOTCL              ; plot close point1
-                jsr DRAW                ; draw to point 2
+                jsr PlotPoint           ; plot close point1
+                jsr DrawLine            ; draw to point 2
+                jsr BlitPlayfield
 
 NOGRD2          dec GRDWK2              ; more lines?
                 beq GRDBO2              ;   no!
@@ -172,8 +182,9 @@ GRDBL2          lda FX,X                ; get far x
                 lda PfColor0            ; invisible grid?
                 beq NOGRD3              ;   yes, don't draw
 
-                jsr PLOTCL              ; plot far point 1
-                jsr DRAW                ; draw to point 2
+                jsr PlotPoint           ; plot far point 1
+                jsr DrawLine            ; draw to point 2
+                jsr BlitPlayfield
 
 NOGRD3          dec GRDWK2              ; more lines?
                 beq GenCoordTbl         ;   no!

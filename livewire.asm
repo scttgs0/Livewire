@@ -6,6 +6,14 @@
 ; A.N.A.L.O.G. COMPUTING #12
 ; ===========================
 
+;   SP00        player
+
+;   Graphics    160x234                 ; 160 graphic; 26 blanks; 48 text
+;       ours    320x240                 ; 76,800 bytes [$12C00 = 300 pages]
+;  Playfield    128x160
+;       ours    256x160                 ; 256 + 32(border) + 32(border) = 320
+
+
                 .cpu "65816"
 
                 .include "equates_system_c256.asm"
@@ -77,10 +85,8 @@ Palette_end
 Stamps          .include "SPRITES.asm"
 Stamps_end
 
-Playfield       .fill 40,$55
-                .fill 158*40,$00
-                .fill 40,$AA
-                .fill 8*40,$00          ; overflow to prevent screen artifacts
+Playfield       .fill 160*32,$00
+                .fill 8*32,$00          ; overflow to prevent screen artifacts
 
 ;--------------------------------------
 ;--------------------------------------

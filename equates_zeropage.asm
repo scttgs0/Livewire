@@ -69,7 +69,7 @@ SPIX                .byte ?             ; areas
 PLTBYT              .byte ?             ; plyr. image byte
 PSCNT               .byte ?             ; plyr. shape count
 KILPLR              .byte ?             ; kill plyr flag
-PAVAIL              .byte ?             ; # proj. available
+ProjAvail           .byte ?             ; # proj. available
 TRANTM              .byte ?             ; transient timer
 DESTLO              .byte ?             ; destination...
 DESTHI              .byte ?             ; address
@@ -78,13 +78,13 @@ DESTNM              .byte ?             ; short plyr #
 CPYST               .byte ?             ; short image start
 DMAC1               .byte ?             ; dma ctrl work
 GRAC1               .byte ?             ; graphics ctrl wk.
-GRIDIX              .byte ?             ; grid index
+GridIndex           .byte ?             ; grid index; range[0-63]
 LIVES               .byte ?             ; lives left
 GRDADJ              .byte ?             ; grid...
 GRDWK               .byte ?             ; draw...
 GRDWK2              .byte ?             ; work...
 GRDNUM              .byte ?             ; areas
-OBJSPD              .byte ?             ; obj. speed
+ObjectSpeed         .byte ?             ; obj. speed
 JOYPAD              .byte ?             ; stick/paddle
 CPYCNT              .byte ?             ; short copy cnt.
 BONUS               .byte ?             ; bonus value

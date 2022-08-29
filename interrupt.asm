@@ -630,7 +630,7 @@ RDSTRG          lda InputFlags          ; get stick trigger
                 and #$10
 CMPTRG          bne CHKPMV              ; not firing!
 
-                lda PAVAIL              ; any proj avail?
+                lda ProjAvail           ; any proj avail?
                 beq CHKPMV              ;   no!
 
                 ldx #7                  ; find an
@@ -640,7 +640,7 @@ PRSCAN          lda PROJAC,X            ; available
                 dex
                 bne PRSCAN
 
-GOTPRN          dec PAVAIL              ; 1 less available
+GOTPRN          dec ProjAvail           ; 1 less available
                 lda #1                  ; it's now
                 sta PROJAC,X            ; active
                 lda #21                 ; start up
@@ -921,7 +921,7 @@ KILLPR          lda #0                  ; kill proj.
                 cpx #2                  ; enemy proj?
                 bcc NOAVIN              ;   yes don't inc
 
-                inc PAVAIL              ; another avail
+                inc ProjAvail           ; another avail
 NOAVIN          lda PROJSG,X            ; segment 0?
                 bne NOKILP              ;   no!
 

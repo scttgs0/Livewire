@@ -9,19 +9,13 @@ GRDTBL          .byte 0,1,2,3,4,1,5,3
 ; COLORS (0=GRID, 1=OBJ1 2=OBJ2)
 ; ------------------------------
 
-C0TBL           ;.byte $C4,$36,$74,$F6
-                ;.byte $54,$06,$00,$26
-                .dword $00088814,$00f85054,$00444cdc,$00bc7430
+Color0Tbl       .dword $00088814,$00f85054,$00444cdc,$00bc7430
                 .dword $008838a8,$00a8a8a8,$00000000,$00fc801c
 
-C1TBL           ;.byte $86,$0C,$36,$56
-                ;.byte $26,$C6,$98,$18
-                .dword $006864fc,$00f0f0f0,$00f85054,$00c048dc
+Color1Tbl       .dword $006864fc,$00f0f0f0,$00f85054,$00c048dc
                 .dword $00fc801c,$0008ac1c,$0054b4fc,$00fcc41c
 
-C2TBL           ;.byte $98,$46,$A8,$36
-                ;.byte $84,$18,$C6,$38
-                .dword $0054b4fc,$00cc3ccc,$0060d070,$00f85054
+Color2Tbl       .dword $0054b4fc,$00cc3ccc,$0060d070,$00f85054
                 .dword $00584cd8,$00fcc41c,$0008ac1c,$00fc706c
 
 
@@ -94,8 +88,9 @@ OBJHUE          .byte 2,3,2,3,2
 SIZEWK          .byte 0,0,0,0,0,0,0,0
 PXINC           .byte 0,0,1,$FF,1,$FF,1,$FF
 PYINC           .byte $FF,1,0,0,$FF,1,1,$FF
-OBSTBL          .byte 18,15,14,12
-                .byte 11,10,9,7
+
+ObjectSpdTbl    .byte 18,15,14,12,11,10,9,7     ; object speed for each grid #
+
 OBJDIR          .byte 4,3,1,2,0,5,$FF,0
                 .byte 4,5,0,6,0,$FF,0,0
                 .byte 0,5,6,4,7,1,$FF,0

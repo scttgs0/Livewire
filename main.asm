@@ -85,8 +85,9 @@ _next7          sta OBJSEG,X            ; segment # 29
                 jsr ShowScore           ; show score
                 jsr SNDOFF              ; no sounds
 
-                lda #6                  ; 6 projectiles
-                sta PAVAIL              ; available
+                lda #6                  ; 6 projectiles available
+                sta ProjAvail
+
                 lda #2                  ; set...
                 sta BONUS               ; bonus=20000
                 sta LIVES               ; 2 extra lives
@@ -109,7 +110,7 @@ _next7          sta OBJSEG,X            ; segment # 29
 
                 jsr InitBitmap
                 jsr InitSprites
-                jsr PMCLR               ; clear p/m
+                jsr ClearSprites        ; clear sprites
 
 ;   enable VBI + DLI
                 jsr InitIRQs
@@ -166,7 +167,7 @@ _checkSELECT    lda CONSOL              ; select key...
 DIGIN           .proc
                 jsr ClearScreen
                 jsr RenderGamePanel
-                jsr BlitPlayfield
+                ;jsr BlitPlayfield
 
                 lda #FALSE              ; no longer in intro
                 sta isIntro
@@ -174,9 +175,9 @@ DIGIN           .proc
 _forever        lda #1                  ; we want...
                 sta COLOR               ; color 1
                 sta ZAP                 ; reset zap
-                jsr CLRSC               ; clear screen
+                jsr ClearPlayfield      ; clear screen
 
-                lda GRIDIX              ; get grid#
+                lda GridIndex           ; get grid #
                 and #7                  ; find which...
                 tax                     ; grid shape...
                 lda GRDTBL,X            ; to draw...
@@ -199,8 +200,8 @@ _plive          lda FLTIME              ; flash going?
 _nofend         lda OBTIM1              ; objects moving?
                 bne _noohan             ;   not yet!
 
-                lda OBJSPD              ; reset move...
-                sta OBTIM1              ; timer
+                lda ObjectSpeed         ; reset move  timer
+                sta OBTIM1
 
 ;
 ; COPY OBJECT KILL TABLE
@@ -281,13 +282,13 @@ _noohan         lda CONSOL              ; any console
 
 _jconwt         jmp _wait1              ; indirect jump
 
-_lvlend         lda GRIDIX              ; are we on
+_lvlend         lda GridIndex           ; are we on
                 cmp #63                 ; grid #63?
                 beq _nogrdi             ;   yes, don't inc!
 
                 clc                     ; increment
                 adc #1                  ; grid #
-                sta GRIDIX              ; and save it.
+                sta GridIndex           ; and save it.
                 and #7                  ; add 2 to
                 bne _nodifi             ; difficulty if
 
