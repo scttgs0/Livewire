@@ -607,11 +607,13 @@ NOTRAN          inc PSCNT               ; inc plyr timer
                 cmp #3                  ; change shape?
                 bne NOPSIN              ;   not yet!
 
-                lda #0                  ; better reset
-                sta PSCNT               ; index
-                inc SP1IX               ; and increment
-                inc SP2IX               ; all shape
-                inc SP3IX               ; indexes!
+                lda #0                  ; better reset index
+                sta PSCNT
+
+                inc SPoint1_Index       ; and increment all shape indexes!
+                inc SPoint2_Index
+                inc SPoint3_Index
+
 NOPSIN          lda PFTIME              ; see if we're
                 beq FIRE                ; ready to check
 
@@ -721,69 +723,77 @@ NOHSHO          lda SEGX,X              ; get player's
                 adc #32                 ; by adding 32
                 sta PLRY                ; set y pos
 
-;                lda #0                  ; clear out
-;                ldx #15                 ; old player
-;CLRPS           sta PL0-8,Y             ; image
-;                iny
-;                dex
-;                bpl CLRPS
+;   create the animated player sprite
+                lda #0                  ; clear out old player image
+                ldx #15
+_clrPS          sta PlyrAnimFrame,X
+                dex
+                bpl _clrPS
 
-                lda #15                 ; now copy
-                sta SPIX                ; 16-byte
-SPLOOP          lda #0                  ; player image
-                sta PLTBYT              ; to player 0
-                lda SP1IX
+;   generate the new animated player frame
+                lda #15                 ; copy 16-byte
+                sta StartPointIndex
+
+_startPointLoop lda #0                  ; player image to player 0
+                sta PlayerTempByte
+
+                lda SPoint1_Index
                 and #15
                 tax
-                lda SPIX
-                cmp SPTBL,X
-                bcc NOSP1
+                lda StartPointIndex
+                cmp StartPointTbl,X
+                bcc _skipSP1
 
-                cmp EPTBL,X
-                bcs NOSP1
+                cmp EndPointTbl,X
+                bcs _skipSP1
 
                 tax
                 lda PN1,X               ; get image 1 and save
-                sta PLTBYT
+                sta PlayerTempByte
 
-NOSP1           lda SP2IX
+_skipSP1        lda SPoint2_Index
                 and #15
                 tax
-                lda SPIX
-                cmp SPTBL,X
-                bcc NOSP2
+                lda StartPointIndex
+                cmp StartPointTbl,X
+                bcc _skipSP2
 
-                cmp EPTBL,X
-                bcs NOSP2
+                cmp EndPointTbl,X
+                bcs _skipSP2
 
                 tax
                 lda PN2,X
-                ora PLTBYT              ; add image 2
-                sta PLTBYT              ; and save
-NOSP2           lda SP3IX
+                ora PlayerTempByte      ; add image 2 and save
+                sta PlayerTempByte
+
+_skipSP2        lda SPoint3_Index
                 and #15
                 tax
-                lda SPIX
-                cmp SPTBL,X
-                bcc NOSP3
+                lda StartPointIndex
+                cmp StartPointTbl,X
+                bcc _skipSP3
 
-                cmp EPTBL,X
-                bcs NOSP3
+                cmp EndPointTbl,X
+                bcs _skipSP3
 
                 tax
                 lda PN3,X
-                ora PLTBYT              ; add image 3
-                sta PLTBYT              ; and save
-NOSP3           lda PLRY
-                clc
-                adc SPIX
-                sec
-                sbc #8
-                tay
-                lda PLTBYT              ; get image byte
-                ;sta PL0,Y               ; put in p/m area
-                dec SPIX                ; more image?
-                bpl SPLOOP              ;   yes!
+                ora PlayerTempByte      ; add image 3 and save
+                sta PlayerTempByte
+
+_skipSP3        ;lda PLRY
+                ;clc
+                ;adc StartPointIndex
+                ;sec
+                ;sbc #8
+                ;tay
+
+                ldy StartPointIndex
+                lda PlayerTempByte      ; get image byte
+                sta PlyrAnimFrame,Y     ; put in p/m area
+
+                dec StartPointIndex     ; more image?
+                bpl _startPointLoop     ;   yes!
 
 VBCONT          lda PRADV1              ; advance proj?
                 beq SETPRA              ;   yes!

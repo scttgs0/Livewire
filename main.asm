@@ -96,10 +96,11 @@ _next7          sta OBJSEG,X            ; segment # 29
                 sta LIVES               ; 2 extra lives
                 jsr ShowLives           ; show lives remaining
 
-                lda #5                  ; set up...
-                sta SP2IX               ; player...
-                lda #10                 ; shape...
-                sta SP3IX               ; indexes
+                stz SPoint1_Index       ; set up...
+                lda #5                  ; player shape indexes
+                sta SPoint2_Index
+                lda #10
+                sta SPoint3_Index
 
                 jsr RenderPublisher
                 jsr RenderTitle
