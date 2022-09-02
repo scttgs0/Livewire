@@ -87,14 +87,14 @@ _noObjKill      lda OBJSEG,X            ; increment
 _notType3       cmp #10                 ; at type 3 turn?
                 bne _1                  ;   no!
 
-                lda OBJTYP,X            ; is it
-                cmp #3                  ; type 3?
+                lda OBJTYP,X            ; is it type 3?
+                cmp #3
                 bne _1                  ;   no!
 
                 lda #$FF                ; reverse object
                 sta OBJINC,X            ; increment
-_1              lda OBJTYP,X            ; is object
-                cmp #2                  ; type 2?
+_1              lda OBJTYP,X            ; is object type 2?
+                cmp #2
                 bne _setHue             ;   no, set color
 
                 .randomByte             ; get random
@@ -126,9 +126,9 @@ _killObj        lda #0                  ; object is no
                 cmp PLRGRD              ; with player
                 bne _chkShort           ; no hit
 
-                lda #1                  ; hit,
-                sta KILPLR              ; kill player!
-                bne _doitagain          ; next object
+                lda #TRUE               ; hit, kill player!
+                sta isPlayerDead
+                bra _doitagain          ; next object
 
 _chkShort       lda OBJTYP,X            ; object
                 cmp #1                  ; type 1?

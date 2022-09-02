@@ -237,6 +237,122 @@ InitSprites     .proc
 ;======================================
 ;
 ;======================================
+SetPlayerRam    .proc
+                php
+                pha
+                phx
+                phy
+
+                .m16
+                lda #<>PlyrAnimFrame    ; Set the source address
+                sta zpSource
+                lda #`PlyrAnimFrame
+                sta zpSource+2
+
+                lda #<>SPR_PLAYER       ; Set the destination address
+                sta zpDest
+                lda #`SPR_PLAYER
+                sta zpDest+2
+                .m8
+
+                .i16
+                ldx #0
+                stx zpIndex1            ; source offset         [0-960]
+                stx zpIndex2            ; destination offset    [0-7680]
+                stx zpIndex3            ; column offset         [0-39]
+
+_nextByte       ldy zpIndex1
+                lda [zpSource],Y
+
+                inc zpIndex1            ; increment the byte counter (source pointer)
+
+                ldx #7
+_nextPixel      stz zpTemp1             ; extract 1-bit pixel
+                asl A
+                rol zpTemp1
+                beq _skipColor
+
+                ldy #$09                ; change #1 to #9 for colored pixel
+                sty zpTemp1
+
+_skipColor      pha
+
+                lda zpTemp1
+                ldy zpIndex2
+                sta [zpDest],Y
+                iny
+                sty zpIndex2
+                pla
+
+                dex
+                bpl _nextPixel
+
+                .m16
+                lda zpIndex2            ; advance to next line
+                clc
+                adc #24
+                sta zpIndex2
+                .m8
+
+_checkEnd       ldx zpIndex1
+                cpx #16
+                bcc _nextByte
+
+_XIT            .i8
+
+                ply
+                plx
+                pla
+                plp
+                rts
+                .endproc
+
+
+;======================================
+;
+;======================================
+BlitPlayerRam   .proc
+                php
+                pha
+
+                .m16
+
+                lda #$0400
+                sta zpSize
+                lda #0
+                sta zpSize+2
+
+                lda #<>SPR_PLAYER       ; Set the source address
+                sta zpSource
+                lda #`SPR_PLAYER
+                sta zpSource+2
+
+                lda #<>(SPRITES-VRAM)   ; Set the destination address
+                sta zpDest
+                lda #`(SPRITES-VRAM)
+                sta zpDest+2
+
+                .m8
+                jsr Copy2VRAM
+
+                pla
+                plp
+                rts
+                .endproc
+
+
+;======================================
+;
+;======================================
+BlitPlayerSprite .proc
+                jsr SetPlayerRam
+                jsr BlitPlayerRam
+                .endproc
+
+
+;======================================
+;
+;======================================
 InitBitmap      .proc
                 php
                 pha

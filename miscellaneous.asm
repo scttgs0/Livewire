@@ -28,7 +28,7 @@ _setFlash       lda FLBYTE,X            ; get image
                 bpl _setFlash           ; loop.
 
                 lda #1                  ; set flash
-                sta FLTIME              ; duration
+                sta FlashTimer          ; duration
                 rts
                 .endproc
 
@@ -37,8 +37,9 @@ _setFlash       lda FLBYTE,X            ; get image
 ; TIME DELAY
 ;======================================
 WAIT            .proc
-                sta TIMER               ; set timer
-_wait1          lda TIMER               ; timer = 0?
+                sta DelayTimer          ; set timer
+
+_wait1          lda DelayTimer          ; timer = 0?
                 bne _wait1              ;   nope!
 
                 rts                     ; timer finished!

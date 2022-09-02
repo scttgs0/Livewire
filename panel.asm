@@ -148,8 +148,8 @@ _MOREWT         .randomByte             ; set random
                 lda #60                 ; wait 1 sec
                 jsr WAIT
 
-                lda #0                  ; reset player
-                sta KILPLR              ; kill flag
+                lda #FALSE              ; reset player kill flag
+                sta isPlayerDead
                 ;lda #$16               ; and
                 ;sta COLPM0             ; player color
                 rts

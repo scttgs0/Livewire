@@ -192,23 +192,23 @@ _forever        lda #1                  ; we want...
                 jsr ShowLevel           ; show level#
                 jsr DrawGrid            ; draw grid!
 
-_wait1          lda PAUFLG              ; we paused?
+_wait1          lda isPaused            ; we paused?
                 bne _wait1              ; yup, loop.
 
-                lda KILPLR              ; player dead?
+                lda isPlayerDead        ; player dead?
                 beq _plive              ;   nope!
 
                 jsr DecrementLives      ; one less life!
 
-_plive          lda FLTIME              ; flash going?
+_plive          lda FlashTimer          ; flash going?
                 bne _nofend             ;   yes! store...
 
-                sta SP01_X_POS          ; flash position!
-_nofend         lda OBTIM1              ; objects moving?
+                ;sta SP01_X_POS          ; flash position!
+_nofend         lda ObjectMoveTmr       ; objects moving?
                 bne _noohan             ;   not yet!
 
-                lda ObjectSpeed         ; reset move  timer
-                sta OBTIM1
+                lda ObjectSpeed         ; reset move timer
+                sta ObjectMoveTmr
 
 ;
 ; COPY OBJECT KILL TABLE
@@ -287,7 +287,13 @@ _noohan         lda CONSOL              ; any console
 
                 jmp LIVE                ;   yes, restart game
 
-_jconwt         jmp _wait1              ; indirect jump
+_jconwt         lda isDirtyPlayer
+                beq _1
+
+                jsr BlitPlayerSprite
+                stz isDirtyPlayer
+
+_1              jmp _wait1              ; indirect jump
 
 _lvlend         lda GridIndex           ; are we on
                 cmp #63                 ; grid #63?
@@ -308,11 +314,11 @@ _nodifi         sed                     ; increment
                 sta BCDLVL
                 cld                     ; now go to
 _nogrdi         lda isDirtyPlayfield
-                beq _1
+                beq _2
 
                 jsr BlitPlayfield
                 stz isDirtyPlayfield
 
-_1              jmp _forever            ; draw new grid.
+_2              jmp _forever            ; draw new grid.
 
                 .endproc
