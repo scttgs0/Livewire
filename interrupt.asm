@@ -1,66 +1,3 @@
-; ----------------------
-; MAIN GAME DISPLAY LIST
-; ----------------------
-
-;DLIST          ;.byte AEMPTY8              ; 24 scanlines
-                ;.byte AEMPTY8+ADLI
-                ;.byte AEMPTY8
-
-                ;.byte $0E+ALMS             ; 160 scanlines; 4 color; 160 pixels wide
-                ;    .addr DISP
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E
-                ;.byte $0E+ALMS
-                ;    .word DISP+$800
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E,$0E
-                ;.byte $0E,$0E,$0E
-
-                ;.byte AEMPTY1+ADLI         ; 2 scanlines
-                ;.byte AEMPTY1
-
-                ;.byte $07+ALMS             ; 16 scanlines; 20 bytes
-                ;    .addr INFOLN
-
-                ;.byte AVB+AJMP
-                ;    .addr DLIST
-
-
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -480,10 +417,10 @@ _2              ;lda #<Interrupt_DLI1   ; point to
                 ;sta VDSLST+1           ; interrupt
 
 ;   this section processes all timers
-;                 lda ObjectMoveTmr
-;                 beq _3
+                lda ObjectMoveTmr
+                beq _3
 
-;                 dec ObjectMoveTmr
+                dec ObjectMoveTmr
 
 _3              lda DelayTimer
                 beq _4
@@ -545,6 +482,7 @@ _8              cmp #$39                ; space bar?
 _endKeys        lda #0                  ; clear keypress
                 sta KEYCHAR
 
+;   sound processing
                 lda isPaused            ; paused?
                 beq _notPaused          ;   no, continue
 
@@ -594,23 +532,25 @@ _12             ;lda COLPM2             ; cycle
                 ;and #$FC               ; also put in
                 ;sta COLPF3             ; pf3 for missiles
 
-;                 dec TransientTmr        ; transient time
-;                 bne _15                 ;   no change
+;   transient processing
+                dec TransientTmr        ; transient time
+                bne _15                 ;   no change
 
-;                 lda OBJHUE+4            ; flip transient
-;                 bne _13
+                lda OBJHUE+4            ; flip transient
+                bne _13
 
-;                 lda #2                  ; hue to either
-;                 bne _14
+                lda #2                  ; hue to either
+                bne _14
 
-; _13             lda #0                  ; 0 or 2
-; _14             sta OBJHUE+4
+_13             lda #0                  ; 0 or 2
+_14             sta OBJHUE+4
 
-;                 .randomByte
-;                 ora #$1F                ; reset the transient time
-;                 and #$3F
-;                 sta TransientTmr
+                .randomByte
+                ora #$1F                ; reset the transient time
+                and #$3F
+                sta TransientTmr
 
+;   player processing
 _15             inc PlyrShapeCnt        ; inc plyr timer
                 lda PlyrShapeCnt        ; ready to change shape?
                 cmp #3
@@ -715,6 +655,7 @@ _storePos       cmp PlyrGridPos         ; same as last?
 
                 ; ldx #9                  ; start up
                 ; stx MOVSOU              ; move sound
+
                 sta PlyrGridPos         ; save grid #
 
 _noStore        asl A                   ; *16 (position index)
@@ -880,7 +821,7 @@ _noProjAdv      lda ProjIncrement,X     ; enemy shot?
 _objKillLoop    lda isObjDead,Y         ; already dead?
                 bne _nextObjChk         ;   yes!
 
-                lda OBJPRS,Y            ; object there?
+                lda isObjPresent,Y      ; object there?
                 beq _nextObjChk         ;   no!
 
                 lda ObjectType,Y        ; is object type 4 (transient)?
@@ -996,10 +937,10 @@ _nokilp         jmp _chkProjEnd         ; next proj.
 
 
 ; ------------------------------
-; THIS SECTION HANDLES SHORTS.
-; 2 PLAYERS ARE USED TO SHOW A
-; MAXIMUM OF 4 SHORTS, SO SOME
-; FLICKER MAY BE OBSERVED.
+; This section handles shorts.
+; 2 players are used to show a
+; maximum of 4 shorts, so some
+; flicker may be observed.
 ; ------------------------------
 
 SHORTS  ;         inc SHFLIP              ; toggle flip
@@ -1012,10 +953,10 @@ SHORTS  ;         inc SHFLIP              ; toggle flip
 ;                 lda SHFLIP              ; get flip,
 ;                 and #1                  ; mask and
 ;                 tay                     ; put in y
-                ;lda #>PL3               ; put player 3
-                ;sta DESTHI              ; in destination
-                ;lda #<PL3               ; address
-                ;sta DESTLO              ; hi & lo
+;                 lda #>PL3               ; put player 3
+;                 sta DESTHI              ; in destination
+;                 lda #<PL3               ; address
+;                 sta DESTLO              ; hi & lo
 ;                 lda #1                  ; set dest #
 ;                 sta DESTNM
 

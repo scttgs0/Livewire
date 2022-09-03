@@ -97,7 +97,7 @@ SCOADD              .fill 3             ; score add value
 MISCAD              .byte ?             ; misc. score add
 NUMOBJ              .fill 5             ; objects left
 DIFF                .byte ?             ; difficulty adjust
-OBJPRS              .fill 6             ; obj present flags
+isObjPresent        .fill 6             ; obj present flags
 
 isDirtyPlayfield    .byte ?
 isDirtyPlayer       .byte ?

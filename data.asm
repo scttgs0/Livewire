@@ -138,7 +138,7 @@ OBJLEN          .byte 3,7,7,7,7,7,0,0
                 .byte 3,3,3,3,3,7,0,0
                 .byte 2,3,3,3,3,3,0,0
                 .byte 1,1,1,3,1,1,3,0
-SIZTBL          .byte 0,0,0,0,0,1,1,1
+SIZTBL          .byte 0,0,0,0,0,1,1,1           ; scale value based on distance to rim
                 .byte 0,0,0,1,1,2,2,2
                 .byte 0,0,1,1,1,2,2,2
                 .byte 0,1,1,2,2,2,2,3

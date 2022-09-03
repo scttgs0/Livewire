@@ -219,10 +219,10 @@ _next1          lda isObjDead,X         ; copies the
 
                 lda #0                  ; then reset the
                 sta MISCAD              ; add value.
-_nomsco         ldx #5                  ; this section
-                lda #0                  ; tallies all
-_next2          ora OBJPRS,X            ; objects that
-                dex                     ; are alive
+_nomsco         ldx #5                  ; this section tallies all
+                lda #0                  ; objects that are alive
+_next2          ora isObjPresent,X
+                dex
                 bpl _next2
 
                 ldx #4                  ; now tally
@@ -234,7 +234,7 @@ _next3          ora NUMOBJ,X            ; all objects
                 beq _lvlend             ;   no, end of level!
 
                 ldx #5                  ; is object
-_next4          lda OBJPRS,X            ; present?
+_next4          lda isObjPresent,X      ; present?
                 bne _nxtogn             ;   yes, try next.
 
 _next5          .randomByte             ; let's try to
@@ -261,7 +261,7 @@ _next6          .randomByte             ; get a random
                 sta OBJSEG,X            ; far end of grid
                 lda #1                  ; set up...
                 sta OBJINC,X            ; obj. increment
-                sta OBJPRS,X            ; object present
+                sta isObjPresent,X      ; object present
 _nxtogn         dex                     ; loop back to do
                 bpl _next4              ; next object
 

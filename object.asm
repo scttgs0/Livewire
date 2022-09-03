@@ -2,64 +2,70 @@
 ; OBJECT HANDLER
 ;======================================
 ObjectHandler   .proc
-                lda OBJNUM              ; increment
-                clc                     ; object #
+_repeat         lda OBJNUM              ; increment object #
+                clc
                 adc #1
                 cmp #6                  ; done?
                 bne _storeNum           ;   no, continue.
 
-                lda #$FF                ; reset
-                sta OBJNUM              ; object #
+                lda #$FF                ; reset object #
+                sta OBJNUM
+
+                jsr BlitPlayfield
                 rts
 
 _storeNum       sta OBJNUM              ; save obj #
                 ldx OBJNUM              ; get obj #
-                lda OBJPRS,X            ; obj present?
-                beq ObjectHandler       ;   no!
+                lda isObjPresent,X      ; obj present?
+                beq _repeat             ;   no!
 
                 lda OBJSEG,X            ; within 2 units
                 cmp #2                  ; of rim?
-                bcc _noObjFI            ;   yes, don't fire
+                bcc _noObjFire          ;   yes, don't fire
 
-                .randomByte             ; random chance
-                and #$0F                ; of shooting
-                bne _noObjFI            ; don't shoot
+                .randomByte             ; random chance of shooting
+                and #$0F
+                bne _noObjFire          ; don't shoot
 
                 lda isProjActive        ; proj. 0 active?
                 bne _tryProj1           ;   yes, ignore!
 
-                ldy #0                  ; force branch
-                beq _storeObjFI         ; to store it
+                ldy #0                  ; force branch to store it
+                beq _storeObjFire
 
 _tryProj1       lda isProjActive+1      ; proj. 1 active?
-                bne _noObjFI            ;    yes, no fire
+                bne _noObjFire          ;    yes, no fire
 
                 ldy #1                  ; set index
-_storeObjFI     lda OBJSEG,X            ; initialize
-                lsr A                   ; projectile
-                sta PROJSG,Y            ; segment #
-                lda OBJGRD,X            ; and
-                sta ProjGridPos,Y       ; sub-grid #
-                asl A                   ; multiply
-                asl A                   ; by
-                asl A                   ; 16
-                asl A                   ; and
+_storeObjFire   lda OBJSEG,X            ; initialize projectile segment #
+                lsr A
+                sta PROJSG,Y
+                lda OBJGRD,X            ; and sub-grid #
+                sta ProjGridPos,Y
+                asl A                   ; *16
+                asl A
+                asl A
+                asl A
                 sta ProjGridIndex,Y     ; save index!
+
                 lda #$FF                ; set increment
                 sta ProjIncrement,Y     ; (toward rim)
-                lda #21                 ; start the
-                sta FIRSOU              ; fire sound
-                lda #1                  ; and
-                sta isProjActive,Y      ; projectile
-_noObjFI        lda #0                  ; set color 0
+
+                lda #21                 ; start the fire sound
+                sta FIRSOU
+
+                lda #TRUE               ; projectile is active
+                sta isProjActive,Y
+
+_noObjFire      lda #0                  ; set color 0
                 sta COLOR               ; to erase object
                 jsr DrawObject          ; and erase it
 
                 ldx OBJNUM
                 lda OBDED2,X            ; obj dead?
-                beq _noObjKill          ;   yes! start
+                beq _noObjKill          ;   no
 
-                jsr Flash               ; death flash
+                jsr Flash               ;   yes! start death flash
 
                 ldx OBJNUM
                 ldy ObjectType,X        ; get object type
@@ -72,17 +78,17 @@ _noObjFI        lda #0                  ; set color 0
                 ldx OBJNUM
                 jmp _killObj            ; then kill obj.
 
-_noObjKill      lda OBJSEG,X            ; increment
-                sec                     ; object's
-                sbc OBJINC,X            ; segment
-                sta OBJSEG,X            ; position
-                bmi _killObj            ; past rim!
+_noObjKill      lda OBJSEG,X            ; increment object's segment position
+                sec
+                sbc OBJINC,X
+                sta OBJSEG,X
+                bmi _killObj            ; beyond rim!
 
                 cmp #30                 ; type 3 past end?
                 bne _notType3           ;   nope!
 
                 inc NUMOBJ+2            ; start type 2
-                bne _killObj            ; force branch
+                bra _killObj
 
 _notType3       cmp #10                 ; at type 3 turn?
                 bne _1                  ;   no!
@@ -91,38 +97,42 @@ _notType3       cmp #10                 ; at type 3 turn?
                 cmp #3
                 bne _1                  ;   no!
 
-                lda #$FF                ; reverse object
-                sta OBJINC,X            ; increment
+                lda #$FF                ; reverse object increment
+                sta OBJINC,X
+
 _1              lda ObjectType,X        ; is object type 2 (arc)?
                 cmp #2
                 bne _setHue             ;   no, set color
 
-                .randomByte             ; get random
-                and #1                  ; direction
-                tay                     ; for type 2
-                lda OBJGRD,X            ; and
+                .randomByte             ; get random direction for type 2
+                and #1
+                tay
+                lda OBJGRD,X
                 clc
                 adc AddOrSub1,Y         ; add or subtract 1
-                cmp #15                 ; past limit?
+                cmp #15                 ; beyond limit?
                 bcs _setHue             ;   yes!
 
                 sta OBJGRD,X            ; save new pos.
+
 _setHue         lda ObjectType,X        ; get obj. type
-                tax                     ; and get
-                lda OBJHUE,X            ; color #
+                tax
+                lda OBJHUE,X            ; and get color #
                 sta COLOR               ; save it
                 jsr DrawObject          ; and draw object!
 
-                jmp ObjectHandler       ; do next one
+                jmp _repeat             ; do next one
 
-_killObj        lda #0                  ; object is no
-                sta OBJPRS,X            ; longer alive
-                lda #21                 ; set up
-                sta OBDSOU              ; death sound
-                lda OBJSEG,X            ; check
-                bpl _doitagain          ; for a
+_killObj        lda #FALSE              ; object is no longer alive
+                sta isObjPresent,X
 
-                lda OBJGRD,X            ; collision with player?
+                lda #21                 ; set up death sound
+                sta OBDSOU
+
+                lda OBJSEG,X
+                bpl _doitagain
+
+                lda OBJGRD,X            ; check for collision with player?
                 cmp PlyrGridPos
                 bne _chkShort           ;   no hit
 
@@ -141,25 +151,29 @@ _tryShort       lda SHORTF,Y            ; short available?
                 dey                     ; keep...
                 bpl _tryShort           ; trying!
 
-                bmi _doitagain          ; no short avail!
+                bra _doitagain          ; no short avail!
 
-_initShort      lda OBJGRD,X            ; multiply the
-                asl A                   ; object's
-                asl A                   ; sub-grid #
-                asl A                   ; by 16...
+_initShort      lda OBJGRD,X            ; object's sub-grid # *16
+                asl A
+                asl A
+                asl A
                 asl A
                 clc
-                adc #8                  ; and add 8 for
-                sta SHORTX,Y            ; the short index
-                lda #1                  ; short is
-                sta SHORTF,Y            ; alive!
-                .randomByte             ; randomize...
-                and #1                  ; short...
-                sta SHORTD,Y            ; direction
-                .randomByte             ; and that...
-                and #$3F                ; direction's...
-                sta SHORTT,Y            ; time!
-_doitagain      jmp ObjectHandler       ; next object
+                adc #8                  ; and add 8 for the short index
+                sta SHORTX,Y
+
+                lda #1                  ; short is alive!
+                sta SHORTF,Y
+
+                .randomByte             ; randomize short direction
+                and #1
+                sta SHORTD,Y
+
+                .randomByte             ; and that direction's time!
+                and #$3F
+                sta SHORTT,Y
+
+_doitagain      jmp _repeat             ; next object
 
                 .endproc
 
@@ -170,98 +184,117 @@ _doitagain      jmp ObjectHandler       ; next object
 DrawObject      .proc
                 ldx OBJNUM              ; get object #
                 lda OBJGRD,X            ; get sub-grid #
-                asl A                   ; multiply
-                asl A                   ; by 16...
+                asl A                   ; *16
+                asl A
                 asl A
                 asl A
                 sta HLDGRD              ; and save.
-                lda OBJSEG,X            ; divide
-                lsr A                   ; segment by 2
+
+                lda OBJSEG,X            ; divide segment by 2
+                lsr A
                 bcs _oddSeg             ; process odd #
 
-                clc                     ; it's even, add
-                adc HLDGRD              ; grid index
-                tay                     ; put in y reg.
-                lda SEGX,Y              ; get object's
-                sta PLOTX               ; x position
+;   process even
+                clc                     ; it's even
+                adc HLDGRD              ; add grid index
+                tay
+
+                lda SEGX,Y              ; get object's x position
+                sta PLOTX
                 sta SAVEX               ; and save
-                lda SEGY,Y              ; get object's
-                sta PLOTY               ; y position
+
+                lda SEGY,Y              ; get object's y position
+                sta PLOTY
                 sta SAVEY               ; and save
                 jmp _oddSkip            ; skip odd routine
 
-_oddSeg         clc                     ; it's odd, add
-                adc HLDGRD              ; grid index
-                tay                     ; put in y reg.
-                lda SEGX,Y              ; get object's
-                clc                     ; x pos, add
-                adc SEGX+1,Y            ; next x pos.
+;   process odd
+_oddSeg         clc                     ; it's odd
+                adc HLDGRD              ; add grid index
+                tay
+
+                lda SEGX,Y              ; get object's x pos
+                clc
+                adc SEGX+1,Y            ; add next x pos.
                 ror A                   ; get average
-                sta PLOTX               ; put in plot x
+                sta PLOTX
                 sta SAVEX               ; and save
-                lda SEGY,Y              ; get object's
-                clc                     ; y pos, add
-                adc SEGY+1,Y            ; next y pos.
+
+                lda SEGY,Y              ; get object's y pos
+                clc
+                adc SEGY+1,Y            ; add next y pos.
                 ror A                   ; get average
-                sta PLOTY               ; put in plot y
+                sta PLOTY
                 sta SAVEY               ; and save
 
-_oddSkip        lda #30                 ; now calculate
-                sec                     ; the object's
-                sbc OBJSEG,X            ; size based on
-                lsr A                   ; its position
-                and #$FE                ; on the grid
+;   calculate the object's size based on its position on the grid
+_oddSkip        lda #30                 ; near objects are bigger
+                sec
+                sbc OBJSEG,X            ; val = (30 - seg pos) / 2
+                lsr A
+                and #$FE                ; make even #
+                asl A                   ; *4
                 asl A
-                asl A
-                tay                     ; put index in y
-                ldx #0                  ; now copy part
-_next1          lda SIZTBL,Y            ; of the size
-                sta SIZEWK,X            ; table to a
-                iny                     ; size work area
-                inx                     ; this table holds
-                cpx #8                  ; 8 size values
-                bne _next1              ; based on dist.
+                tay
+
+;   now copy part of the size table to a size work area.
+;   this table holds 8 size values based on distance.
+                ldx #0
+_next1          lda SIZTBL,Y
+                sta SIZEWK,X
+                iny
+                inx
+                cpx #8
+                bne _next1
 
                 ldx OBJNUM              ; get object #
                 lda ObjectType,X        ; and its type
-                asl A                   ; and multiply
-                asl A                   ; by 8 for an
-                asl A                   ; index into
-                sta SHAPIX              ; the shape table
-                lda #8                  ; max 8 lines in
-                sta SHAPCT              ; each object
-_next2          ldx SHAPIX              ; get line#
-                lda OBJDIR,X            ; & its direction
-                tay                     ; a negative #
-                bmi _XIT                ; indicates end
+                asl A                   ; *8 (index into the shape table)
+                asl A
+                asl A
+                sta SHAPIX
 
-                lda PXINC,Y             ; get x increment
-                sta XI                  ; of line,
-                lda PYINC,Y             ; y increment
-                sta YI                  ; of line,
-                lda OBJLEN,X            ; absolute length
-                tay                     ; of line then
-                lda SIZEWK,Y            ; scaled length
+                lda #8                  ; max 8 lines in each object
+                sta SHAPCT
+
+_next2          ldx SHAPIX              ; get line #
+                lda OBJDIR,X            ; and its direction
+                tay
+                bmi _XIT                ; a negative # indicates end
+
+                lda PXINC,Y             ; get x increment of line,
+                sta XI
+                lda PYINC,Y             ; y increment of line,
+                sta YI
+                lda OBJLEN,X            ; absolute length of line
+                tay
+                lda SIZEWK,Y            ; then scaled length
                 sta LENGTH              ; and store!
-_next3          lda PLOTX               ; this section
-                clc                     ; adjusts the
-                adc XI                  ; x and y plot
-                sta PLOTX               ; values...
+
+;   this section adjusts the x and y plot values...
+_next3          lda PLOTX
+                clc
+                adc XI
+                sta PLOTX
+
                 lda PLOTY
                 clc
                 adc YI
                 sta PLOTY
-                lda SHAPIX              ; don't plot
-                beq _noPlot1            ; first line!
+
+                lda SHAPIX              ; don't plot first line!
+                beq _noPlot1
 
                 jsr PlotPoint           ; plot point
 
-_noPlot1        lda PLOTY               ; increment y
-                clc                     ; again to adjust
-                adc YI                  ; for gr. 7+
-                sta PLOTY               ; aspect ratio
-                lda SHAPIX              ; don't plot
-                beq _noPlot2            ; first line
+;   increment y again to adjust for gr. 7+ aspect ratio
+_noPlot1        lda PLOTY
+                clc
+                adc YI
+                sta PLOTY
+
+                lda SHAPIX              ; don't plot first line!
+                beq _noPlot2
 
                 jsr PlotPoint           ; plot point
 
@@ -269,6 +302,7 @@ _noPlot2        dec LENGTH              ; end of line?
                 bpl _next3              ;   nope!
 
                 inc SHAPIX              ; next line
+
                 dec SHAPCT              ; last line?
                 bne _next2              ;   not yet!
 
@@ -286,22 +320,25 @@ _next1          lda SHORTF,X            ; short alive?
 
                 ldy SHORTD,X            ; get short dir.
                 lda SHORTX,X            ; get x pos.
-                clc                     ; and adjust
-                adc AddOrSub2,Y         ; position
+                clc
+                adc AddOrSub2,Y         ; and adjust position
                 cmp #240                ; on grid?
                 bcs _resetShort         ;   no! don't move
 
-                sta SHORTX,X            ; ok, save pos.
+                sta SHORTX,X            ;   ok, save pos.
+
                 dec SHORTT,X            ; direction change?
                 bpl _nextShort          ;   no!
 
-_resetShort     .randomByte             ; get a random
-                and #$3F                ; direction time
-                sta SHORTT,X            ; 0-63 & save
-                and #1                  ; random direction
-                sta SHORTD,X            ; 0-1 & save
+_resetShort     .randomByte             ; get a random direction time
+                and #$3F                ; clamp to [0-63]
+                sta SHORTT,X            ; and save
+
+                and #1                  ; clamp to [0-1]
+                sta SHORTD,X            ; and save
+
 _nextShort      dex                     ; more shorts?
-                bpl _next1              ; yup!
+                bpl _next1              ;   yup!
 
                 rts
                 .endproc
