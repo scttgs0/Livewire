@@ -33,8 +33,8 @@ OBCNT4          .byte 0,0,4,8,10,12,14,16           ; transient
 ; STICK ADD VALUES
 ; ----------------
 
-STKADD          .byte 0,0,0,0,0,1,1,1
-                .byte 0,$FF,$FF,$FF,0,0,0,0
+DeflectionValue .byte $00,$00,$00,$00,$00,$01,$01,$01   ; right =  1
+                .byte $00,$FF,$FF,$FF,$00,$00,$00,$00   ; left  = -1
 
 ; ---------------
 ; PROJECTILE DATA

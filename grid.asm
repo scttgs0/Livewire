@@ -211,10 +211,11 @@ _nogrid3        dec GRDWK2              ; more lines?
 GenCoordTbl     .proc
                 lda #0
                 sta GRIDNO
+
 _next1          tax
                 lda SEGX,X              ; set up segwk
-                sta SEGWK               ; with end
-                lda SEGX+15,X           ; coordinates
+                sta SEGWK               ; with end coordinates
+                lda SEGX+15,X
                 sta SEGWK+16
                 jsr DivideSEGWK         ; divide segwk
 

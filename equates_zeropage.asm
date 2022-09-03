@@ -27,8 +27,8 @@ XWORK               .byte ?
 YWORK               .byte ?
 GRID                .byte ?             ; grid # work
 OFFSET              .byte ?             ; grid offset
-PMTIME              .byte ?             ; player move timer
-PLRGRD              .byte ?             ; player grid#
+PlyrMoveTmr         .byte ?             ; player move timer
+PlyrGridPos         .byte ?             ; player grid #
 PLRY                .byte ?             ; player y pos.
 GRIDNO              .byte ?             ; grid #
 LAST                .byte ?             ; grid...
@@ -85,7 +85,7 @@ GRDWK               .byte ?             ; draw...
 GRDWK2              .byte ?             ; work...
 GRDNUM              .byte ?             ; areas
 ObjectSpeed         .byte ?             ; obj. speed
-JOYPAD              .byte ?             ; stick/paddle
+JOYPAD              .byte ?             ; 0=stick; 1=paddle
 CPYCNT              .byte ?             ; short copy cnt.
 BONUS               .byte ?             ; bonus value
 FIRSOU              .byte ?             ; fire sound count

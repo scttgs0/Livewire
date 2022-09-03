@@ -122,11 +122,11 @@ _killObj        lda #0                  ; object is no
                 lda OBJSEG,X            ; check
                 bpl _doitagain          ; for a
 
-                lda OBJGRD,X            ; collision
-                cmp PLRGRD              ; with player
-                bne _chkShort           ; no hit
+                lda OBJGRD,X            ; collision with player?
+                cmp PlyrGridPos
+                bne _chkShort           ;   no hit
 
-                lda #TRUE               ; hit, kill player!
+                lda #TRUE               ;   hit, kill player!
                 sta isPlayerDead
                 bra _doitagain          ; next object
 

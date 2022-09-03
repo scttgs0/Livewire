@@ -495,10 +495,10 @@ _2              ;lda #<Interrupt_DLI1   ; point to
 
 ;                 dec FlashTimer
 
-; _5              lda isPlayerDead        ; player dead?
-;                 beq _6                  ;   no, continue!
+_5              lda isPlayerDead        ; player dead?
+                beq _6                  ;   no, continue!
 
-;                 jmp VBCONT              ; skip player stuff
+                jmp VBCONT              ; skip player stuff
 
 _6              lda isIntro             ; in intro?
                 beq _7                  ;   no, continue!
@@ -545,17 +545,18 @@ _8              cmp #$39                ; space bar?
 _endKeys        lda #0                  ; clear keypress
                 sta KEYCHAR
 
-;                 lda isPaused            ; paused?
-;                 beq _notPaused          ;   no, continue
+                lda isPaused            ; paused?
+                beq _notPaused          ;   no, continue
 
 ;                 lda #0                  ; turn off
 ;                 sta SID_CTRL1           ; all sounds
 ;                 sta SID_CTRL2           ; during
 ;                 sta SID_CTRL3           ; the
 ;                 ;sta AUDC4              ; pause
-;                 jmp VBEND               ; then exit
 
-; _notPaused      lda FIRSOU              ; fire sound on?
+                jmp VBEND               ; then exit
+
+_notPaused ;      lda FIRSOU              ; fire sound on?
 ;                 beq _10                 ;   no!
 
 ;                 dec FIRSOU              ; dec counter
@@ -626,7 +627,7 @@ _16  ;           lda PlyrShootTmr        ; see if we're
 ;                 beq _17                 ; ready to check
 
 ;                 dec PlyrShootTmr        ; if player is
-;                 jmp CHKPMV              ; shooting
+;                 jmp _chkPlyrMove        ; shooting
 
 ; _17             lda #4                  ; reset fire timer
 ;                 sta PlyrShootTmr
@@ -639,10 +640,10 @@ _16  ;           lda PlyrShootTmr        ; see if we're
 
 ; RDSTRG          lda InputFlags          ; get stick trigger
 ;                 and #$10
-; CMPTRG          bne CHKPMV              ; not firing!
+; CMPTRG          bne _chkPlyrMove        ; not firing!
 
 ;                 lda ProjAvail           ; any proj avail?
-;                 beq CHKPMV              ;   no!
+;                 beq _chkPlyrMove        ;   no!
 
 ;                 ldx #7                  ; find an
 ; PRSCAN          lda PROJAC,X            ; available
@@ -658,7 +659,7 @@ _16  ;           lda PlyrShootTmr        ; see if we're
 ;                 sta FIRSOU              ; fire sound
 ;                 lda #0                  ; initialize
 ;                 sta PROJSG,X            ; segment # to 0
-;                 lda PLRGRD              ; set up
+;                 lda PlyrGridPos         ; set up
 ;                 sta PROGRD,X            ; proj grid#
 ;                 asl A                   ; and
 ;                 asl A                   ; multiply
@@ -667,8 +668,9 @@ _16  ;           lda PlyrShootTmr        ; see if we're
 ;                 sta PROJGN,X            ; for index
 ;                 lda #1                  ; initialize
 ;                 sta PROINC,X            ; proj increment
-; CHKPMV          lda JOYPAD              ; using stick?
-;                 beq GOSTIK              ;   yes!
+
+_chkPlyrMove    lda JOYPAD              ; using stick?
+                beq GOSTIK              ;   yes!
 
                 ;lda POT0               ; get paddle
                 ;lsr A                  ; divide by
@@ -676,58 +678,67 @@ _16  ;           lda PlyrShootTmr        ; see if we're
                 ;lsr A                  ; usable value
                 ;lsr A
                 ;cmp #15                ; > 14?
-                ;bmi STOPOS             ;   no, go store
-;                 bra STOPOS  ; HACK:
+                ;bmi _storePos          ;   no, go store
+;                 bra _storePos  ; HACK:
 
 ;                 lda #14                 ; max. is 14
-;                 bne STOPOS              ; and go store
+;                 bne _storePos              ; and go store
 
-; GOSTIK          lda PMTIME              ; ready for stick?
-;                 beq RDSTIK              ;   yes!
+GOSTIK          lda PlyrMoveTmr         ; ready for stick?
+                beq _readStick          ;   yes!
 
-;                 dec PMTIME              ; dec timer
-; JVBC            jmp VBCONT              ; jmp to continue
+                dec PlyrMoveTmr         ; dec timer
+                jmp VBCONT              ; jmp to continue
 
-; RDSTIK          lda #2                  ; reset stick timer
-;                 sta PMTIME              ; to 2 jiffies
+_readStick      lda #3                  ; reset stick timer
+                sta PlyrMoveTmr         ; to 3 jiffies
 
-;                 ldx InputFlags          ; get stick
-;                 lda PLRGRD              ; get plyr grid #
-;                 clc                     ; add the
-;                 adc STKADD,X            ; direction inc
-;                 bmi SAMPOS              ; if <0 reject
+                lda InputFlags          ; get stick
+                and #$0F
+                tax
 
-;                 cmp #15                 ; if <15...
-;                 bne STOPOS              ; use it!
+                lda PlyrGridPos         ; get plyr grid #
+                clc                     ; add the
+                adc DeflectionValue,X   ; direction inc
+                bmi _samePos            ; if <0.. reject
 
-; SAMPOS          lda PLRGRD              ; get grid#
-; STOPOS          cmp PLRGRD              ; same as last?
-;                 beq NOPSTO              ;   yes, don't store
+                cmp #15                 ; if <15.. use it!
+                bne _storePos
 
-;                 ldx #9                  ; start up
-;                 stx MOVSOU              ; move sound
-;                 sta PLRGRD              ; save grid#
-; NOPSTO          asl A                   ; multiply
-;                 asl A                   ; by 16 for
-;                 asl A                   ; position
-;                 asl A                   ; index
-;                 tax
+_samePos        lda PlyrGridPos         ; get grid #
+_storePos       cmp PlyrGridPos         ; same as last?
+                beq _noStore            ;   yes, don't store
+
+                ; ldx #9                  ; start up
+                ; stx MOVSOU              ; move sound
+                sta PlyrGridPos         ; save grid #
+
+_noStore        asl A                   ; *16 (position index)
+                asl A
+                asl A
+                asl A
+                tax
 
                 ;lda P0PL
                 ;and #$0C               ; hit p2/p3?
-                ;beq NOHSHO             ;   no!
-                ; bra NOHSHO  ; HACK:
+                ;beq _noHitShort        ;   no!
+                ; bra _noHitShort  ; HACK:
 
                 ; lda #TRUE               ; oops! hit short!
                 ; sta isPlayerDead        ; kill player
                 ; jmp VBEND               ; and exit vblank
 
-NOHSHO          lda SEGX,X              ; get player's
+_noHitShort     lda SEGX,X              ; get player's
+                .m16
+                and #$FF
+                asl A                   ; *2
                 clc                     ; x position and
-                adc #75                 ; adjust for p/m
+                adc #61                 ; adjust for p/m
                 sta SP00_X_POS          ; and save
+                .m8
 
                 ldy PLRY                ; hold old y pos
+
                 lda SEGY,X              ; get new y pos
                 clc                     ; adjust for p/m
                 adc #32                 ; by adding 32
@@ -810,7 +821,7 @@ _skipSP3        lda PLRY
                 lda #TRUE
                 sta isDirtyPlayer
 
-; VBCONT          lda PRADV1              ; advance proj?
+VBCONT  ;        lda PRADV1              ; advance proj?
 ;                 beq SETPRA              ;   yes!
 
 ;                 dec PRADV1              ;   no, dec timer
@@ -954,8 +965,8 @@ _skipSP3        lda PLRY
 ;                 lda PROINC,X            ; toward rim?
 ;                 bpl NOKILP              ;   no!
 
-;                 lda PROGRD,X            ; same grid...
-;                 cmp PLRGRD              ; as player?
+;                 lda PROGRD,X            ; same grid as player?
+;                 cmp PlyrGridPos
 ;                 bne NOKILP              ;   no!
 
 ;                 lda #TRUE               ; the player is dead!
