@@ -5,8 +5,25 @@ ClearSprites    .proc
                 .m16
 
                 lda #0
-                sta SP00_X_POS
+                sta SP00_X_POS          ; player
                 sta SP00_Y_POS
+
+                sta SP12_X_POS          ; projectiles
+                sta SP12_Y_POS
+                sta SP13_X_POS
+                sta SP13_Y_POS
+                sta SP14_X_POS
+                sta SP14_Y_POS
+                sta SP15_X_POS
+                sta SP15_Y_POS
+                sta SP16_X_POS
+                sta SP16_Y_POS
+                sta SP17_X_POS
+                sta SP17_Y_POS
+                sta SP18_X_POS
+                sta SP18_Y_POS
+                sta SP19_X_POS
+                sta SP19_Y_POS
 
                 .m8
                 rts
