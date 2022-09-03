@@ -25,13 +25,13 @@ _storeNum       sta OBJNUM              ; save obj #
                 and #$0F                ; of shooting
                 bne _noObjFI            ; don't shoot
 
-                lda PROJAC              ; proj. 0 active?
+                lda isProjActive        ; proj. 0 active?
                 bne _tryProj1           ;   yes, ignore!
 
                 ldy #0                  ; force branch
                 beq _storeObjFI         ; to store it
 
-_tryProj1       lda PROJAC+1            ; proj. 1 active?
+_tryProj1       lda isProjActive+1      ; proj. 1 active?
                 bne _noObjFI            ;    yes, no fire
 
                 ldy #1                  ; set index
@@ -39,18 +39,18 @@ _storeObjFI     lda OBJSEG,X            ; initialize
                 lsr A                   ; projectile
                 sta PROJSG,Y            ; segment #
                 lda OBJGRD,X            ; and
-                sta PROGRD,Y            ; sub-grid #
+                sta ProjGridPos,Y       ; sub-grid #
                 asl A                   ; multiply
                 asl A                   ; by
                 asl A                   ; 16
                 asl A                   ; and
-                sta PROJGN,Y            ; save index!
+                sta ProjGridIndex,Y     ; save index!
                 lda #$FF                ; set increment
-                sta PROINC,Y            ; (toward rim)
+                sta ProjIncrement,Y     ; (toward rim)
                 lda #21                 ; start the
                 sta FIRSOU              ; fire sound
                 lda #1                  ; and
-                sta PROJAC,Y            ; projectile
+                sta isProjActive,Y      ; projectile
 _noObjFI        lda #0                  ; set color 0
                 sta COLOR               ; to erase object
                 jsr DrawObject          ; and erase it
@@ -62,7 +62,7 @@ _noObjFI        lda #0                  ; set color 0
                 jsr Flash               ; death flash
 
                 ldx OBJNUM
-                ldy OBJTYP,X            ; get object type
+                ldy ObjectType,X        ; get object type
                 lda POINT1,Y            ; get points
                 sta SCOADD+1            ; and ready
                 lda POINT2,Y            ; the score
@@ -87,13 +87,13 @@ _noObjKill      lda OBJSEG,X            ; increment
 _notType3       cmp #10                 ; at type 3 turn?
                 bne _1                  ;   no!
 
-                lda OBJTYP,X            ; is it type 3?
+                lda ObjectType,X        ; is object type 3 (surge)?
                 cmp #3
                 bne _1                  ;   no!
 
                 lda #$FF                ; reverse object
                 sta OBJINC,X            ; increment
-_1              lda OBJTYP,X            ; is object type 2?
+_1              lda ObjectType,X        ; is object type 2 (arc)?
                 cmp #2
                 bne _setHue             ;   no, set color
 
@@ -107,7 +107,7 @@ _1              lda OBJTYP,X            ; is object type 2?
                 bcs _setHue             ;   yes!
 
                 sta OBJGRD,X            ; save new pos.
-_setHue         lda OBJTYP,X            ; get obj. type
+_setHue         lda ObjectType,X        ; get obj. type
                 tax                     ; and get
                 lda OBJHUE,X            ; color #
                 sta COLOR               ; save it
@@ -130,8 +130,8 @@ _killObj        lda #0                  ; object is no
                 sta isPlayerDead
                 bra _doitagain          ; next object
 
-_chkShort       lda OBJTYP,X            ; object
-                cmp #1                  ; type 1?
+_chkShort       lda ObjectType,X        ; is object type 1 (voltage spike)?
+                cmp #1
                 bne _doitagain          ;   nope!
 
                 ldy #3                  ; try short:
@@ -223,7 +223,7 @@ _next1          lda SIZTBL,Y            ; of the size
                 bne _next1              ; based on dist.
 
                 ldx OBJNUM              ; get object #
-                lda OBJTYP,X            ; and its type
+                lda ObjectType,X        ; and its type
                 asl A                   ; and multiply
                 asl A                   ; by 8 for an
                 asl A                   ; index into

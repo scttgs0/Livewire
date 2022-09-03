@@ -196,9 +196,18 @@ InitSprites     .proc
                 lda #<>(SPRITES-VRAM)   ; Set the destination address
                 sta zpDest
                 sta SP00_ADDR           ; And set the Vicky register
-                ;clc
-                ;adc #$400               ; 1024
-                ;sta SP01_ADDR
+
+                clc
+                adc #$400               ; 1024
+                sta SP12_ADDR           ; projectiles
+                sta SP13_ADDR
+                sta SP14_ADDR
+                sta SP15_ADDR
+                sta SP16_ADDR
+                sta SP17_ADDR
+                sta SP18_ADDR
+                sta SP19_ADDR
+
                 ;clc
                 ;adc #$1000              ; 1024*4
                 ;sta SP02_ADDR
@@ -207,26 +216,64 @@ InitSprites     .proc
                 sta zpDest+2
 
                 .m8
-                sta SP00_ADDR+2
+                sta SP00_ADDR+2         ; player
+
                 ;sta SP01_ADDR+2
                 ;sta SP02_ADDR+2
+
+                sta SP12_ADDR+2         ; projectiles
+                sta SP13_ADDR+2
+                sta SP14_ADDR+2
+                sta SP15_ADDR+2
+                sta SP16_ADDR+2
+                sta SP17_ADDR+2
+                sta SP18_ADDR+2
+                sta SP19_ADDR+2
 
                 jsr Copy2VRAM
 
                 .m16
                 lda #0
-                sta SP00_X_POS
+                sta SP00_X_POS          ; player
                 sta SP00_Y_POS
+
                 ;sta SP01_X_POS
                 ;sta SP01_Y_POS
                 ;sta SP02_X_POS
                 ;sta SP02_Y_POS
 
+                sta SP12_X_POS          ; projectiles
+                sta SP12_Y_POS
+                sta SP13_X_POS
+                sta SP13_Y_POS
+                sta SP14_X_POS
+                sta SP14_Y_POS
+                sta SP15_X_POS
+                sta SP15_Y_POS
+                sta SP16_X_POS
+                sta SP16_Y_POS
+                sta SP17_X_POS
+                sta SP17_Y_POS
+                sta SP18_X_POS
+                sta SP18_Y_POS
+                sta SP19_X_POS
+                sta SP19_Y_POS
+
                 .m8
                 lda #scEnable
-                sta SP00_CTRL
+                sta SP00_CTRL           ; player
+
                 ;sta SP01_CTRL
                 ;sta SP02_CTRL
+
+                sta SP12_CTRL           ; projectiles
+                sta SP13_CTRL
+                sta SP14_CTRL
+                sta SP15_CTRL
+                sta SP16_CTRL
+                sta SP17_CTRL
+                sta SP18_CTRL
+                sta SP19_CTRL
 
                 pla
                 plp

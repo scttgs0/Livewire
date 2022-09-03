@@ -25,7 +25,7 @@ _setFlash       lda FLBYTE,X            ; get image
                 ;sta PL1,Y               ; put in player 1
                 iny                     ; next p/m byte
                 dex                     ; next image byte
-                bpl _setFlash           ; loop.
+                bpl _setFlash
 
                 lda #1                  ; set flash
                 sta FlashTimer          ; duration

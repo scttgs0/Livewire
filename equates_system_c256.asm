@@ -168,6 +168,86 @@ SP03_ADDR               = $AF_0C19
 SP03_X_POS              = $AF_0C1C
 SP03_Y_POS              = $AF_0C1E
 
+SP04_CTRL               = $AF_0C20
+SP04_ADDR               = $AF_0C21
+SP04_X_POS              = $AF_0C24
+SP04_Y_POS              = $AF_0C26
+
+SP05_CTRL               = $AF_0C28
+SP05_ADDR               = $AF_0C29
+SP05_X_POS              = $AF_0C2C
+SP05_Y_POS              = $AF_0C2E
+
+SP06_CTRL               = $AF_0C30
+SP06_ADDR               = $AF_0C31
+SP06_X_POS              = $AF_0C34
+SP06_Y_POS              = $AF_0C36
+
+SP07_CTRL               = $AF_0C38
+SP07_ADDR               = $AF_0C39
+SP07_X_POS              = $AF_0C3C
+SP07_Y_POS              = $AF_0C3E
+
+SP08_CTRL               = $AF_0C40
+SP08_ADDR               = $AF_0C41
+SP08_X_POS              = $AF_0C44
+SP08_Y_POS              = $AF_0C46
+
+SP09_CTRL               = $AF_0C48
+SP09_ADDR               = $AF_0C49
+SP09_X_POS              = $AF_0C4C
+SP09_Y_POS              = $AF_0C4E
+
+SP10_CTRL               = $AF_0C50
+SP10_ADDR               = $AF_0C51
+SP10_X_POS              = $AF_0C54
+SP10_Y_POS              = $AF_0C56
+
+SP11_CTRL               = $AF_0C58
+SP11_ADDR               = $AF_0C59
+SP11_X_POS              = $AF_0C5C
+SP11_Y_POS              = $AF_0C5E
+
+SP12_CTRL               = $AF_0C60
+SP12_ADDR               = $AF_0C61
+SP12_X_POS              = $AF_0C64
+SP12_Y_POS              = $AF_0C66
+
+SP13_CTRL               = $AF_0C68
+SP13_ADDR               = $AF_0C69
+SP13_X_POS              = $AF_0C6C
+SP13_Y_POS              = $AF_0C6E
+
+SP14_CTRL               = $AF_0C70
+SP14_ADDR               = $AF_0C71
+SP14_X_POS              = $AF_0C74
+SP14_Y_POS              = $AF_0C76
+
+SP15_CTRL               = $AF_0C78
+SP15_ADDR               = $AF_0C79
+SP15_X_POS              = $AF_0C7C
+SP15_Y_POS              = $AF_0C7E
+
+SP16_CTRL               = $AF_0C80
+SP16_ADDR               = $AF_0C81
+SP16_X_POS              = $AF_0C84
+SP16_Y_POS              = $AF_0C86
+
+SP17_CTRL               = $AF_0C88
+SP17_ADDR               = $AF_0C89
+SP17_X_POS              = $AF_0C8C
+SP17_Y_POS              = $AF_0C8E
+
+SP18_CTRL               = $AF_0C90
+SP18_ADDR               = $AF_0C91
+SP18_X_POS              = $AF_0C94
+SP18_Y_POS              = $AF_0C96
+
+SP19_CTRL               = $AF_0C98
+SP19_ADDR               = $AF_0C99
+SP19_X_POS              = $AF_0C9C
+SP19_Y_POS              = $AF_0C9E
+
 ;---------------------------------------
 
 KEYBOARD_SCAN_CODE      = $AF_115F

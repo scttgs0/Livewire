@@ -7,6 +7,10 @@
 ; ===========================
 
 ;   SP00        player
+;   SP01        flash (object death)
+;   SP02-05     short
+;   SP06-11     object
+;   SP12-19     projectile
 
 ;   Graphics    160x234                 ; 160 graphic; 26 blanks; 48 text
 ;       ours    320x240                 ; 76,800 bytes [$12C00 = 300 pages]

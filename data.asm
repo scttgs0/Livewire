@@ -40,10 +40,10 @@ DeflectionValue .byte $00,$00,$00,$00,$00,$01,$01,$01   ; right =  1
 ; PROJECTILE DATA
 ; ---------------
 
-PROJAC          .byte 0,0,0,0,0,0,0,0
-PROINC          .fill 8,$00
-PROGRD          .fill 8,$00
-PROJGN          .fill 8,$00
+isProjActive    .byte 0,0,0,0,0,0,0,0
+ProjIncrement   .fill 8,$00
+ProjGridPos     .fill 8,$00
+ProjGridIndex   .fill 8,$00
 PROJSG          .fill 8,$00
 PRSTRT          .byte 3,7
 PREND           .byte $FF,3
@@ -77,9 +77,9 @@ SHORTT          .fill 4,$00
 ; OBJECT DATA
 ; -----------
 
-OBDEAD          .fill 6,$00
+isObjDead       .fill 6,$00
 OBDED2          .fill 6,$00
-OBJTYP          .fill 6,$00
+ObjectType      .fill 6,$00                     ; 0=resistance, 1=spike, 2=arc, 3=surge, 4=transient
 OBJINC          .fill 6,$00
 OBJGRD          .fill 6,$00
 OBJSEG          .fill 6,$00
@@ -156,9 +156,7 @@ SIZTBL          .byte 0,0,0,0,0,1,1,1
 PlyrAnimFrame   .byte $00,$00,$00,$00,$00,$00,$00,$00
                 .byte $00,$00,$00,$00,$00,$00,$00,$00
 
-PN1             ;.byte $10,$10,$10,$10,$10,$10,$10,$10
-                ;.byte $08,$08,$08,$08,$08,$08,$08,$08
-                .byte %00010000         ; ...#....
+PN1             .byte %00010000         ; ...#....
                 .byte %00010000         ; ...#....
                 .byte %00010000         ; ...#....
                 .byte %00010000         ; ...#....
@@ -175,9 +173,7 @@ PN1             ;.byte $10,$10,$10,$10,$10,$10,$10,$10
                 .byte %00001000         ; ....#...
                 .byte %00001000         ; ....#...
 
-PN2             ;.byte $00,$00,$00,$00,$80,$40,$20,$10
-                ;.byte $08,$04,$02,$01,$00,$00,$00,$00
-                .byte %00000000         ; ........
+PN2             .byte %00000000         ; ........
                 .byte %00000000         ; ........
                 .byte %00000000         ; ........
                 .byte %00000000         ; ........
@@ -194,9 +190,7 @@ PN2             ;.byte $00,$00,$00,$00,$80,$40,$20,$10
                 .byte %00000000         ; ........
                 .byte %00000000         ; ........
 
-PN3             ;.byte $00,$00,$01,$01,$02,$02,$04,$08
-                ;.byte $10,$20,$40,$40,$80,$80,$00,$00
-                .byte %00000000         ; ........
+PN3             .byte %00000000         ; ........
                 .byte %00000000         ; ........
                 .byte %00000001         ; .......#
                 .byte %00000001         ; .......#

@@ -485,20 +485,20 @@ _2              ;lda #<Interrupt_DLI1   ; point to
 
 ;                 dec ObjectMoveTmr
 
-; _3              lda DelayTimer
-;                 beq _4
+_3              lda DelayTimer
+                beq _4
 
-;                 dec DelayTimer
+                dec DelayTimer
 
-; _4              lda FlashTimer
-;                 beq _5
+_4              lda FlashTimer
+                beq _5
 
-;                 dec FlashTimer
+                dec FlashTimer
 
 _5              lda isPlayerDead        ; player dead?
                 beq _6                  ;   no, continue!
 
-                jmp VBCONT              ; skip player stuff
+                jmp _VBCONT             ; skip player stuff
 
 _6              lda isIntro             ; in intro?
                 beq _7                  ;   no, continue!
@@ -523,7 +523,7 @@ _8              cmp #$39                ; space bar?
 ;                 dec ZAP                 ; zap now used
 ;                 ldx #5                  ; time to kill
 ;                 lda #1                  ; all objects
-; _next1          sta OBDEAD,X
+; _next1          sta isObjDead,X
 ;                 dex
 ;                 bpl _next1
 
@@ -623,54 +623,58 @@ _15             inc PlyrShapeCnt        ; inc plyr timer
                 inc SPoint2_Index
                 inc SPoint3_Index
 
-_16  ;           lda PlyrShootTmr        ; see if we're
-;                 beq _17                 ; ready to check
+_16             lda PlyrShootTmr        ; check if player is shooting
+                beq _17
 
-;                 dec PlyrShootTmr        ; if player is
-;                 jmp _chkPlyrMove        ; shooting
+                dec PlyrShootTmr
+                bra _chkPlyrMove
 
-; _17             lda #4                  ; reset fire timer
-;                 sta PlyrShootTmr
+_17             lda #4                  ; reset fire timer
+                sta PlyrShootTmr
 
-                ; lda JOYPAD              ; using stick?
-                ; beq RDSTRG              ;   yes!
+                lda JOYPAD              ; using stick?
+                beq _readTrigger        ;   yes!
 
                 ;lda PTRIG0             ; get padl trigger
-                ;jmp CMPTRG             ; check it
+                ;jmp _cmpTrigger        ; check it
 
-; RDSTRG          lda InputFlags          ; get stick trigger
-;                 and #$10
-; CMPTRG          bne _chkPlyrMove        ; not firing!
+_readTrigger    lda InputFlags          ; get stick trigger
+                and #$10
+_cmpTrigger     bne _chkPlyrMove        ; not firing!
 
-;                 lda ProjAvail           ; any proj avail?
-;                 beq _chkPlyrMove        ;   no!
+                lda ProjAvail           ; any proj avail?
+                beq _chkPlyrMove        ;   no!
 
-;                 ldx #7                  ; find an
-; PRSCAN          lda PROJAC,X            ; available
-;                 beq GOTPRN              ; projectile
+                ldx #7                  ; find an available projectile
+_projScan       lda isProjActive,X
+                beq _gotProj
 
-;                 dex
-;                 bne PRSCAN
+                dex
+                bne _projScan
 
-; GOTPRN          dec ProjAvail           ; 1 less available
-;                 lda #1                  ; it's now
-;                 sta PROJAC,X            ; active
-;                 lda #21                 ; start up
-;                 sta FIRSOU              ; fire sound
-;                 lda #0                  ; initialize
-;                 sta PROJSG,X            ; segment # to 0
-;                 lda PlyrGridPos         ; set up
-;                 sta PROGRD,X            ; proj grid#
-;                 asl A                   ; and
-;                 asl A                   ; multiply
-;                 asl A                   ; by 16
-;                 asl A
-;                 sta PROJGN,X            ; for index
-;                 lda #1                  ; initialize
-;                 sta PROINC,X            ; proj increment
+_gotProj        dec ProjAvail           ; 1 less available
+                lda #TRUE               ; it's now active
+                sta isProjActive,X
+
+                ; lda #21                 ; start up
+                ; sta FIRSOU              ; fire sound
+
+                lda #0                  ; initialize segment # to 0
+                sta PROJSG,X
+
+                lda PlyrGridPos         ; set up proj grid #
+                sta ProjGridPos,X
+                asl A                   ; *16
+                asl A
+                asl A
+                asl A
+                sta ProjGridIndex,X     ; for index
+
+                lda #1                  ; initialize proj increment
+                sta ProjIncrement,X
 
 _chkPlyrMove    lda JOYPAD              ; using stick?
-                beq GOSTIK              ;   yes!
+                beq _goStick              ;   yes!
 
                 ;lda POT0               ; get paddle
                 ;lsr A                  ; divide by
@@ -679,16 +683,16 @@ _chkPlyrMove    lda JOYPAD              ; using stick?
                 ;lsr A
                 ;cmp #15                ; > 14?
                 ;bmi _storePos          ;   no, go store
-;                 bra _storePos  ; HACK:
+                ;bra _storePos  ; HACK:
 
-;                 lda #14                 ; max. is 14
-;                 bne _storePos              ; and go store
+                ;lda #14                 ; max. is 14
+                ;bne _storePos           ; and go store
 
-GOSTIK          lda PlyrMoveTmr         ; ready for stick?
+_goStick        lda PlyrMoveTmr         ; ready for stick?
                 beq _readStick          ;   yes!
 
                 dec PlyrMoveTmr         ; dec timer
-                jmp VBCONT              ; jmp to continue
+                jmp _VBCONT             ; jmp to continue
 
 _readStick      lda #3                  ; reset stick timer
                 sta PlyrMoveTmr         ; to 3 jiffies
@@ -821,157 +825,174 @@ _skipSP3        lda PLRY
                 lda #TRUE
                 sta isDirtyPlayer
 
-VBCONT  ;        lda PRADV1              ; advance proj?
-;                 beq SETPRA              ;   yes!
+_VBCONT         lda ProjAdvToggle       ; advance proj?
+                beq _setProjAdv         ;   yes!
 
-;                 dec PRADV1              ;   no, dec timer
-;                 jmp FLIPIT              ; go flip display
+                dec ProjAdvToggle       ;   no, dec timer
+                bra FLIPIT              ; go flip display
 
-; SETPRA          inc PRADVT
-;                 lda #1                  ; set advance
-;                 sta PRADV1              ; timer
+_setProjAdv     inc ProjAdvTimer
+
+                lda #1                  ; set advance timer
+                sta ProjAdvToggle
 
 ; ------------------------------
-; THIS SECTION FLIP-FLOPS THE 4
-; MISSILES IN ORDER TO ALLOW THE
-; DISPLAY OF 8 PROJECTILES.  AS
-; A RESULT, SOME FLICKER CAN BE
-; OBSERVED.
+; This section flip-flops the 4
+; missiles in order to allow the
+; display of 8 projectiles.  As
+; a result, some flicker can be
+; observed.
 ; ------------------------------
 
-; FLIPIT          inc PRFLIP              ; inc flip index
-;                 lda PRFLIP              ; get index
-;                 and #1                  ; make 0/1
-;                 tay                     ; save in y
-;                 lda PREND,Y             ; get # of last
-;                 sta ENDVAL              ; projectile
-;                 ldx PRSTRT,Y            ; get # of first
-;                 stx VBXHLD              ; projectile
-;                 lda #3                  ; start w/missile
-;                 sta MISNUM              ; number 3
-; PROJLP          lda PROJAC,X            ; is proj. active?
-;                 bne GOTPRJ              ; you bet.
+FLIPIT          inc PRFLIP              ; inc flip index
+                lda PRFLIP              ; get index
+                and #1                  ; make 0/1
+                tay                     ; save in y
+                lda PREND,Y             ; get # of last
+                sta ENDVAL              ; projectile
+                ldx PRSTRT,Y            ; get # of first
+                stx VBXHLD              ; projectile
 
-;                 jmp CKPEND              ; try another
+                lda #3                  ; start w/missile #3
+                sta MISNUM
+_projLoop       lda isProjActive,X      ; is proj. active?
+                bne _gotActProj         ;     you bet
 
-; GOTPRJ          ldx MISNUM              ; get missile #
-;                 ldy PRYHLD,X            ; get last position
-                ;lda MISSLS-1,Y          ; erase old
-                ;and MISLOF,X            ; projectile
-                ;sta MISSLS-1,Y          ; image
-                ;lda MISSLS,Y
-                ;and MISLOF,X
-                ;sta MISSLS,Y
-                ;lda MISSLS+1,Y
-                ;and MISLOF,X
-                ;sta MISSLS+1,Y
-;                 ldx VBXHLD
-;                 lda PRADVT              ; ready to
-;                 and #1                  ; advance proj?
-;                 bne NOPADV              ;   not yet
+                jmp _chkProjEnd         ;     try another
 
-;                 lda PROJSG,X            ; get proj seg#
-;                 clc                     ; and
-;                 adc PROINC,X            ; add increment
-;                 sta PROJSG,X            ; then save
-; NOPADV          lda PROINC,X            ; enemy shot?
-;                 bmi NOOHCK              ;   no obj hit check
+_gotActProj     ldx MISNUM              ; get missile #
+                ldy PRYHLD,X            ; get last position
 
-;                 ldy #5
-; OBKILP          lda OBDEAD,Y            ; already dead?
-;                 bne NXTOCK              ;   yes!
+                ldx VBXHLD
+                lda ProjAdvTimer        ; ready to advance proj?
+                and #1
+                bne _noProjAdv          ;   not yet
 
-;                 lda OBJPRS,Y            ; object there?
-;                 beq NXTOCK              ;   no!
+                lda PROJSG,X            ; get proj seg #
+                clc                     ; and
+                adc ProjIncrement,X     ; add increment
+                sta PROJSG,X            ; then save
 
-;                 lda OBJTYP,Y            ; transient?
-;                 cmp #4
-;                 bne NOTRNC              ;   no!
+_noProjAdv      lda ProjIncrement,X     ; enemy shot?
+                bmi _noObjHitChk        ;   no obj hit check
 
-;                 lda OBJHUE+4            ; invisible?
-;                 beq NXTOCK              ;   yes!
+                ldy #5
+_objKillLoop    lda isObjDead,Y         ; already dead?
+                bne _nextObjChk         ;   yes!
 
-; NOTRNC          lda OBJGRD,Y            ; same grid #
-;                 cmp PROGRD,X            ; as proj?
-;                 bne NXTOCK              ;   no!
+                lda OBJPRS,Y            ; object there?
+                beq _nextObjChk         ;   no!
 
-;                 lda OBJSEG,Y            ; same seg #
-;                 lsr A
-;                 sec
-;                 sbc PROJSG,X            ; as proj?
-;                 beq HITOBJ
+                lda ObjectType,Y        ; is object type 4 (transient)?
+                cmp #4
+                bne _NOTRNC             ;   no!
 
-;                 cmp #254
-;                 bcc NXTOCK              ;   no!
+                lda OBJHUE+4            ; invisible?
+                beq _nextObjChk         ;   yes!
 
-; HITOBJ          lda OBJTYP,Y            ; resistor?
-;                 beq CGPRDR              ;   yes!
+_NOTRNC         lda OBJGRD,Y            ; same grid # as proj?
+                cmp ProjGridPos,X
+                bne _nextObjChk         ;   no!
 
-;                 lda #1                  ; kill object
-;                 sta OBDEAD,Y
-;                 jmp KILLPR              ; and proj.
+                lda OBJSEG,Y            ; same seg #
+                lsr A
+                sec
+                sbc PROJSG,X            ; as proj?
+                beq _hitObj
 
-; CGPRDR          lda #$FF                ; proj now heading
-;                 sta PROINC,X            ; for player!
-; NXTOCK          dey                     ; next object
-;                 bpl OBKILP              ; more to do!
+                cmp #254
+                bcc _nextObjChk         ;   no!
 
-; NOOHCK          lda PROJSG,X            ; is proj seg# =0?
-;                 beq KILLPR              ;   yes, kill it!
+_hitObj         lda ObjectType,Y        ; is object type 0 (resistor)?
+                beq _cgprdr             ;   yes!
 
-;                 cmp #16                 ; =16?
-;                 beq KILLPR              ;   yes, kill it!
+                lda #TRUE               ; kill object
+                sta isObjDead,Y
+                jmp _killProj           ; and proj.
 
-;                 clc                     ; now add proj
-;                 adc PROJGN,X            ; grid index
-;                 tax                     ; and get
-;                 lda SEGX,X              ; x coord
-;                 ldy SEGY,X              ; and y coord
-;                 clc                     ; add 64 to
-;                 adc #64                 ; x coord for
-;                 ldx MISNUM              ; p/m horiz
-;                 sta SP03_X_POS,X        ; and save
-;                 tya                     ; get y
-;                 clc                     ; add 32 to
-;                 adc #32                 ; y coord for
-;                 tay                     ; p/m vert
-;                 sty PRYHLD,X            ; and save.
-                ;lda MISSLS-1,Y          ; now draw
-                ;ora MISLON,X            ; projectile in
-                ;sta MISSLS-1,Y          ; new position
-                ;lda MISSLS,Y
-                ;ora MISLON,X
-                ;sta MISSLS,Y
-                ;lda MISSLS+1,Y
-                ;ora MISLON,X
-                ;sta MISSLS+1,Y
-; CKPEND          dec MISNUM              ; next missile #
-;                 dec VBXHLD              ; next proj.
-;                 ldx VBXHLD
-;                 cpx ENDVAL              ; done?
-;                 beq SHORTS              ;   yes!
+_cgprdr         lda #$FF                ; proj now heading for player!
+                sta ProjIncrement,X
 
-;                 jmp PROJLP              ; do next proj.
+_nextObjChk     dey                     ; next object
+                bpl _objKillLoop
 
-; KILLPR          lda #0                  ; kill proj.
-;                 sta PROJAC,X
-;                 cpx #2                  ; enemy proj?
-;                 bcc NOAVIN              ;   yes don't inc
+_noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
+                beq _killProj           ;   yes, kill it!
 
-;                 inc ProjAvail           ; another avail
-; NOAVIN          lda PROJSG,X            ; segment 0?
-;                 bne NOKILP              ;   no!
+                cmp #16                 ; =16?
+                beq _killProj           ;   yes, kill it!
 
-;                 lda PROINC,X            ; toward rim?
-;                 bpl NOKILP              ;   no!
+                clc                     ; now add proj grid index
+                adc ProjGridIndex,X
+                tax                     ; and get
+                lda SEGX,X              ; x coord and y coord
+                asl A                   ; *2
+                ldy SEGY,X
+                clc                     ; add 64 to x coord for p/m horiz
+                adc #64
 
-;                 lda PROGRD,X            ; same grid as player?
-;                 cmp PlyrGridPos
-;                 bne NOKILP              ;   no!
+;   now draw projectile in new position
+                pha
+                lda MISNUM
+                asl A                   ; *8
+                asl A
+                asl A
+                tax
+                pla
+                sta SP12_X_POS,X        ; and save
 
-;                 lda #TRUE               ; the player is dead!
-;                 sta isPlayerDead
-; NOKILP          jmp CKPEND              ; next proj.
+                phx
+                ldx MISNUM
+                tya                     ; get y
+                clc                     ; add 32 to y coord for p/m vert
+                adc #56
+                tay
+                sty PRYHLD,X            ; and save.
+                plx
+                sta SP12_Y_POS,X
+
+_chkProjEnd     dec MISNUM              ; next missile #
+                dec VBXHLD              ; next proj.
+                ldx VBXHLD
+                cpx ENDVAL              ; done?
+                beq SHORTS              ;   yes!
+
+                jmp _projLoop           ; do next proj.
+
+_killProj       lda #FALSE              ; kill proj.
+                sta isProjActive,X
+
+                phx
+                txa
+                asl A                   ; *8
+                asl A
+                asl A
+                tax
+                lda #0                  ; hide the sprite
+                sta SP12_X_POS,X
+                sta SP12_Y_POS,X
+                plx
+
+                cpx #2                  ; enemy proj?
+                bcc _noavin             ;   yes, don't inc
+
+                inc ProjAvail           ; another avail
+
+;   determine whether player was hit by projectile
+_noavin         lda PROJSG,X            ; segment 0?
+                bne _nokilp             ;   no!
+
+                lda ProjIncrement,X     ; toward rim?
+                bpl _nokilp             ;   no!
+
+                lda ProjGridPos,X       ; same grid as player?
+                cmp PlyrGridPos
+                bne _nokilp             ;   no!
+
+                lda #TRUE               ; the player is dead!
+                sta isPlayerDead
+
+_nokilp         jmp _chkProjEnd         ; next proj.
 
 
 ; ------------------------------
@@ -981,7 +1002,7 @@ VBCONT  ;        lda PRADV1              ; advance proj?
 ; FLICKER MAY BE OBSERVED.
 ; ------------------------------
 
-; SHORTS          inc SHFLIP              ; toggle flip
+SHORTS  ;         inc SHFLIP              ; toggle flip
 ;                 lda SHFLIP              ; mask flip
 ;                 lsr A                   ; to either
 ;                 and #1                  ; 0 or 1

@@ -58,7 +58,7 @@ _next2          sta SHORTF,X
                 bpl _next2
 
                 ldx #5                  ; zero object...
-_next3          sta OBDEAD,X            ; clr dead table
+_next3          sta isObjDead,X         ; clr dead table
                 dex
                 bpl _next3
 
@@ -69,7 +69,7 @@ _next4          sta SCORE,X
                 bpl _next4
 
                 ldx #7
-_next5          sta PROJAC,X            ; clear proj.
+_next5          sta isProjActive,X      ; clear proj.
                 dex
                 bpl _next5
 
@@ -210,18 +210,17 @@ _nofend         lda ObjectMoveTmr       ; objects moving?
                 lda ObjectSpeed         ; reset move timer
                 sta ObjectMoveTmr
 
-;
+; ----------------------
 ; COPY OBJECT KILL TABLE
-;
+; ----------------------
 
                 ldx #5                  ; this section
-_next1          lda OBDEAD,X            ; copies the
+_next1          lda isObjDead,X         ; copies the
                 sta OBDED2,X            ; object kill
                 lda #0                  ; table which is
-                sta OBDEAD,X            ; set up by the
+                sta isObjDead,X         ; set up by the
                 dex                     ; projectile
                 bpl _next1              ; handler
-
 
                 lda MISCAD              ; misc.score?
                 beq _nomsco             ;   no!
@@ -263,7 +262,7 @@ _next5          .randomByte             ; let's try to
                 sbc #1                  ; of objects
                 sta NUMOBJ,Y            ; waiting.
                 tya                     ; then set
-                sta OBJTYP,X            ; object type.
+                sta ObjectType,X        ; object type
 _next6          .randomByte             ; get a random
                 and #$0F                ; sub-grid
                 cmp #15                 ; number

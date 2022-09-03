@@ -40,8 +40,8 @@ PlyrShootTmr        .byte ?             ; player fire timer
 ENDVAL              .byte ?             ; work area
 MISNUM              .byte ?             ; missile #
 PRFLIP              .byte ?             ; proj. flip flag
-PRADVT              .byte ?             ; proj. move timer
-PRADV1              .byte ?             ; proj. timer
+ProjAdvTimer        .byte ?             ; proj. move timer
+ProjAdvToggle       .byte ?             ; proj. timer (every other frame)
 DelayTimer          .byte ?             ; general timer
 isIntro             .byte ?             ; intro flag
 BCDLVL              .byte ?             ; level #

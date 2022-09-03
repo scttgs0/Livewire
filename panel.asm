@@ -85,9 +85,9 @@ DecrementLives  .proc
 
 _WAITPD         ldx #7                  ; 8 projectiles
                 lda #0                  ; zero tally
-_CKPRLV         ora PROJAC,X            ; check all
-                dex                     ; projectiles
-                bne _CKPRLV             ; for activity
+_CKPRLV         ora isProjActive,X      ; check all projectiles for activity
+                dex
+                bne _CKPRLV
 
                 cmp #0                  ; any active?
                 bne _WAITPD             ;   yes! wait more!

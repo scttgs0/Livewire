@@ -14,7 +14,7 @@ _clrShorts      sta SHORTF,X
                 bpl _clrShorts
 
                 ldx #7                  ; turn off all projectiles
-_clrPrjct       sta PROJAC,X
+_clrPrjct       sta isProjActive,X
                 dex
                 bpl _clrPrjct
 
