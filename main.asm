@@ -39,15 +39,8 @@ _next1          sta $80,X
                 lda #1                  ; init...
                 sta BCDLVL              ; level #
                 sta isIntro             ; set intro flag
-                lda #<JoyMsg            ; default...
-                ;sta CONTRL              ; control...
-                lda #>JoyMsg            ; is...
-                ;sta CONTRL+1            ; stick!
 
-;   turn off display, disable interrupts
                 lda #0                  ; init...
-                ;sta DMACTL             ; DMA
-                ;sta NMIEN              ; interrupts
                 ;sta AUDCTL             ; audio
                 ;sta HITCLR             ; collision
                 ;sta COLBK              ; backgnd color
@@ -107,11 +100,6 @@ _next7          sta OBJSEG,X            ; segment # 29
                 jsr RenderAuthor
                 jsr RenderSelect
 
-                ;ldy #<VBI              ; point to...
-                ;ldx #>VBI              ; vertical...
-                ;lda #7                 ; blank...
-                ;jsr SETVBV             ; interrupt
-
                 jsr InitBitmap
                 jsr InitSprites
                 jsr ClearSprites        ; clear sprites
@@ -127,7 +115,8 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;lda #$16               ; put yellow...
                 ;sta COLPM0             ; in player 0
 
-                ;lda #3          ; DEBUG: [0-7] to display specific grid
+;   DEBUG: [0-7] to display specific grid
+                ;lda #3
                 ;sta GridIndex
 
                 bra IntroScreen
@@ -174,7 +163,6 @@ _checkSELECT    lda CONSOL              ; select key...
 DigIn           .proc
                 jsr ClearScreen
                 jsr RenderGamePanel
-                ;jsr BlitPlayfield
 
                 lda #FALSE              ; no longer in intro
                 sta isIntro
@@ -204,6 +192,7 @@ _plive          lda FlashTimer          ; flash going?
                 bne _nofend             ;   yes! store...
 
                 ;sta SP01_X_POS          ; flash position!
+
 _nofend         lda ObjectMoveTmr       ; objects moving?
                 bne _noohan             ;   not yet!
 
@@ -243,7 +232,6 @@ _next3          ora NUMOBJ,X            ; all objects
 
                 cmp #0                  ; any objects?
                 beq _lvlend             ;   no, end of level!
-
 
                 ldx #5                  ; is object
 _next4          lda OBJPRS,X            ; present?

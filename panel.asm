@@ -1,5 +1,5 @@
 ;======================================
-; ADD TO SCORE
+; Add to Score
 ;======================================
 AddToScore      .proc
                 ldy #0                  ; get zero
@@ -59,7 +59,7 @@ _next1          lda SCORE,Y             ; get score byte
 
 
 ;======================================
-; INCREMENT LIVES
+; Increment Lives
 ;======================================
 IncrementLives  .proc
                 lda LIVES               ; do we have
@@ -74,13 +74,13 @@ _XIT            rts
 
 
 ;======================================
-; DECREMENT LIVES
+; Decrement Lives
 ;======================================
 DecrementLives  .proc
                 jsr SoundOff            ; no sound
 
 ; ---------------------------
-; WAIT FOR PROJECTILES TO END
+; wait for projectiles to end
 ; ---------------------------
 
 _WAITPD         ldx #7                  ; 8 projectiles
@@ -93,7 +93,7 @@ _CKPRLV         ora isProjActive,X      ; check all projectiles for activity
                 bne _WAITPD             ;   yes! wait more!
 
 ; -----------
-; STOP SHORTS
+; stop shorts
 ; -----------
 
                 ldx #3                  ; 4 shorts (0-3)
@@ -102,7 +102,7 @@ _STPSHO         sta SHORTF,X            ; turn off
                 bpl _STPSHO             ; loop until done
 
 ; --------------------------
-; PUT OBJECTS AT END OF GRID
+; put objects at end of grid
 ; --------------------------
 
                 lda #0                  ; erase
@@ -162,7 +162,7 @@ _DEAD           pla                     ; all dead, pull
 
 
 ;======================================
-; SHOW LIVES
+; Show Lives
 ;======================================
 ShowLives       .proc
                 lda #$30                ; select display color
@@ -177,7 +177,7 @@ ShowLives       .proc
 
 
 ;======================================
-; SHOW LEVEL
+; Show Level
 ;======================================
 ShowLevel       .proc
                 ldy #$30                ; select display color
@@ -192,7 +192,7 @@ ShowLevel       .proc
 
 
 ;======================================
-; BCD CHAR DISPLAY
+; BCD Char Display
 ;--------------------------------------
 ; on entry
 ;   A           BCD value

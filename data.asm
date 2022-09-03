@@ -47,8 +47,6 @@ ProjGridIndex   .fill 8,$00
 PROJSG          .fill 8,$00
 PRSTRT          .byte 3,7
 PREND           .byte $FF,3
-MISLON          .byte $03,$0C,$30,$C0
-MISLOF          .byte $FC,$F3,$CF,$3F
 
 ; -------------------------
 ; FLASH (OBJECT DEATH) DATA
@@ -217,12 +215,6 @@ StartPointTbl   .byte 0,1,2,3,4,5,6,7
 EndPointTbl     .byte 17,16,15,14,13,12,11,10
                 .byte 9,10,11,12,13,14,15,16
 
-; --------------------------------
-; JOYSTICK/PADDLE MESSAGE POINTERS
-; --------------------------------
-
-JPLO            .byte <JoyMsg,<PadMsg
-JPHI            .byte >JoyMsg,>PadMsg
 
 ; ----------------
 ; GRID DATA TABLES
