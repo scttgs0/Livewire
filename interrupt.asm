@@ -1,5 +1,5 @@
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-;
+; Process IRQs
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 HandleIrq       .proc
                 .m16i16
@@ -433,12 +433,12 @@ _4              lda FlashTimer
 _5              lda isPlayerDead        ; player dead?
                 beq _6                  ;   no, continue!
 
-                jmp _VBCONT             ; skip player stuff
+                jmp _VBcont             ; skip player stuff
 
 _6              lda isIntro             ; in intro?
                 beq _7                  ;   no, continue!
 
-                jmp VBEND               ; exit if intro
+                jmp _VBend               ; exit if intro
 
 _7              lda KEYCHAR             ; get keyboard
                 cmp #$1C                ; pause (esc)?
@@ -492,44 +492,44 @@ _endKeys        lda #0                  ; clear keypress
                 sta SID_CTRL3           ; the
                 ;sta AUDC4              ; pause
 
-                jmp VBEND               ; then exit
+                jmp _VBend               ; then exit
 
-_notPaused ;      lda FIRSOU              ; fire sound on?
-;                 beq _10                 ;   no!
+_notPaused      lda FIRSOU              ; fire sound on?
+                beq _10                 ;   no!
 
-;                 dec FIRSOU              ; dec counter
-;                 ldx FIRSOU              ; put in index
-;                 lda FIRFRQ,X            ; get frequency
-;                 sta SID_FREQ2
-;                 lda FIRCTL,X            ; get control
-;                 sta SID_CTRL2
+                dec FIRSOU              ; dec counter
+                ldx FIRSOU              ; put in index
+                lda FIRFRQ,X            ; get frequency
+                sta SID_FREQ2
+                lda FIRCTL,X            ; get control
+                sta SID_CTRL2
 
-; _10             lda OBDSOU              ; obj death sound?
-;                 beq _11                 ;   no!
+_10             lda OBDSOU              ; obj death sound?
+                beq _11                 ;   no!
 
-;                 dec OBDSOU              ; dec counter
-;                 ldx OBDSOU              ; put in index
-;                 lda OBDFRQ,X            ; get frequency
-;                 sta SID_FREQ3
-;                 lda OBDCTL,X            ; get control
-;                 sta SID_CTRL3
+                dec OBDSOU              ; dec counter
+                ldx OBDSOU              ; put in index
+                lda OBDFRQ,X            ; get frequency
+                sta SID_FREQ3
+                lda OBDCTL,X            ; get control
+                sta SID_CTRL3
 
-; _11             lda MOVSOU              ; move sound?
-;                 beq _12                 ;   no!
+_11             lda MOVSOU              ; move sound?
+                beq _12                 ;   no!
 
-;                 dec MOVSOU              ; dec counter
-;                 ldx MOVSOU              ; put in index
-                ;lda MOVFRQ,X           ; get frequency
+                dec MOVSOU              ; dec counter
+                ldx MOVSOU              ; put in index
+                lda MOVFRQ,X            ; get frequency
                 ;sta AUDF4
-                ;lda MOVCTL,X           ; get control
+                lda MOVCTL,X            ; get control
                 ;sta AUDC4
 
-_12             ;lda COLPM2             ; cycle player 2 color
+_12             ;lda COLPM2              ; cycle player 2 color
                 ;clc
                 ;adc #16
-                ;sta COLPM2             ; save in p/m 2
-                ;sta COLPM3             ; and in p/m 3
-                ;and #$FC               ; also put in pf3 for missiles
+                ;sta COLPM2              ; save in p/m 2
+                ;sta COLPM3              ; and in p/m 3
+                ;and #$FC                ; also put in pf3 for missiles
                 ;sta COLPF3
 
 ;   transient processing
@@ -596,8 +596,8 @@ _gotProj        dec ProjAvail           ; 1 less available
                 lda #TRUE               ; it's now active
                 sta isProjActive,X
 
-                ; lda #21                 ; start up
-                ; sta FIRSOU              ; fire sound
+                lda #21                 ; start up
+                sta FIRSOU              ; fire sound
 
                 lda #0                  ; initialize segment # to 0
                 sta PROJSG,X
@@ -623,7 +623,6 @@ _chkPlyrMove    lda JOYPAD              ; using stick?
                 ;lsr A
                 ;cmp #15                ; > 14?
                 ;bmi _storePos          ;   no, go store
-                ;bra _storePos  ; HACK:
 
                 ;lda #14                 ; max. is 14
                 ;bne _storePos           ; and go store
@@ -632,7 +631,7 @@ _goStick        lda PlyrMoveTmr         ; ready for stick?
                 beq _readStick          ;   yes!
 
                 dec PlyrMoveTmr         ; dec timer
-                jmp _VBCONT             ; jmp to continue
+                jmp _VBcont             ; jmp to continue
 
 _readStick      lda #3                  ; reset stick timer
                 sta PlyrMoveTmr         ; to 3 jiffies
@@ -653,8 +652,8 @@ _samePos        lda PlyrGridPos         ; get grid #
 _storePos       cmp PlyrGridPos         ; same as last?
                 beq _noStore            ;   yes, don't store
 
-                ; ldx #9                  ; start up
-                ; stx MOVSOU              ; move sound
+                ldx #9                  ; start up
+                stx MOVSOU              ; move sound
 
                 sta PlyrGridPos         ; save grid #
 
@@ -667,11 +666,10 @@ _noStore        asl A                   ; *16 (position index)
                 ;lda P0PL
                 ;and #$0C               ; hit p2/p3?
                 ;beq _noHitShort        ;   no!
-                ; bra _noHitShort  ; HACK:
 
                 ; lda #TRUE               ; oops! hit short!
                 ; sta isPlayerDead        ; kill player
-                ; jmp VBEND               ; and exit vblank
+                ; jmp _VBend               ; and exit vblank
 
 _noHitShort     lda SEGX,X              ; get player's
                 .m16
@@ -766,11 +764,11 @@ _skipSP3        lda PLRY
                 lda #TRUE
                 sta isDirtyPlayer
 
-_VBCONT         lda ProjAdvToggle       ; advance proj?
+_VBcont         lda ProjAdvToggle       ; advance proj?
                 beq _setProjAdv         ;   yes!
 
                 dec ProjAdvToggle       ;   no, dec timer
-                bra FLIPIT              ; go flip display
+                bra _missiles           ; go flip display
 
 _setProjAdv     inc ProjAdvTimer
 
@@ -785,7 +783,7 @@ _setProjAdv     inc ProjAdvTimer
 ; observed.
 ; ------------------------------
 
-FLIPIT          inc PRFLIP              ; inc flip index
+_missiles       inc PRFLIP              ; inc flip index
                 lda PRFLIP              ; get index
                 and #1                  ; make 0/1
                 tay                     ; save in y
@@ -896,7 +894,7 @@ _chkProjEnd     dec MISNUM              ; next missile #
                 dec VBXHLD              ; next proj.
                 ldx VBXHLD
                 cpx ENDVAL              ; done?
-                beq SHORTS              ;   yes!
+                beq _Shorts             ;   yes!
 
                 jmp _projLoop           ; do next proj.
 
@@ -943,7 +941,7 @@ _nokilp         jmp _chkProjEnd         ; next proj.
 ; flicker may be observed.
 ; ------------------------------
 
-SHORTS  ;         inc SHFLIP              ; toggle flip
+_Shorts ;         inc SHFLIP              ; toggle flip
 ;                 lda SHFLIP              ; mask flip
 ;                 lsr A                   ; to either
 ;                 and #1                  ; 0 or 1
@@ -953,35 +951,39 @@ SHORTS  ;         inc SHFLIP              ; toggle flip
 ;                 lda SHFLIP              ; get flip,
 ;                 and #1                  ; mask and
 ;                 tay                     ; put in y
+
 ;                 lda #>PL3               ; put player 3
 ;                 sta DESTHI              ; in destination
 ;                 lda #<PL3               ; address
 ;                 sta DESTLO              ; hi & lo
+
 ;                 lda #1                  ; set dest #
 ;                 sta DESTNM
 
-;                 lda ShortStart,Y        ; get start
-;                 sta VBXHLD              ; short #
-; SHORLP          lda #0
+;                 lda ShortStart,Y        ; get start short #
+;                 sta VBXHLD
+
+; _shortLoop      lda #0
 ;                 ldx DESTNM
 ;                 ldy ShortHoldY,X        ; get last index
 
 ;                 ldx #9
-; ERSSHO          sta (DESTLO),Y          ; erase previous short
+; _eraseShort     sta (DESTLO),Y          ; erase previous short
 ;                 iny
 ;                 dex
-;                 bpl ERSSHO
+;                 bpl _eraseShort
 
 ;                 ldx VBXHLD
 ;                 lda SHORTF,X            ; short alive?
-;                 beq NXTSHO              ;   no!
+;                 beq _nextShort          ;   no!
 
-;                 lda SHORTX,X            ; get index of
-;                 tax                     ; short's pos.
-;                 lda RIMX,X              ; get x coord
-;                 ldy RIMY,X              ; and y coord
+;                 lda SHORTX,X            ; get index of short's pos.
+;                 tax
+;                 lda RIMX,X              ; get x coord and y coord
+;                 ldy RIMY,X
 ;                 clc
 ;                 adc #62                 ; adjust x
+
 ;                 ldx DESTNM              ; get player#
 ;                 sta SP02_X_POS,X        ; and store
 ;                 tya
@@ -989,26 +991,27 @@ SHORTS  ;         inc SHFLIP              ; toggle flip
 ;                 adc #28                 ; adjust y
 ;                 sta ShortHoldY,X        ; save it
 ;                 tay
+
 ;                 ldx CPYST
 ;                 lda #4
 ;                 sta CPYCNT
-; SHOCOP          lda ShortImage,X        ; now copy short image
+; _shortCopy      lda ShortImage,X        ; now copy short image
 ;                 sta (DESTLO),Y          ; to p/m area
 ;                 iny
 ;                 sta (DESTLO),Y
 ;                 iny
 ;                 dex
 ;                 dec CPYCNT
-;                 bpl SHOCOP
+;                 bpl _shortCopy
 
-; NXTSHO          dec DESTNM              ; more?
-;                 bmi VBEND               ;   no, exit!
+; _nextShort      dec DESTNM              ; more?
+;                 bmi _VBend              ;   no, exit!
 
 ;                 dec DESTHI              ; next player
 ;                 inc VBXHLD
-;                 jmp SHORLP              ; loop back.
+;                 jmp _shortLoop          ; loop back.
 
-VBEND           ;sta HITCLR             ; clear collision
+_VBend          ;sta HITCLR             ; clear collision
 
 _XIT            .m16i16
                 ply
