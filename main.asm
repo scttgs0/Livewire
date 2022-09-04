@@ -86,7 +86,8 @@ _next7          sta OBJSEG,X            ; segment # 29
 
                 lda #2                  ; set...
                 sta BONUS               ; bonus=20000
-                sta LIVES               ; 2 extra lives
+                lda #4
+                sta LIVES               ; 4 extra lives
                 jsr ShowLives           ; show lives remaining
 
                 stz SPoint1_Index       ; set up...
