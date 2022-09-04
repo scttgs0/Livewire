@@ -54,6 +54,7 @@ SoundOff        .proc
                 sta FIRSOU              ; fire sound
                 sta OBDSOU              ; obj death sound
                 sta MOVSOU              ; plyr move sound
+
                 ldx #7                  ; zero all:
 _next1          ;sta AUDF1,X            ; audio registers
                 dex

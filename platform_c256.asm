@@ -153,22 +153,22 @@ _next1          lda Custom_LUT,x
 
 ;--------------------------------------
 
-Custom_LUT      .dword $00282828        ; 0: Dark Jungle Green  
-                .dword $00DDDDDD        ; 1: Gainsboro          
+Custom_LUT      .dword $00282828        ; 0: Dark Jungle Green
+                .dword $00DDDDDD        ; 1: Gainsboro
                 .dword $00fc901c        ; 2: Orange
-                .dword $00082cc8        ; 3: Blue Gray          
-                .dword $00693972        ; 4: Indigo             
-                .dword $00B561C2        ; 5: Deep Fuchsia       
-                .dword $0076ADEB        ; 6: Maya Blue          
-                .dword $007A7990        ; 7: Fern Green         
-                .dword $0074D169        ; 8: Moss Green         
-                .dword $00D5CD6B        ; 9: Medium Spring Bud  
-                .dword $00C563BD        ; A: Pastel Violet      
-                .dword $005B8B46        ; B: Han Blue           
-                .dword $00BC605E        ; C: Medium Carmine     
-                .dword $00C9A765        ; D: Satin Sheen Gold   
-                .dword $0062C36B        ; E: Mantis Green       
-                .dword $00BC605E        ; F: Medium Carmine     
+                .dword $00082cc8        ; 3: Blue Gray
+                .dword $00693972        ; 4: Indigo
+                .dword $00B561C2        ; 5: Deep Fuchsia
+                .dword $0076ADEB        ; 6: Maya Blue
+                .dword $007A7990        ; 7: Fern Green
+                .dword $0074D169        ; 8: Moss Green
+                .dword $00D5CD6B        ; 9: Medium Spring Bud
+                .dword $00C563BD        ; A: Pastel Violet
+                .dword $005B8B46        ; B: Han Blue
+                .dword $00BC605E        ; C: Medium Carmine
+                .dword $00C9A765        ; D: Satin Sheen Gold
+                .dword $0062C36B        ; E: Mantis Green
+                .dword $00BC605E        ; F: Medium Carmine
 
                 .endproc
 
@@ -1078,7 +1078,7 @@ Copy2VRAM       .proc
                 phb
                 .setbank `SDMA_SRC_ADDR
                 .setdp zpSource
-                .m8
+                .m8i8
 
     ; Set SDMA to go from system to video RAM, 1D copy
                 lda #sdcSysRAM_Src|sdcEnable
@@ -1099,7 +1099,6 @@ Copy2VRAM       .proc
                 ldx zpDest+2
                 stx VDMA_DST_ADDR+2
 
-                .m16
                 lda zpSize              ; Set the size of the block
                 sta SDMA_SIZE
                 sta VDMA_SIZE
@@ -1138,7 +1137,17 @@ wait_vdma       lda VDMA_STATUS         ; Get the VDMA status
                 plp
                 rts
 
-vdma_err        brk
+vdma_err        lda #0                  ; Make sure DMA registers are cleared
+                sta SDMA0_CTRL
+                sta VDMA_CTRL
+
+                .setdp $0000
+                .setbank $00
+                .m8i8
+                plb
+                plp
+
+                jmp Copy2VRAM           ; retry
                 .endproc
 
 
@@ -1149,7 +1158,6 @@ InitIRQs        .proc
                 pha
 
 ;   enable vertical blank interrupt
-
                 .m8i8
                 ldx #HandleIrq.HandleIrq_END-HandleIrq
 _relocate       ;lda @l $024000,X        ; HandleIrq address
@@ -1198,7 +1206,8 @@ SetFont         .proc
                 phx
                 phy
 
-                ; bra _XIT  ; DEBUG: helpful if you need to see the trace
+;   DEBUG: helpful if you need to see the trace
+                ; bra _XIT
 
                 .m8i8
                 lda #<GameFont
