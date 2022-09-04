@@ -393,9 +393,7 @@ VbiHandler      .proc
                 .m8i8
                 .setbank $00
 
-                lda JIFFYCLOCK
-                inc A
-                sta JIFFYCLOCK
+                inc JIFFYCLOCK
 
                 lda JOYSTICK0           ; read joystick0
                 and #$1F
@@ -454,30 +452,32 @@ _7              lda KEYCHAR             ; get keyboard
 _8              cmp #$39                ; space bar?
                 bne _endKeys            ;   naw, done w/key
 
-;                 lda ZAP                 ; used zap yet?
-;                 beq _endKeys            ;   yes, no zap
+                lda ZAP                 ; used zap yet?
+                beq _endKeys            ;   yes, no zap
 
-;                 dec ZAP                 ; zap now used
-;                 ldx #5                  ; time to kill
-;                 lda #1                  ; all objects
-; _next1          sta isObjDead,X
-;                 dex
-;                 bpl _next1
+                dec ZAP                 ; zap now used
 
-;                 ldx #3                  ; and kill
-; _next2          lda SHORTF,X            ; all shorts
-;                 beq _9
+                ldx #5                  ; time to kill all objects
+                lda #TRUE
+_next1          sta isObjDead,X
+                dex
+                bpl _next1
 
-;                 lda MISCAD              ; also set
-;                 sed                     ; miscellaneous
-;                 clc                     ; score add
-;                 adc #4                  ; for 400 points
-;                 sta MISCAD              ; for each short
-;                 cld
-;                 lda #0                  ; kill
-;                 sta SHORTF,X            ; short
-; _9              dex
-;                 bpl _next2
+                ldx #3                  ; and kill all shorts
+_next2          lda SHORTF,X
+                beq _9
+
+                lda MISCAD              ; also set miscellaneous score add
+                sed
+                clc
+                adc #4                  ; 400 points for each short
+                sta MISCAD
+                cld
+
+                lda #0                  ; kill short
+                sta SHORTF,X
+_9              dex
+                bpl _next2
 
 _endKeys        lda #0                  ; clear keypress
                 sta KEYCHAR
@@ -486,11 +486,11 @@ _endKeys        lda #0                  ; clear keypress
                 lda isPaused            ; paused?
                 beq _notPaused          ;   no, continue
 
-;                 lda #0                  ; turn off
-;                 sta SID_CTRL1           ; all sounds
-;                 sta SID_CTRL2           ; during
-;                 sta SID_CTRL3           ; the
-;                 ;sta AUDC4              ; pause
+                lda #0                  ; turn off
+                sta SID_CTRL1           ; all sounds
+                sta SID_CTRL2           ; during
+                sta SID_CTRL3           ; the
+                ;sta AUDC4              ; pause
 
                 jmp VBEND               ; then exit
 
@@ -524,13 +524,13 @@ _notPaused ;      lda FIRSOU              ; fire sound on?
                 ;lda MOVCTL,X           ; get control
                 ;sta AUDC4
 
-_12             ;lda COLPM2             ; cycle
-                ;clc                    ; player 2
-                ;adc #16                ; color
+_12             ;lda COLPM2             ; cycle player 2 color
+                ;clc
+                ;adc #16
                 ;sta COLPM2             ; save in p/m 2
                 ;sta COLPM3             ; and in p/m 3
-                ;and #$FC               ; also put in
-                ;sta COLPF3             ; pf3 for missiles
+                ;and #$FC               ; also put in pf3 for missiles
+                ;sta COLPF3
 
 ;   transient processing
                 dec TransientTmr        ; transient time
