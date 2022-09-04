@@ -941,77 +941,86 @@ _nokilp         jmp _chkProjEnd         ; next proj.
 ; flicker may be observed.
 ; ------------------------------
 
-_Shorts ;         inc SHFLIP              ; toggle flip
-;                 lda SHFLIP              ; mask flip
-;                 lsr A                   ; to either
-;                 and #1                  ; 0 or 1
-;                 tay                     ; put in y
-;                 lda ShortStartIdx,Y     ; and get image
-;                 sta CPYST               ; to use (+/x)
-;                 lda SHFLIP              ; get flip,
-;                 and #1                  ; mask and
-;                 tay                     ; put in y
+_Shorts         inc SHFLIP              ; toggle flip
+                lda SHFLIP              ; mask flip to either 0 or 1
+                lsr A
+                and #1
+                tay
+                lda ShortStartIdx,Y     ; and get image to use (+/x)
+                sta CPYST
 
-;                 lda #>PL3               ; put player 3
-;                 sta DESTHI              ; in destination
-;                 lda #<PL3               ; address
-;                 sta DESTLO              ; hi & lo
+                lda SHFLIP              ; get flip, mask
+                and #1
+                tay
 
-;                 lda #1                  ; set dest #
-;                 sta DESTNM
+                lda #>SHORT_WK3         ; put short 3 in destination address
+                sta DESTHI
+                lda #<SHORT_WK3
+                sta DESTLO
 
-;                 lda ShortStart,Y        ; get start short #
-;                 sta VBXHLD
+                lda #1                  ; set dest #
+                sta DESTNM
 
-; _shortLoop      lda #0
-;                 ldx DESTNM
-;                 ldy ShortHoldY,X        ; get last index
+                lda ShortStart,Y        ; get start short #
+                sta VBXHLD
 
-;                 ldx #9
-; _eraseShort     sta (DESTLO),Y          ; erase previous short
-;                 iny
-;                 dex
-;                 bpl _eraseShort
+_shortLoop      lda #0
+                ldx DESTNM
+                ldy ShortHoldY,X        ; get last index
 
-;                 ldx VBXHLD
-;                 lda SHORTF,X            ; short alive?
-;                 beq _nextShort          ;   no!
+                ldx #9
+_eraseShort     sta (DESTLO),Y          ; erase previous short
+                iny
+                dex
+                bpl _eraseShort
 
-;                 lda SHORTX,X            ; get index of short's pos.
-;                 tax
-;                 lda RIMX,X              ; get x coord and y coord
-;                 ldy RIMY,X
-;                 clc
-;                 adc #62                 ; adjust x
+                ldx VBXHLD
+                lda SHORTF,X            ; short alive?
+                beq _nextShort          ;   no!
 
-;                 ldx DESTNM              ; get player#
-;                 sta SP02_X_POS,X        ; and store
-;                 tya
-;                 clc
-;                 adc #28                 ; adjust y
-;                 sta ShortHoldY,X        ; save it
-;                 tay
+                lda SHORTX,X            ; get index of short's pos.
+                tax
+                lda RIMX,X              ; get x coord and y coord
+                ldy RIMY,X
+                clc
+                adc #62                 ; adjust x
 
-;                 ldx CPYST
-;                 lda #4
-;                 sta CPYCNT
-; _shortCopy      lda ShortImage,X        ; now copy short image
-;                 sta (DESTLO),Y          ; to p/m area
-;                 iny
-;                 sta (DESTLO),Y
-;                 iny
-;                 dex
-;                 dec CPYCNT
-;                 bpl _shortCopy
+                pha
+                lda DESTNM              ; get player #
+                asl A                   ; *8
+                asl A
+                asl A
+                tax
+                pla
+                sta SP02_X_POS,X        ; and store
+                tya
+                clc
+                adc #28                 ; adjust y
+                ldx DESTNM
+                sta ShortHoldY,X        ; save it
+                tay
 
-; _nextShort      dec DESTNM              ; more?
-;                 bmi _VBend              ;   no, exit!
+                ldx CPYST
+                lda #4
+                sta CPYCNT
+_shortCopy      lda ShortImage,X        ; now copy short image
+                sta (DESTLO),Y          ; to p/m area
+                iny
+                sta (DESTLO),Y
+                iny
+                dex
+                dec CPYCNT
+                bpl _shortCopy
 
-;                 dec DESTHI              ; next player
-;                 inc VBXHLD
-;                 jmp _shortLoop          ; loop back.
+_nextShort      dec DESTNM              ; more?
+                bmi _VBend              ;   no, exit!
 
-_VBend          ;sta HITCLR             ; clear collision
+                dec DESTHI              ; next player
+                inc VBXHLD
+                jmp _shortLoop          ; loop back.
+
+_VBend          ; TODO: blit to SP02+
+                ;sta HITCLR             ; clear collision
 
 _XIT            .m16i16
                 ply
