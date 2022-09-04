@@ -150,6 +150,7 @@ _MOREWT         .randomByte             ; set random
 
                 lda #FALSE              ; reset player kill flag
                 sta isPlayerDead
+
                 ;lda #$16               ; and
                 ;sta COLPM0             ; player color
                 rts

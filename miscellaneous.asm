@@ -1,5 +1,5 @@
 ;======================================
-; FLASH OBJECT WHEN DEAD
+; Flash Object When Dead
 ;======================================
 Flash           .proc
                 ldy FLASHY              ; get y pos.
@@ -34,7 +34,7 @@ _setFlash       lda FLBYTE,X            ; get image
 
 
 ;======================================
-; TIME DELAY
+; Time Delay
 ;======================================
 WAIT            .proc
                 sta DelayTimer          ; set timer
@@ -47,7 +47,7 @@ _wait1          lda DelayTimer          ; timer = 0?
 
 
 ;======================================
-; TURN SOUNDS OFF
+; Turn Sounds Off
 ;======================================
 SoundOff        .proc
                 lda #0                  ; zero out:
@@ -55,8 +55,8 @@ SoundOff        .proc
                 sta OBDSOU              ; obj death sound
                 sta MOVSOU              ; plyr move sound
 
-                ldx #7                  ; zero all:
-_next1          ;sta AUDF1,X            ; audio registers
+                ldx #$1C                ; zero all:
+_next1          sta SID_FREQ1,X         ; audio registers
                 dex
                 bpl _next1
 
