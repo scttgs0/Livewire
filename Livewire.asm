@@ -1,3 +1,4 @@
+
 ; ===========================
 ;         LIVEWIRE
 ; ===========================
@@ -6,9 +7,9 @@
 ; A.N.A.L.O.G. COMPUTING #12
 ; ===========================
 
-                .include "equates_system_atari8.asm"
-                .include "equates_zeropage.asm"
-                .include "equates_game.asm"
+                .include "equates_system_atari8.inc"
+                .include "equates_zeropage.inc"
+                .include "equates_game.inc"
 
 
 ; --------------------------------------
