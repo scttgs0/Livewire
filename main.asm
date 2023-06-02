@@ -5,28 +5,20 @@
 ;--------------------------------------
 ;--------------------------------------
 LIVE            .proc
-                jsr Random_Seed
+                jsr RandomSeedQuick
 
-                .frsGraphics mcTextOn|mcOverlayOn|mcGraphicsOn|mcBitmapOn|mcSpriteOn,mcVideoMode320
+                .frsGraphics mcTextOn|mcOverlayOn|mcGraphicsOn|mcBitmapOn|mcSpriteOn,mcVideoMode240|mcTextDoubleX|mcTextDoubleY
                 .frsMouse_off
                 .frsBorder_off
 
-                jsr InitLUT
-                jsr InitCharLUT
+                stz BITMAP0_CTRL        ; disable all bitmaps
+                stz BITMAP1_CTRL
+                stz BITMAP2_CTRL
+                stz LAYER_ORDER_CTRL_0
+                stz LAYER_ORDER_CTRL_1
 
-                lda #<CharResX
-                sta COLS_PER_LINE
-                lda #>CharResX
-                sta COLS_PER_LINE+1
-                lda #CharResX
-                sta COLS_VISIBLE
-
-                lda #<CharResY
-                sta LINES_MAX
-                lda #>CharResY
-                sta LINES_MAX+1
-                lda #CharResY
-                sta LINES_VISIBLE
+                jsr InitGfxPalette
+                jsr InitTextPalette
 
                 jsr SetFont
                 jsr ClearScreen
@@ -195,7 +187,7 @@ _wait1          lda isPaused            ; we paused?
 _plive          lda FlashTimer          ; flash going?
                 bne _nofend             ;   yes! store...
 
-                ;sta SP01_X_POS          ; flash position!
+                ;sta SP01_X              ; flash position!
 
 _nofend         lda ObjectMoveTmr       ; objects moving?
                 bne _noohan             ;   not yet!

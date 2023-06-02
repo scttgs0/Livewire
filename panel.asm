@@ -128,16 +128,16 @@ _RNDOBG         .randomByte             ; get random
 
                 lda #$0F                ; show player
                 ;sta COLPM0             ; death here
-                sta SID_CTRL1           ; start sound
+                sta SID1_CTRL1          ; start sound
 _MOREWT         .randomByte             ; set random
                 and #$1F                ; death sound
-                sta SID_FREQ1           ; frequency
+                sta SID1_FREQ1          ; frequency
                 lda #6                  ; wait 0.1 sec
                 jsr WAIT
 
                 ;dec COLPM0             ; dec brightness
                 ;lda COLPM0             ; now set
-                ;sta SID_CTRL1          ; death volume
+                ;sta SID1_CTRL1          ; death volume
                 ;bne _MOREWT            ; more wait
 
                 lda LIVES               ; more lives?
@@ -208,10 +208,10 @@ ShowBCD         .proc
                 sta INFOLN+1,X          ; show it
 
                 lda zpShowByte          ; restore character
-                lsr A                   ; /16 -- get num 0
-                lsr A
-                lsr A
-                lsr A
+                lsr                     ; /16 -- get num 0
+                lsr
+                lsr
+                lsr
                 ora zpShowColor         ; add color
                 sta INFOLN,X            ; show it
 

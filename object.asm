@@ -39,14 +39,14 @@ _tryProj1       lda isProjActive+1      ; proj. 1 active?
 
                 ldy #1                  ; set index
 _storeObjFire   lda OBJSEG,X            ; initialize projectile segment #
-                lsr A
+                lsr
                 sta PROJSG,Y
                 lda OBJGRD,X            ; and sub-grid #
                 sta ProjGridPos,Y
-                asl A                   ; *16
-                asl A
-                asl A
-                asl A
+                asl                     ; *16
+                asl
+                asl
+                asl
                 sta ProjGridIndex,Y     ; save index!
 
                 lda #$FF                ; set increment
@@ -155,10 +155,10 @@ _tryShort       lda SHORTF,Y            ; short available?
                 bra _doitagain          ; no short avail!
 
 _initShort      lda OBJGRD,X            ; object's sub-grid # *16
-                asl A
-                asl A
-                asl A
-                asl A
+                asl
+                asl
+                asl
+                asl
                 clc
                 adc #8                  ; and add 8 for the short index
                 sta SHORTX,Y
@@ -185,14 +185,14 @@ _doitagain      jmp _repeat             ; next object
 DrawObject      .proc
                 ldx OBJNUM              ; get object #
                 lda OBJGRD,X            ; get sub-grid #
-                asl A                   ; *16
-                asl A
-                asl A
-                asl A
+                asl                     ; *16
+                asl
+                asl
+                asl
                 sta HLDGRD              ; and save.
 
                 lda OBJSEG,X            ; divide segment by 2
-                lsr A
+                lsr
                 bcs _oddSeg             ; process odd #
 
 ;   process even
@@ -232,10 +232,10 @@ _oddSeg         clc                     ; it's odd
 _oddSkip        lda #30                 ; near objects are bigger
                 sec
                 sbc OBJSEG,X            ; val = (30 - seg pos) / 2
-                lsr A
+                lsr
                 and #$FE                ; make even #
-                asl A                   ; *4
-                asl A
+                asl                     ; *4
+                asl
                 tay
 
 ;   now copy part of the size table to a size work area.
@@ -250,9 +250,9 @@ _next1          lda SIZTBL,Y
 
                 ldx OBJNUM              ; get object #
                 lda ObjectType,X        ; and its type
-                asl A                   ; *8 (index into the shape table)
-                asl A
-                asl A
+                asl                     ; *8 (index into the shape table)
+                asl
+                asl
                 sta SHAPIX
 
                 lda #8                  ; max 8 lines in each object

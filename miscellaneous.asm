@@ -14,7 +14,7 @@ _clrFlash       ;sta PL1,Y               ; zero out each
                 lda SAVEX               ; get object's
                 clc                     ; x pos. and
                 adc #61                 ; add 61 for
-                sta SP01_X_POS          ; flash horiz.
+                sta SP01_X              ; flash horiz.
                 lda SAVEY               ; get y pos and
                 clc                     ; add 26 for
                 adc #26                 ; flash vert.
@@ -57,7 +57,7 @@ SoundOff        .proc
                 sta MOVSOU              ; plyr move sound
 
                 ldx #$1C                ; zero all:
-_next1          sta SID_FREQ1,X         ; audio registers
+_next1          sta SID1_FREQ1,X        ; audio registers
                 dex
                 bpl _next1
 

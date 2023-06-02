@@ -1,0 +1,7 @@
+
+resetSprite     .macro
+                stz \1_X
+                stz \1_X+1
+                stz \1_Y
+                stz \1_Y+1
+                .endmacro

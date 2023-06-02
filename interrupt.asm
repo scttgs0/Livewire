@@ -3,36 +3,32 @@
 ; Process IRQs
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 HandleIrq       .proc
-                .m16i16
                 pha
                 phx
                 phy
 
-                .m8i8
-                lda @l INT_PENDING_REG1
+                lda INT_PENDING_REG1
                 bit #FNX1_INT00_KBD
                 beq _1
 
-                jsl KeyboardHandler
+                jsr KeyboardHandler
 
-                lda @l INT_PENDING_REG1
-                sta @l INT_PENDING_REG1
+                lda INT_PENDING_REG1
+                sta INT_PENDING_REG1
 
-_1              lda @l INT_PENDING_REG0
+_1              lda INT_PENDING_REG0
                 bit #FNX0_INT00_SOF
                 beq _XIT
 
-                jsl VbiHandler
+                jsr VbiHandler
 
-                lda @l INT_PENDING_REG0
-                sta @l INT_PENDING_REG0
+                lda INT_PENDING_REG0
+                sta INT_PENDING_REG0
 
-_XIT            .m16i16
-                ply
+_XIT            ply
                 plx
                 pla
 
-                .m8i8
 HandleIrq_END   rti
                 ;jmp IRQ_PRIOR
 
@@ -64,15 +60,11 @@ KEY_DOWN        = $50
 KEY_CTRL        = $1D                   ; fire button
 ;---
 
-                .m16i16
                 pha
                 phx
                 phy
 
-                .m8i8
-                .setbank $00
-
-                lda KBD_INPT_BUF
+                lda PS2_KEYBD_IN
                 pha
                 sta KEYCHAR
 
@@ -289,13 +281,10 @@ _8r             pla
 _CleanUpXIT     stz KEYCHAR
                 pla
 
-_XIT            .m16i16
-                ply
+_XIT            ply
                 plx
                 pla
-
-                .m8i8
-                rtl
+                rts
                 .endproc
 
 
@@ -385,16 +374,12 @@ LASTSC          .text '                '
 ; VERTICAL BLANK ROUTINE
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 VbiHandler      .proc
-                .m16i16
                 pha
                 phx
                 phy
                 ;cld                     ; clr decimal mode
 
-                .m8i8
-                .setbank $00
-
-                inc JIFFYCLOCK
+                inc JIFFYCLOCK          ; increment the jiffy clock each VBI
 
                 lda JOYSTICK0           ; read joystick0
                 and #$1F
@@ -488,9 +473,9 @@ _endKeys        lda #0                  ; clear keypress
                 beq _notPaused          ;   no, continue
 
                 lda #0                  ; turn off
-                sta SID_CTRL1           ; all sounds
-                sta SID_CTRL2           ; during
-                sta SID_CTRL3           ; the
+                sta SID1_CTRL1          ; all sounds
+                sta SID1_CTRL2          ; during
+                sta SID1_CTRL3          ; the
                 ;sta AUDC4              ; pause
 
                 jmp _VBend               ; then exit
@@ -501,9 +486,9 @@ _notPaused      lda FIRSOU              ; fire sound on?
                 dec FIRSOU              ; dec counter
                 ldx FIRSOU              ; put in index
                 lda FIRFRQ,X            ; get frequency
-                sta SID_FREQ2
+                sta SID1_FREQ2
                 lda FIRCTL,X            ; get control
-                sta SID_CTRL2
+                sta SID1_CTRL2
 
 _10             lda OBDSOU              ; obj death sound?
                 beq _11                 ;   no!
@@ -511,9 +496,9 @@ _10             lda OBDSOU              ; obj death sound?
                 dec OBDSOU              ; dec counter
                 ldx OBDSOU              ; put in index
                 lda OBDFRQ,X            ; get frequency
-                sta SID_FREQ3
+                sta SID1_FREQ3
                 lda OBDCTL,X            ; get control
-                sta SID_CTRL3
+                sta SID1_CTRL3
 
 _11             lda MOVSOU              ; move sound?
                 beq _12                 ;   no!
@@ -605,25 +590,25 @@ _gotProj        dec ProjAvail           ; 1 less available
 
                 lda PlyrGridPos         ; set up proj grid #
                 sta ProjGridPos,X
-                asl A                   ; *16
-                asl A
-                asl A
-                asl A
+                asl                     ; *16
+                asl
+                asl
+                asl
                 sta ProjGridIndex,X     ; for index
 
                 lda #1                  ; initialize proj increment
                 sta ProjIncrement,X
 
 _chkPlyrMove    lda JOYPAD              ; using stick?
-                beq _goStick              ;   yes!
+                beq _goStick            ;   yes!
 
-                ;lda POT0               ; get paddle
-                ;lsr A                  ; divide by
-                ;lsr A                  ; 16 to get
-                ;lsr A                  ; usable value
-                ;lsr A
-                ;cmp #15                ; > 14?
-                ;bmi _storePos          ;   no, go store
+                ;lda POT0                ; get paddle
+                ;lsr                     ; divide by
+                ;lsr                     ; 16 to get
+                ;lsr                     ; usable value
+                ;lsr
+                ;cmp #15                 ; > 14?
+                ;bmi _storePos           ;   no, go store
 
                 ;lda #14                 ; max. is 14
                 ;bne _storePos           ; and go store
@@ -658,10 +643,10 @@ _storePos       cmp PlyrGridPos         ; same as last?
 
                 sta PlyrGridPos         ; save grid #
 
-_noStore        asl A                   ; *16 (position index)
-                asl A
-                asl A
-                asl A
+_noStore        asl                     ; *16 (position index)
+                asl
+                asl
+                asl
                 tax
 
                 ;lda P0PL
@@ -670,16 +655,16 @@ _noStore        asl A                   ; *16 (position index)
 
                 ; lda #TRUE               ; oops! hit short!
                 ; sta isPlayerDead        ; kill player
-                ; jmp _VBend               ; and exit vblank
+                ; jmp _VBend              ; and exit vblank
 
 _noHitShort     lda SEGX,X              ; get player's
-                .m16
+                ; .m16
                 and #$FF
-                asl A                   ; *2
+                asl                     ; *2
                 clc                     ; x position and
                 adc #61                 ; adjust for p/m
-                sta SP00_X_POS          ; and save
-                .m8
+                sta SP00_X              ; and save
+                ; .m8
 
                 ldy PLRY                ; hold old y pos
 
@@ -753,7 +738,7 @@ _skipSP3        lda PLRY
                 sbc #16
                 clc
                 adc #32
-                sta SP00_Y_POS
+                sta SP00_Y
 
                 ldy StartPointIndex
                 lda PlayerTempByte      ; get image byte
@@ -835,7 +820,7 @@ _NOTRNC         lda OBJGRD,Y            ; same grid # as proj?
                 bne _nextObjChk         ;   no!
 
                 lda OBJSEG,Y            ; same seg #
-                lsr A
+                lsr
                 sec
                 sbc PROJSG,X            ; as proj?
                 beq _hitObj
@@ -866,7 +851,7 @@ _noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
                 adc ProjGridIndex,X
                 tax                     ; and get
                 lda SEGX,X              ; x coord and y coord
-                asl A                   ; *2
+                asl                     ; *2
                 ldy SEGY,X
                 clc                     ; add 64 to x coord for p/m horiz
                 adc #64
@@ -874,12 +859,12 @@ _noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
 ;   now draw projectile in new position
                 pha
                 lda MISNUM
-                asl A                   ; *8
-                asl A
-                asl A
+                asl                     ; *8
+                asl
+                asl
                 tax
                 pla
-                sta SP12_X_POS,X        ; and save
+                sta SP12_X,X            ; and save
 
                 phx
                 ldx MISNUM
@@ -889,7 +874,7 @@ _noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
                 tay
                 sty PRYHLD,X            ; and save.
                 plx
-                sta SP12_Y_POS,X
+                sta SP12_Y,X
 
 _chkProjEnd     dec MISNUM              ; next missile #
                 dec VBXHLD              ; next proj.
@@ -904,13 +889,13 @@ _killProj       lda #FALSE              ; kill proj.
 
                 phx
                 txa
-                asl A                   ; *8
-                asl A
-                asl A
+                asl                     ; *8
+                asl
+                asl
                 tax
                 lda #0                  ; hide the sprite
-                sta SP12_X_POS,X
-                sta SP12_Y_POS,X
+                sta SP12_X,X
+                sta SP12_Y,X
                 plx
 
                 cpx #2                  ; enemy proj?
@@ -944,7 +929,7 @@ _nokilp         jmp _chkProjEnd         ; next proj.
 
 _Shorts         inc SHFLIP              ; toggle flip
                 lda SHFLIP              ; mask flip to either 0 or 1
-                lsr A
+                lsr
                 and #1
                 tay
                 lda ShortStartIdx,Y     ; and get image to use (+/x)
@@ -988,12 +973,12 @@ _eraseShort     sta (DESTLO),Y          ; erase previous short
 
                 pha
                 lda DESTNM              ; get player #
-                asl A                   ; *8
-                asl A
-                asl A
+                asl                     ; *8
+                asl
+                asl
                 tax
                 pla
-                sta SP02_X_POS,X        ; and store
+                sta SP02_X,X            ; and store
                 tya
                 clc
                 adc #28                 ; adjust y
@@ -1023,11 +1008,9 @@ _nextShort      dec DESTNM              ; more?
 _VBend          ; TODO: blit to SP02+
                 ;sta HITCLR             ; clear collision
 
-_XIT            .m16i16
-                ply
+_XIT            ply
                 plx
                 pla
 
-                .m8i8
-                rtl
+                rts
                 .endproc

@@ -3,30 +3,30 @@
 ; Clear Sprites
 ;======================================
 ClearSprites    .proc
-                .m16
+                ; .m16
 
                 lda #0
-                sta SP00_X_POS          ; player
-                sta SP00_Y_POS
+                sta SP00_X          ; player
+                sta SP00_Y
 
-                sta SP12_X_POS          ; projectiles
-                sta SP12_Y_POS
-                sta SP13_X_POS
-                sta SP13_Y_POS
-                sta SP14_X_POS
-                sta SP14_Y_POS
-                sta SP15_X_POS
-                sta SP15_Y_POS
-                sta SP16_X_POS
-                sta SP16_Y_POS
-                sta SP17_X_POS
-                sta SP17_Y_POS
-                sta SP18_X_POS
-                sta SP18_Y_POS
-                sta SP19_X_POS
-                sta SP19_Y_POS
+                sta SP12_X          ; projectiles
+                sta SP12_Y
+                sta SP13_X
+                sta SP13_Y
+                sta SP14_X
+                sta SP14_Y
+                sta SP15_X
+                sta SP15_Y
+                sta SP16_X
+                sta SP16_Y
+                sta SP17_X
+                sta SP17_Y
+                sta SP18_X
+                sta SP18_Y
+                sta SP19_X
+                sta SP19_Y
 
-                .m8
+                ; .m8
                 rts
                 .endproc
 
@@ -67,7 +67,7 @@ _1              inc HI
 ;======================================
 PlotPoint       .proc
                 lda PLOTY               ; mult. y by 32:
-                asl A
+                asl
                 sta LO
 
                 lda #0
@@ -99,8 +99,8 @@ PlotPoint       .proc
                 tax
 
                 lda PLOTX               ; get plotx and divide by 4 (4 pixels/byte)
-                lsr A                   ; /4
-                lsr A
+                lsr                     ; /4
+                lsr
                 sta YOFSET
 
                 tay
@@ -199,7 +199,7 @@ _setVec         lda #0                  ; zero out:
                 sta COUNTR              ; save deltax in counter
                 sta ENDPT               ; and endpoint
 
-                lsr A                   ; /2
+                lsr                     ; /2
                 sta ACCY                ; store in y accum.
                 bra _doDraw             ; start draw
 
@@ -208,7 +208,7 @@ _yBigger        lda DELTAY
                 sta COUNTR              ; store it in counter
                 sta ENDPT               ; and endpoint
 
-                lsr A                   ; /2
+                lsr                     ; /2
                 sta ACCX                ; store in x accum.
 
 ; ----------------------------------------

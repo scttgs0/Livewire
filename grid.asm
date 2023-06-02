@@ -27,14 +27,14 @@ _clrPrjct       sta isProjActive,X
                 sta ProjAvail
 
                 lda GridIndex           ; get grid #
-                lsr A                   ; /8
-                lsr A
-                lsr A
+                lsr                     ; /8
+                lsr
+                lsr
                 tax
                 phx                     ; save this for later
 
-                asl A                   ; *4    (convert to 4-byte color index)
-                asl A
+                asl                     ; *4    (convert to 4-byte color index)
+                asl
                 tax                     ; load appropriate colors
 
                 ldy #0
@@ -44,7 +44,7 @@ _nextColor      lda Color0Tbl,X         ; grid color
                 sta PfColor1,Y
                 lda Color2Tbl,X         ; object color 2
                 sta PfColor2,Y
-                jsr InitLUT
+                jsr InitGfxPalette
 
                 inx
                 iny
@@ -79,10 +79,10 @@ _difficulty     lda NUMOBJ,X            ; object counts
                 bpl _difficulty
 
                 lda GRDNUM              ; get grid #
-                asl A                   ; *16
-                asl A
-                asl A
-                asl A
+                asl                     ; *16
+                asl
+                asl
+                asl
                 sta GRDADJ              ; save
                 sta GRDWK               ; save
                 tax                     ; set x index
@@ -312,7 +312,7 @@ DivideSEGWK     .proc
                 lda #16
                 sta STEP
                 sta NEXT
-                lsr A
+                lsr
                 sta DEST
 _next1          lda #0
                 sta LAST
@@ -340,10 +340,10 @@ _next2          ldx LAST
                 jmp _next2
 
 _nostep         lda STEP
-                lsr A
+                lsr
                 sta STEP
                 sta NEXT
-                lsr A
+                lsr
                 beq _XIT
 
                 sta DEST
@@ -358,10 +358,10 @@ _XIT            rts
 ;======================================
 GridCoordSave   .proc
                 lda GRID
-                asl A                   ; *16
-                asl A
-                asl A
-                asl A
+                asl                     ; *16
+                asl
+                asl
+                asl
                 clc                     ; add the offset value
                 adc OFFSET
                 tax                     ; save in index
