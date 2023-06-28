@@ -1,18 +1,25 @@
 
+; SPDX-FileName: platform_f256jr.asm
+; SPDX-FileCopyrightText: Copyright 2023, Scott Giese
+; SPDX-License-Identifier: GPL-3.0-or-later
+
+
 ;======================================
 ; seed = quick and dirty
 ;======================================
 RandomSeedQuick .proc
                 lda RTC_MIN
-                sta RNG_SEED_HI
+                sta RNG_SEED+1
 
                 lda RTC_SEC
-                sta RNG_SEED_LO
+                sta RNG_SEED
 
                 lda #rcEnable|rcDV      ; cycle the DV bit
                 sta RNG_CTRL
                 lda #rcEnable
                 sta RNG_CTRL
+
+                rts
                 .endproc
 
 
@@ -67,6 +74,8 @@ RandomSeed      .proc
                 sta RNG_CTRL
                 lda #rcEnable
                 sta RNG_CTRL
+
+                rts
                 .endproc
 
 
@@ -209,6 +218,7 @@ _Text_CLUT      .dword $00282828        ; 0: Dark Jungle Green
 ;======================================
 InitGfxPalette  .proc
                 pha
+                phx
                 phy
 
 ;   switch to graphic map
@@ -255,71 +265,62 @@ _next1          lda (zpSource),Y
 ; sprites dimensions are 32x32 (1024)
 ;======================================
 InitSprites     .proc
-                php
                 pha
 
 ;   switch to system map
                 stz IOPAGE_CTRL
 
 ;   setup player sprites (sprite-00 & sprint-01)
-                lda #<SPR_PLAYER
-                sta SP00_ADDR
-                sta SP01_ADDR
-                lda #>SPR_PROJECTILE
-                sta SP00_ADDR+1
-                sta SP01_ADDR+1
-                stz SP00_ADDR+2
-                stz SP01_ADDR+2
-
-                stz SP00_X
-                stz SP00_X+1
-                stz SP00_Y
-                stz SP00_Y+1
-
-                stz SP01_X
-                stz SP01_X+1
-                stz SP01_Y
-                stz SP01_Y+1
+                .frsSpriteInit SPR_PLAYER, scEnable|scLUT0|scDEPTH0|scSIZE_16, 0
+                .frsSpriteInit SPR_PLAYER, scEnable|scLUT0|scDEPTH0|scSIZE_16, 1
 
 ;   setup bomb sprites (sprite-02 & sprint-03)
-                lda #<SPR_PROJECTILE
-                sta SP02_ADDR
-                sta SP03_ADDR
-                lda #>SPR_PROJECTILE
-                sta SP02_ADDR+1
-                sta SP03_ADDR+1
-                stz SP02_ADDR+2
-                stz SP03_ADDR+2
+                .frsSpriteInit SPR_PROJECTILE, scEnable|scLUT0|scDEPTH0|scSIZE_16, 2
+                .frsSpriteInit SPR_PROJECTILE, scEnable|scLUT0|scDEPTH0|scSIZE_16, 3
 
-                .resetSprite SP02
-                .resetSprite SP03
-                .resetSprite SP04
-                .resetSprite SP05
-                .resetSprite SP06
-                .resetSprite SP07
-                .resetSprite SP08
-                .resetSprite SP09
-                .resetSprite SP10
-                .resetSprite SP11
-                .resetSprite SP12
-                .resetSprite SP13
-                .resetSprite SP14
-                .resetSprite SP15
-                .resetSprite SP16
-                .resetSprite SP17
-                .resetSprite SP18
-                .resetSprite SP19
+                ; .frsSpriteClearX 4
+                ; .frsSpriteClearY 4
+                ; .frsSpriteClearX 5
+                ; .frsSpriteClearY 5
+                ; .frsSpriteClearX 6
+                ; .frsSpriteClearY 6
+                ; .frsSpriteClearX 7
+                ; .frsSpriteClearY 7
+                ; .frsSpriteClearX 8
+                ; .frsSpriteClearY 8
+                ; .frsSpriteClearX 9
+                ; .frsSpriteClearY 9
+                ; .frsSpriteClearX 10
+                ; .frsSpriteClearY 10
 
-                lda #scEnable
-                sta SP00_CTRL
-                sta SP02_CTRL
-                sta SP03_CTRL
+                ; .resetSprite SP02
+                ; .resetSprite SP03
+                ; .resetSprite SP04
+                ; .resetSprite SP05
+                ; .resetSprite SP06
+                ; .resetSprite SP07
+                ; .resetSprite SP08
+                ; .resetSprite SP09
+                ; .resetSprite SP10
+                ; .resetSprite SP11
+                ; .resetSprite SP12
+                ; .resetSprite SP13
+                ; .resetSprite SP14
+                ; .resetSprite SP15
+                ; .resetSprite SP16
+                ; .resetSprite SP17
+                ; .resetSprite SP18
+                ; .resetSprite SP19
 
-                lda #scEnable|scLUT1
-                sta SP01_CTRL
+                ; lda #scEnable|scLUT0|scDEPTH0|scSIZE_16
+                ; sta SP00_CTRL
+                ; sta SP02_CTRL
+                ; sta SP03_CTRL
+
+                ; lda #scEnable|scLUT1|scDEPTH0|scSIZE_16
+                ; sta SP01_CTRL
 
                 pla
-                plp
                 rts
                 .endproc
 
@@ -472,8 +473,8 @@ _withinRange    sec
                 sta zpTemp1             ; zpTemp1=1 (row)
 
                 lda PlayerPosX,X
-                lsr             ; /2
                 lsr             ; /4
+                lsr
                 sta zpTemp2             ; (column)
 
                 lda #<CANYON
@@ -1217,7 +1218,7 @@ v_RenderLine    .var 24*CharResX
                 lda #iopPage3
                 sta IOPAGE_CTRL
 
-;   reset color for twp 40-char lines
+;   reset color for two 40-char lines
                 ldx #$FF
                 ldy #$FF
 _nextColor      inx
@@ -1629,34 +1630,81 @@ _XIT
 
 ;======================================
 ; Render Canyon
+;--------------------------------------
+; codes $01-$03 are boulders (destructible)
+; codes $84-$85 are canyon (not destructible)
 ;======================================
 RenderCanyon    .proc
-v_RenderLine    .var 13*CharResX
+v_RenderLine    .var 13*CharResX    ; skip 13 lines
+v_QtyLines      = zpTemp1
 ;---
 
                 php
                 pha
-                phx
                 phy
 
-                ;ldx #$FFFF         ; TODO:
-                ;ldy #$FFFF
-                ldx #$FF
-                ldy #$FF
-_nextChar       inx
-                iny
-                ;cpy #440           ; TODO:
+                lda #11             ; 11 lines
+                sta v_QtyLines
+
+                lda #<CANYON
+                sta zpSource
+                lda #>CANYON
+                sta zpSource+1
+
+;   pointer to text-color memory
+                lda #<CS_COLOR_MEM_PTR+v_RenderLine
+                sta zpDest
+                lda #>CS_COLOR_MEM_PTR+v_RenderLine
+                sta zpDest+1
+
+;   pointer to text-character memory
+                lda #<CS_TEXT_MEM_PTR+v_RenderLine
+                sta zpDest+2
+                lda #>CS_TEXT_MEM_PTR+v_RenderLine
+                sta zpDest+3
+
+                ldy #40             ; 40 characters per line
+_nextChar       dey
+                bpl _1
+
+                dec v_QtyLines
                 beq _XIT
 
-                lda CANYON,Y
-                beq _space
+                ldy #40             ; reset index
+
+                lda zpSource
+                clc
+                adc #40
+                sta zpSource
+                lda zpSource+1
+                adc #0
+                sta zpSource+1
+
+                lda zpDest
+                clc
+                adc #40
+                sta zpDest
+                lda zpDest+1
+                adc #0
+                sta zpDest+1
+
+                lda zpDest+2
+                clc
+                adc #40
+                sta zpDest+2
+                lda zpDest+3
+                adc #0
+                sta zpDest+3
+
+_1              lda (zpSource),Y
+                beq _space          ; 0 or ' ' are processed as a space
                 cmp #$20
                 beq _space
 
-                cmp #$84
+                cmp #$84            ; is code < $84?
                 bcc _boulder
 
-_earth          eor #$80
+_earth          eor #$80            ; clear the high-bit (to convert the data into the ascii code)
                 pha
 
 ;   switch to color map
@@ -1664,51 +1712,158 @@ _earth          eor #$80
                 sta IOPAGE_CTRL
 
                 lda #$E0
-                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta (zpDest),Y
 
 ;   switch to text map
                 lda #iopPage2
                 sta IOPAGE_CTRL
 
                 pla
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                sta (zpDest+2),Y
 
                 bra _nextChar
 
-_space
+_space          pha
 
 ;   switch to color map
                 lda #iopPage3
                 sta IOPAGE_CTRL
 
                 lda #$00
-                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                sta (zpDest),Y
 
 ;   switch to text map
                 lda #iopPage2
                 sta IOPAGE_CTRL
 
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                pla
+                sta (zpDest+2),Y
 
                 bra _nextChar
 
-_boulder
+_boulder        pha
 
 ;   switch to color map
                 lda #iopPage3
                 sta IOPAGE_CTRL
 
+                pla
                 phy
                 tay
                 lda CanyonColors,Y
-                sta CS_COLOR_MEM_PTR+v_RenderLine,X
                 ply
+                sta (zpDest),Y
 
 ;   switch to text map
                 lda #iopPage2
                 sta IOPAGE_CTRL
 
                 lda #$01
+                sta (zpDest+2),Y
+
+                bra _nextChar
+
+_XIT
+;   switch to system map
+                stz IOPAGE_CTRL
+
+                ply
+                pla
+                plp
+                rts
+                .endproc
+
+
+;======================================
+; Render Player Scores & Bombs
+;--------------------------------------
+; preserves:
+;   X Y
+;======================================
+RenderDebug     .proc
+v_RenderLine    .var 0*CharResX
+;---
+
+                php
+                pha
+                phx
+                phy
+
+;   switch to color map
+                lda #iopPage3
+                sta IOPAGE_CTRL
+
+;   reset color for the 40-char line
+                ldx #$FF
+                ldy #$FF
+_nextColor      inx
+                iny
+                cpy #$14
+                beq _processText
+
+                lda DebugMsgColor,Y
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                inx
+                sta CS_COLOR_MEM_PTR+v_RenderLine,X
+                bra _nextColor
+
+;   process the text
+_processText
+
+;   switch to text map
+                lda #iopPage2
+                sta IOPAGE_CTRL
+
+                ldx #$FF
+                ldy #$FF
+_nextChar       inx
+                iny
+                cpy #$14
+                beq _XIT
+
+                lda DebugMsg,Y
+                beq _space
+                cmp #$20
+                beq _space
+
+                cmp #$9B
+                beq _bomb
+
+                cmp #$41
+                bcc _number
+                bra _letter
+
+_space          sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                inx
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+
+                bra _nextChar
+
+;   (ascii-30)*2+$A0
+_number         sec
+                sbc #$30
+                asl
+
+                clc
+                adc #$A0
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                inx
+                inc A
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+
+                bra _nextChar
+
+_letter         sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                inx
+                clc
+                adc #$40
+                sta CS_TEXT_MEM_PTR+v_RenderLine,X
+
+                bra _nextChar
+
+_bomb           sta CS_TEXT_MEM_PTR+v_RenderLine,X
+                inx
+                inc A
                 sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
@@ -1730,6 +1885,10 @@ _XIT
 ;======================================
 InitSystemVectors .proc
                 pha
+
+;   switch to system map
+                stz IOPAGE_CTRL
+
                 sei
 
                 cld                     ; clear decimal
@@ -1749,10 +1908,10 @@ InitSystemVectors .proc
                 ; lda #>DefaultHandler
                 ; sta vecNMI+1
 
-                ; lda #<INIT
-                ; sta vecRESET
-                ; lda #>INIT
-                ; sta vecRESET+1
+                lda #<BOOT
+                sta vecRESET
+                lda #>BOOT
+                sta vecRESET+1
 
                 lda #<DefaultHandler
                 sta vecIRQ_BRK
@@ -1776,29 +1935,36 @@ DefaultHandler  rti
 ;======================================
 InitMMU         .proc
                 pha
+
+;   switch to system map
+                stz IOPAGE_CTRL
+
                 sei
 
-                lda #mmuEditMode|mmuEditPage0|mmuPage0
+;   enable page0; modify page1
+                lda #mmuEditMode|mmuEditPage1|mmuPage0
                 sta MMU_CTRL
 
                 lda #$00                ; [0000:1FFF]
                 sta MMU_Block0
-                lda #$20                ; [2000:3FFF]
+                inc A                   ; [2000:3FFF]
                 sta MMU_Block1
-                lda #$40                ; [4000:5FFF]
+                inc A                   ; [4000:5FFF]
                 sta MMU_Block2
-                lda #$60                ; [6000:7FFF]
+                inc A                   ; [6000:7FFF]
                 sta MMU_Block3
-                lda #$80                ; [8000:9FFF]
+                inc A                   ; [8000:9FFF]
                 sta MMU_Block4
-                lda #$A0                ; [A000:BFFF]
+                inc A                   ; [A000:BFFF]
                 sta MMU_Block5
-                lda #$C0                ; [C000:DFFF]
+                inc A                   ; [C000:DFFF]
                 sta MMU_Block6
-                lda #$E0                ; [E000:FFFF]
+                inc A                   ; [E000:FFFF]
                 sta MMU_Block7
 
-                lda #mmuPage0
+;   disable edit mode
+                lda MMU_CTRL
+                and #~mmuEditMode
                 sta MMU_CTRL
 
                 cli
@@ -1812,6 +1978,9 @@ InitMMU         .proc
 ;======================================
 InitIRQs        .proc
                 pha
+
+;   switch to system map
+                stz IOPAGE_CTRL
 
                 sei                     ; disable IRQ
 
@@ -1833,17 +2002,34 @@ InitIRQs        .proc
 ;   initialize joystick/keyboard
                 lda #$1F
                 sta InputFlags
-                stz InputType
+                stz InputType           ; =joystick
+
+;   disable all IRQ
+                lda #$FF
+                sta INT_EDGE_REG0
+                sta INT_EDGE_REG1
+                sta INT_EDGE_REG2
+                sta INT_MASK_REG0
+                sta INT_MASK_REG1
+                sta INT_MASK_REG2
+
+;   clear pending interrupts
+                lda INT_PENDING_REG0
+                sta INT_PENDING_REG0
+                lda INT_PENDING_REG1
+                sta INT_PENDING_REG1
+                lda INT_PENDING_REG2
+                sta INT_PENDING_REG2
 
 ;   enable Start-of-Frame IRQ
                 lda INT_MASK_REG0
-                and #~FNX0_INT00_SOF    
+                and #~INT00_SOF
                 sta INT_MASK_REG0
 
 ;   enable Keyboard IRQ
-                lda INT_MASK_REG1
-                and #~FNX1_INT00_KBD    
-                sta INT_MASK_REG1
+                ; lda INT_MASK_REG1
+                ; and #~INT01_VIA1
+                ; sta INT_MASK_REG1
 
                 cli                     ; enable IRQ
                 pla
@@ -1855,7 +2041,6 @@ InitIRQs        .proc
 ;
 ;======================================
 SetFont         .proc
-                php
                 pha
                 phx
                 phy
@@ -1863,14 +2048,16 @@ SetFont         .proc
 ;   DEBUG: helpful if you need to see the trace
                 ; bra _XIT
 
-                lda #<GameFont
-                sta zpSource
-                lda #>GameFont
-                sta zpSource+1
-
 ;   switch to charset map
                 lda #iopPage1
                 sta IOPAGE_CTRL
+
+;   Font #0
+FONT0           lda #<GameFont
+                sta zpSource
+                lda #>GameFont
+                sta zpSource+1
+                stz zpSource+2
 
                 lda #<FONT_MEMORY_BANK0
                 sta zpDest
@@ -1898,6 +2085,5 @@ _next1          lda (zpSource),Y
 _XIT            ply
                 plx
                 pla
-                plp
                 rts
                 .endproc
