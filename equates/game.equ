@@ -1,6 +1,6 @@
 
 ;--------------------------------------
-; Miscellaneous Memory Usage
+; Code equates
 ;--------------------------------------
 
 CharResX        = 40

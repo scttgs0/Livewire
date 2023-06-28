@@ -21,14 +21,15 @@
 
                 .cpu "65c02"
 
-                .include "system_f256jr.equ"
-                .include "zeropage.equ"
-                .include "game.equ"
+                .include "equates/system_f256jr.equ"
+                .include "equates/zeropage.equ"
+                .include "equates/game.equ"
 
-                .include "frs_jr_graphic.mac"
-                .include "frs_jr_mouse.mac"
-                .include "frs_jr_random.mac"
-                .include "game.mac"
+                .include "macros/frs_jr_graphic.mac"
+                .include "macros/frs_jr_mouse.mac"
+                .include "macros/frs_jr_random.mac"
+                .include "macros/frs_jr_sprite.mac"
+                .include "macros/game.mac"
 
 
 ;--------------------------------------
