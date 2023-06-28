@@ -14,7 +14,7 @@ _clrFlash       ;sta PL1,Y               ; zero out each
                 lda SAVEX               ; get object's
                 clc                     ; x pos. and
                 adc #61                 ; add 61 for
-                sta SP01_X              ; flash horiz.
+                sta SPRITE(sprite_t.X, 1) ; flash horiz.
                 lda SAVEY               ; get y pos and
                 clc                     ; add 26 for
                 adc #26                 ; flash vert.

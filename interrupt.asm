@@ -667,7 +667,7 @@ _noHitShort     lda SEGX,X              ; get player's
                 asl                     ; *2
                 clc                     ; x position and
                 adc #61                 ; adjust for p/m
-                sta SP00_X              ; and save
+                sta SPRITE(sprite_t.X, 0) ; and save
                 ; .m8
 
                 ldy PLRY                ; hold old y pos
@@ -742,7 +742,7 @@ _skipSP3        lda PLRY
                 sbc #16
                 clc
                 adc #32
-                sta SP00_Y
+                sta SPRITE(sprite_t.Y, 0)
 
                 ldy StartPointIndex
                 lda PlayerTempByte      ; get image byte
@@ -868,7 +868,7 @@ _noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
                 asl
                 tax
                 pla
-                sta SP12_X,X            ; and save
+                sta SPRITE(sprite_t.X, 12),X ; and save
 
                 phx
                 ldx MISNUM
@@ -878,7 +878,7 @@ _noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
                 tay
                 sty PRYHLD,X            ; and save.
                 plx
-                sta SP12_Y,X
+                sta SPRITE(sprite_t.Y, 12),X
 
 _chkProjEnd     dec MISNUM              ; next missile #
                 dec VBXHLD              ; next proj.
@@ -898,8 +898,8 @@ _killProj       lda #FALSE              ; kill proj.
                 asl
                 tax
                 lda #0                  ; hide the sprite
-                sta SP12_X,X
-                sta SP12_Y,X
+                sta SPRITE(sprite_t.X, 12),X
+                sta SPRITE(sprite_t.Y, 12),X
                 plx
 
                 cpx #2                  ; enemy proj?
@@ -982,7 +982,7 @@ _eraseShort     sta (DESTLO),Y          ; erase previous short
                 asl
                 tax
                 pla
-                sta SP02_X,X            ; and store
+                sta SPRITE(sprite_t.X, 2),X ; and store
                 tya
                 clc
                 adc #28                 ; adjust y

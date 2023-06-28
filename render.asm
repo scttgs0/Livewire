@@ -3,30 +3,26 @@
 ; Clear Sprites
 ;======================================
 ClearSprites    .proc
-                ; .m16
+                .frsSpriteClearX 0      ; player
+                .frsSpriteClearY 0
 
-                lda #0
-                sta SP00_X          ; player
-                sta SP00_Y
+                .frsSpriteClearX 12     ; projectiles
+                .frsSpriteClearY 12
+                .frsSpriteClearX 13
+                .frsSpriteClearY 13
+                .frsSpriteClearX 14
+                .frsSpriteClearY 14
+                .frsSpriteClearX 15
+                .frsSpriteClearY 15
+                .frsSpriteClearX 16
+                .frsSpriteClearY 16
+                .frsSpriteClearX 17
+                .frsSpriteClearY 17
+                .frsSpriteClearX 18
+                .frsSpriteClearY 18
+                .frsSpriteClearX 19
+                .frsSpriteClearY 19
 
-                sta SP12_X          ; projectiles
-                sta SP12_Y
-                sta SP13_X
-                sta SP13_Y
-                sta SP14_X
-                sta SP14_Y
-                sta SP15_X
-                sta SP15_Y
-                sta SP16_X
-                sta SP16_Y
-                sta SP17_X
-                sta SP17_Y
-                sta SP18_X
-                sta SP18_Y
-                sta SP19_X
-                sta SP19_Y
-
-                ; .m8
                 rts
                 .endproc
 
