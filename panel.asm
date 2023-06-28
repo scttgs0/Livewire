@@ -117,7 +117,7 @@ _ERSOBJ         jsr DrawObject          ; erase it!
                 sta OBJSEG,X            ; seg #30
                 lda #1                  ; set up move
                 sta OBJINC,X            ; increment
-_RNDOBG         .randomByte             ; get random
+_RNDOBG         .frsRandomByte          ; get random
                 and #$0F                ; sub-grid #
                 cmp #$0F                ; 0-14
                 beq _RNDOBG
@@ -129,7 +129,7 @@ _RNDOBG         .randomByte             ; get random
                 lda #$0F                ; show player
                 ;sta COLPM0             ; death here
                 sta SID1_CTRL1          ; start sound
-_MOREWT         .randomByte             ; set random
+_MOREWT         .frsRandomByte          ; set random
                 and #$1F                ; death sound
                 sta SID1_FREQ1          ; frequency
                 lda #6                  ; wait 0.1 sec

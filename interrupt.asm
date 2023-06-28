@@ -535,7 +535,7 @@ _12             ;lda COLPM2              ; cycle player 2 color
 _13             lda #0                  ; 0 or 2
 _14             sta OBJHUE+4
 
-                .randomByte
+                .frsRandomByte
                 ora #$1F                ; reset the transient time
                 and #$3F
                 sta TransientTmr

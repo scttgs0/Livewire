@@ -24,7 +24,7 @@ _storeNum       sta OBJNUM              ; save obj #
                 cmp #2                  ; of rim?
                 bcc _noObjFire          ;   yes, don't fire
 
-                .randomByte             ; random chance of shooting
+                .frsRandomByte          ; random chance of shooting
                 and #$0F
                 bne _noObjFire          ; don't shoot
 
@@ -105,7 +105,7 @@ _1              lda ObjectType,X        ; is object type 2 (arc)?
                 cmp #2
                 bne _setHue             ;   no, set color
 
-                .randomByte             ; get random direction for type 2
+                .frsRandomByte          ; get random direction for type 2
                 and #1
                 tay
                 lda OBJGRD,X
@@ -166,11 +166,11 @@ _initShort      lda OBJGRD,X            ; object's sub-grid # *16
                 lda #1                  ; short is alive!
                 sta SHORTF,Y
 
-                .randomByte             ; randomize short direction
+                .frsRandomByte          ; randomize short direction
                 and #1
                 sta SHORTD,Y
 
-                .randomByte             ; and that direction's time!
+                .frsRandomByte          ; and that direction's time!
                 and #$3F
                 sta SHORTT,Y
 
@@ -331,7 +331,7 @@ _next1          lda SHORTF,X            ; short alive?
                 dec SHORTT,X            ; direction change?
                 bpl _nextShort          ;   no!
 
-_resetShort     .randomByte             ; get a random direction time
+_resetShort     .frsRandomByte          ; get a random direction time
                 and #$3F                ; clamp to [0-63]
                 sta SHORTT,X            ; and save
 

@@ -233,7 +233,7 @@ _next3          ora NUMOBJ,X            ; all objects
 _next4          lda isObjPresent,X      ; present?
                 bne _nxtogn             ;   yes, try next.
 
-_next5          .randomByte             ; let's try to
+_next5          .frsRandomByte          ; let's try to
                 and #7                  ; start up a
                 cmp #5                  ; new object
                 bcs _next5              ; get a type
@@ -247,7 +247,7 @@ _next5          .randomByte             ; let's try to
                 sta NUMOBJ,Y            ; waiting.
                 tya                     ; then set
                 sta ObjectType,X        ; object type
-_next6          .randomByte             ; get a random
+_next6          .frsRandomByte          ; get a random
                 and #$0F                ; sub-grid
                 cmp #15                 ; number
                 beq _next6
