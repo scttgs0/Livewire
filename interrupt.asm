@@ -1,29 +1,34 @@
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Process IRQs
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; Main IRQ Handler
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 HandleIrq       .proc
                 pha
                 phx
                 phy
 
-                lda INT_PENDING_REG1
-                bit #FNX1_INT00_KBD
-                beq _1
+;   switch to system map
+                stz IOPAGE_CTRL
 
-                jsr KeyboardHandler
+                ; lda INT_PENDING_REG1
+                ; bit #INT01_VIA1
+                ; beq _1
 
-                lda INT_PENDING_REG1
-                sta INT_PENDING_REG1
+                ; lda INT_PENDING_REG1
+                ; sta INT_PENDING_REG1
+
+                ; jsr KeyboardHandler
 
 _1              lda INT_PENDING_REG0
-                bit #FNX0_INT00_SOF
+                bit #INT00_SOF
                 beq _XIT
-
-                jsr VbiHandler
 
                 lda INT_PENDING_REG0
                 sta INT_PENDING_REG0
+
+                jsr VbiHandler
 
 _XIT            ply
                 plx
@@ -371,13 +376,12 @@ LASTSC          .text '                '
 
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; VERTICAL BLANK ROUTINE
+; Handle Vertical Blank Interrupt (SOF)
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 VbiHandler      .proc
                 pha
                 phx
                 phy
-                ;cld                     ; clr decimal mode
 
                 inc JIFFYCLOCK          ; increment the jiffy clock each VBI
 
@@ -1011,6 +1015,5 @@ _VBend          ; TODO: blit to SP02+
 _XIT            ply
                 plx
                 pla
-
                 rts
                 .endproc
