@@ -10,6 +10,8 @@ HandleIrq       .proc
                 phy
 
 ;   switch to system map
+                lda IOPAGE_CTRL
+                pha                     ; preserve
                 stz IOPAGE_CTRL
 
                 ; lda INT_PENDING_REG1
@@ -30,7 +32,10 @@ _1              lda INT_PENDING_REG0
 
                 jsr VbiHandler
 
-_XIT            ply
+_XIT            pla                     ; restore
+                sta IOPAGE_CTRL
+
+                ply
                 plx
                 pla
 
@@ -667,7 +672,7 @@ _noHitShort     lda SEGX,X              ; get player's
                 asl                     ; *2
                 clc                     ; x position and
                 adc #61                 ; adjust for p/m
-                sta SPRITE(sprite_t.X, 0) ; and save
+                sta SPR(sprite_t.X, 0)  ; and save
                 ; .m8
 
                 ldy PLRY                ; hold old y pos
@@ -742,7 +747,7 @@ _skipSP3        lda PLRY
                 sbc #16
                 clc
                 adc #32
-                sta SPRITE(sprite_t.Y, 0)
+                sta SPR(sprite_t.Y, 0)
 
                 ldy StartPointIndex
                 lda PlayerTempByte      ; get image byte
@@ -868,7 +873,7 @@ _noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
                 asl
                 tax
                 pla
-                sta SPRITE(sprite_t.X, 12),X ; and save
+                ;--sta SPR(sprite_t.X, 12),X ; and save
 
                 phx
                 ldx MISNUM
@@ -878,7 +883,7 @@ _noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
                 tay
                 sty PRYHLD,X            ; and save.
                 plx
-                sta SPRITE(sprite_t.Y, 12),X
+                ;--sta SPR(sprite_t.Y, 12),X
 
 _chkProjEnd     dec MISNUM              ; next missile #
                 dec VBXHLD              ; next proj.
@@ -898,8 +903,8 @@ _killProj       lda #FALSE              ; kill proj.
                 asl
                 tax
                 lda #0                  ; hide the sprite
-                sta SPRITE(sprite_t.X, 12),X
-                sta SPRITE(sprite_t.Y, 12),X
+                ;--sta SPR(sprite_t.X, 12),X
+                ;--sta SPR(sprite_t.Y, 12),X
                 plx
 
                 cpx #2                  ; enemy proj?
@@ -982,7 +987,7 @@ _eraseShort     sta (DESTLO),Y          ; erase previous short
                 asl
                 tax
                 pla
-                sta SPRITE(sprite_t.X, 2),X ; and store
+                ;--sta SPR(sprite_t.X, 2),X ; and store
                 tya
                 clc
                 adc #28                 ; adjust y
