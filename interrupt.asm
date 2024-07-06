@@ -873,7 +873,8 @@ _noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
                 asl
                 tax
                 pla
-                ;--sta SPR(sprite_t.X, 12),X ; and save
+                ;!!.frsSpriteSetX_ix
+                ;!!sta SPR(sprite_t.X, 12),X ; and save
 
                 phx
                 ldx MISNUM
@@ -883,7 +884,7 @@ _noObjHitChk    lda PROJSG,X            ; is proj seg# =0?
                 tay
                 sty PRYHLD,X            ; and save.
                 plx
-                ;--sta SPR(sprite_t.Y, 12),X
+                ;!!sta SPR(sprite_t.Y, 12),X
 
 _chkProjEnd     dec MISNUM              ; next missile #
                 dec VBXHLD              ; next proj.
@@ -903,8 +904,10 @@ _killProj       lda #FALSE              ; kill proj.
                 asl
                 tax
                 lda #0                  ; hide the sprite
-                ;--sta SPR(sprite_t.X, 12),X
-                ;--sta SPR(sprite_t.Y, 12),X
+                ;!!.frsSpriteSetX_ix
+                ;!!sta SPR(sprite_t.X, 12),X
+                ;!!.frsSpriteSetY_ix
+                ;!!sta SPR(sprite_t.Y, 12),X
                 plx
 
                 cpx #2                  ; enemy proj?
@@ -987,7 +990,8 @@ _eraseShort     sta (DESTLO),Y          ; erase previous short
                 asl
                 tax
                 pla
-                ;--sta SPR(sprite_t.X, 2),X ; and store
+                ;!!.frsSpriteSetX_ix
+                ;!!sta SPR(sprite_t.X, 2),X ; and store
                 tya
                 clc
                 adc #28                 ; adjust y

@@ -5,10 +5,17 @@
 ;--------------------------------------
 ;--------------------------------------
 LIVE            .proc
+                sei
+                jsr InitMMU
+                jsr InitCPUVectors
+                jsr InitIRQs
+                cli
+
                 jsr RandomSeedQuick
 
                 .frsGraphics mcTextOn|mcOverlayOn|mcGraphicsOn|mcBitmapOn|mcSpriteOn,mcVideoMode240|mcTextDoubleX|mcTextDoubleY
                 .frsMouse_off
+                .frsCursor 0
                 .frsBorder_off
 
                 stz BITMAP0_CTRL        ; disable all bitmaps
@@ -19,7 +26,6 @@ LIVE            .proc
 
                 jsr InitGfxPalette
                 jsr InitTextPalette
-
                 jsr SetFont
                 jsr ClearScreen
 
@@ -96,6 +102,7 @@ _next7          sta OBJSEG,X            ; segment # 29
                 jsr RenderAuthor
                 jsr RenderSelect
 
+                jsr ClearScreenRAM
                 jsr InitBitmap
                 jsr InitSprites
                 jsr ClearSprites        ; clear sprites
@@ -115,7 +122,8 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;lda #3
                 ;sta GridIndex
 
-                bra IntroScreen
+                ;!! bra IntroScreen
+                bra DigIn   ; HACK:
 
                 .endproc
 

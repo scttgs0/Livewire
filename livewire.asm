@@ -21,14 +21,15 @@
 
                 .cpu "65c02"
 
-                .include "equates/system_f256jr.equ"
+                .include "equates/system_f256.equ"
                 .include "equates/zeropage.equ"
                 .include "equates/game.equ"
 
-                .include "macros/frs_jr_graphic.mac"
-                .include "macros/frs_jr_mouse.mac"
-                .include "macros/frs_jr_random.mac"
-                .include "macros/frs_jr_sprite.mac"
+                .include "macros/f256_graphic.mac"
+                .include "macros/f256_mouse.mac"
+                .include "macros/f256_random.mac"
+                .include "macros/f256_sprite.mac"
+                .include "macros/f256_text.mac"
                 .include "macros/game.mac"
 
 
@@ -37,23 +38,27 @@
                 * = $2000
 ;--------------------------------------
 
-                .byte $F2,$56           ; signature
-                .byte $02               ; block count
-                .byte $01               ; start at block1
-                .addr BOOT              ; execute address
-                .word $0000             ; version
-                .word $0000             ; kernel
-                                        ; binary name
-                .text 'Livewire',$00
+                ; .byte $F2,$56           ; signature
+                ; .byte $03               ; slot count
+                ; .byte $01               ; start slot
+                ; .addr BOOT              ; execute address
+                ; .word $0001             ; version
+                ; .word $0000             ; kernel
+                ; .null 'Livewire'        ; binary name
 
+;--------------------------------------
+
+                .text "PGX"
+                .byte $03
+                .dword BOOT
 
 ;--------------------------------------
 ;--------------------------------------
 
-BOOT            cld
-                ldx #$FF                ; initialize the stack
+BOOT            ldx #$FF                ; initialize the stack
                 txs
                 jmp LIVE
+
 
 ; --------------------------------------
 ; --------------------------------------
@@ -66,7 +71,8 @@ BOOT            cld
 ;--------------------------------------
 
                 .include "interrupt.asm"
-                .include "platform_f256jr.asm"
+                .include "platform_f256.asm"
+                .include "facade.asm"
 
                 .include "object.asm"
                 .include "panel.asm"
@@ -78,11 +84,16 @@ BOOT            cld
 
 
 ;--------------------------------------
-                .align $100
+                .align $400
 ;--------------------------------------
 
 GameFont        .include "FONT.inc"
 GameFont_end
+
+
+;--------------------------------------
+                .align $100
+;--------------------------------------
 
 Palette         .include "PALETTE.inc"
 Palette_end
@@ -97,12 +108,3 @@ Stamps_end
 
 Playfield       .fill 160*32,$00
                 .fill 8*32,$00          ; overflow to prevent screen artifacts
-
-;--------------------------------------
-;--------------------------------------
-                .align $100
-;--------------------------------------
-
-Video8K         .fill 8192,$00
-
-                .end

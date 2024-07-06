@@ -1,6 +1,6 @@
 
 ;--------------------------------------
-;   Zero-page Equates
+; Zero-page equates
 ;--------------------------------------
 
 ;--------------------------------------
@@ -103,9 +103,12 @@ isObjPresent        .fill 6             ; obj present flags
 isDirtyPlayfield    .byte ?
 isDirtyPlayer       .byte ?
 
+;--------------------------------------
+
 JIFFYCLOCK          .byte ?
 
 InputFlags          .byte ?
+
 InputType           .byte ?             ; Joystick/Keyboard for Player 1
 itJoystick      = 0
 itKeyboard      = 1
@@ -114,6 +117,7 @@ CONSOL              .byte ?             ; state of OPTION,SELECT,START
 
 zpSource            .long ?             ; Starting address for the source data
 zpDest              .long ?             ; Starting address for the destination block
+zpDest2             .long ?             ; Starting address for the destination block
 zpSize              .long ?             ; Number of bytes to copy
 
 zpTemp1             .byte ?
@@ -122,6 +126,8 @@ zpTemp2             .byte ?
 zpIndex1            .word ?
 zpIndex2            .word ?
 zpIndex3            .word ?
+
+BlitLines           .byte ?
 
 RND_MIN             .byte ?
 RND_SEC             .byte ?
