@@ -6,14 +6,14 @@
 ;--------------------------------------
 LIVE            .proc
                 sei
-                jsr InitMMU
                 jsr InitCPUVectors
+                jsr InitMMU
                 jsr InitIRQs
                 cli
 
                 jsr RandomSeedQuick
 
-                .frsGraphics mcTextOn|mcOverlayOn|mcGraphicsOn|mcBitmapOn|mcSpriteOn,mcVideoMode240|mcTextDoubleX|mcTextDoubleY
+                .frsGraphics mcSpriteOn|mcBitmapOn|mcGraphicsOn|mcOverlayOn|mcTextOn,mcVideoMode240|mcTextDoubleX|mcTextDoubleY
                 .frsMouse_off
                 .frsCursor 0
                 .frsBorder_off
@@ -29,11 +29,12 @@ LIVE            .proc
                 jsr SetFont
                 jsr ClearScreen
 
-                jsr InitSID             ; init sound
+                ;!!jsr InitSID             ; init sound
 
                 lda #0                  ; clear page 0
                 ldx #127
 _next1          sta $80,X
+
                 dex
                 bpl _next1
 
@@ -41,41 +42,47 @@ _next1          sta $80,X
                 sta BCDLVL              ; level #
                 sta isIntro             ; set intro flag
 
-                lda #0                  ; init...
-                ;sta AUDCTL             ; audio
-                ;sta HITCLR             ; collision
-                ;sta COLBK              ; backgnd color
+                ;!!lda #0                  ; init...
+                ;!!sta AUDCTL             ; audio
+                ;!!sta HITCLR             ; collision
+                ;!!sta COLBK              ; backgnd color
 
                 ldx #3                  ; clear shorts
 _next2          sta SHORTF,X
+
                 dex
                 bpl _next2
 
                 ldx #5                  ; zero object...
 _next3          sta isObjDead,X         ; clr dead table
+
                 dex
                 bpl _next3
 
                 ldx #2                  ; zero score
 _next4          sta SCORE,X
                 sta SCOADD,X
+
                 dex
                 bpl _next4
 
                 ldx #7
 _next5          sta isProjActive,X      ; clear proj.
+
                 dex
                 bpl _next5
 
                 ldx #5
 _next6          lda INFOLN,X            ; copy score...
                 sta LASTSC+5,X          ; to last...
+
                 dex                     ; score line
                 bpl _next6
 
                 lda #29                 ; set all...
                 ldx #5                  ; objects to...
 _next7          sta OBJSEG,X            ; segment # 29
+
                 dex
                 bpl _next7
 
@@ -84,7 +91,6 @@ _next7          sta OBJSEG,X            ; segment # 29
 
                 lda #6                  ; 6 projectiles available
                 sta ProjAvail
-
                 lda #2                  ; set...
                 sta BONUS               ; bonus=20000
                 lda #4
@@ -119,11 +125,11 @@ _next7          sta OBJSEG,X            ; segment # 29
                 ;sta COLPM0             ; in player 0
 
 ;   DEBUG: [0-7] to display specific grid
-                ;lda #3
-                ;sta GridIndex
+                ;!!lda #3
+                ;!!sta GridIndex
 
-                ;!! bra IntroScreen
-                bra DigIn   ; HACK:
+                ;!!bra IntroScreen
+                bra DigIn   ; HACK: keyboard not wired in yet
 
                 .endproc
 
@@ -151,11 +157,11 @@ _checkSELECT    lda CONSOL              ; select key...
                 adc #1                  ; indicator...
                 and #1
                 sta JOYPAD
+
                 jsr RenderSelect
 
                 lda #30                 ; 30 jiffy...
                 jsr WAIT                ; wait!
-
                 bra _next1              ; and loop.
 
                 .endproc

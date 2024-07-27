@@ -11,16 +11,17 @@ DrawGrid        .proc
                 lda #0
                 ldx #3                  ; turn off shorts
 _clrShorts      sta SHORTF,X
+
                 dex
                 bpl _clrShorts
 
                 ldx #7                  ; turn off all projectiles
 _clrPrjct       sta isProjActive,X
+
                 dex
                 bpl _clrPrjct
 
                 jsr ClearSprites        ; clear sprites
-
                 sta OFFSET              ; zero offset
 
                 lda #6                  ; 6 projectiles available
@@ -58,6 +59,7 @@ _nextColor      lda Color0Tbl,X         ; grid color
 
                 lda GridIndex           ; get grid
                 and #7                  ; shape index
+
                 tax                     ; load:
                 lda OBCNT0,X            ; type 0
                 sta NUMOBJ              ; object count
@@ -75,6 +77,7 @@ _difficulty     lda NUMOBJ,X            ; object counts
                 clc                     ; by adding
                 adc DIFF                ; difficulty
                 sta NUMOBJ,X            ; and save
+
                 dex
                 bpl _difficulty
 
@@ -85,6 +88,7 @@ _difficulty     lda NUMOBJ,X            ; object counts
                 asl
                 sta GRDADJ              ; save
                 sta GRDWK               ; save
+
                 tax                     ; set x index
                 lda #16                 ; load 16 bytes
                 sta GRDWK2

@@ -126,7 +126,7 @@ ObjectSpdTbl    .byte 18,15,14,12,11,10,9,7     ; object speed for each grid #
 ;       +       *
 ;     /   \   /
 ;   *       *
-;     \   %  
+;     \   %
 ;       =
 
 OBJDIR          .byte 4,3,1,2,0,5,$FF,0         ; resistance        +(1,-1)(-1,0)(0,1)(1,0) =(0,-1) %(-1,1)

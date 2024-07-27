@@ -19,8 +19,6 @@
 ;       ours    256x160                 ; 256 + 32(border) + 32(border) = 320
 
 
-                .cpu "65c02"
-
                 .include "equates/system_f256.equ"
                 .include "equates/zeropage.equ"
                 .include "equates/game.equ"
@@ -38,25 +36,26 @@
                 * = $2000
 ;--------------------------------------
 
-                ; .byte $F2,$56           ; signature
-                ; .byte $03               ; slot count
-                ; .byte $01               ; start slot
-                ; .addr BOOT              ; execute address
-                ; .word $0001             ; version
-                ; .word $0000             ; kernel
-                ; .null 'Livewire'        ; binary name
-
-;--------------------------------------
-
+.if PGX=1
                 .text "PGX"
                 .byte $03
                 .dword BOOT
-
 ;--------------------------------------
+.else
+                .byte $F2,$56           ; signature
+                .byte $03               ; slot count
+                .byte $01               ; start slot
+                .addr BOOT              ; execute address
+                .word $0001             ; version
+                .word $0000             ; kernel
+                .null 'Livewire'        ; binary name
+.endif
+
 ;--------------------------------------
 
 BOOT            ldx #$FF                ; initialize the stack
                 txs
+
                 jmp LIVE
 
 
