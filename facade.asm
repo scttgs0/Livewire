@@ -12,8 +12,18 @@ ClearScreenRAM  .proc
                 phx
                 phy
 
+;   preserve IOPAGE control
+                lda IOPAGE_CTRL
+                pha
+
 ;   switch to system map
                 stz IOPAGE_CTRL
+
+;   ensure edit mode
+                lda MMU_CTRL
+                pha                     ; preserve
+                ora #mmuEditMode
+                sta MMU_CTRL
 
                 lda #$11                ; [8000:9FFF]->[1_0000:1_1FFF]
                 sta MMU_Block4
@@ -32,6 +42,7 @@ ClearScreenRAM  .proc
 _next2          ldx #$40                ; quantity of pages (16k total)
                 ldy #$00
 _next1          sta (zpDest),Y
+
                 dey
                 bne _next1
 
@@ -48,18 +59,26 @@ _next1          sta (zpDest),Y
                 inc MMU_Block5
                 inc MMU_Block5
 
-                pha
-
 ;   reset to the top of the screen buffer
+                pha
                 lda #<Screen16K         ; Set the source address
                 sta zpDest
                 lda #>Screen16K         ; Set the source address
                 sta zpDest+1
-
                 pla
+
                 bra _next2
 
-_XIT            ply
+_XIT
+;   restore MMU control
+                pla
+                sta MMU_CTRL
+
+;   restore IOPAGE control
+                pla
+                sta IOPAGE_CTRL
+
+                ply
                 plx
                 pla
                 rts
@@ -67,7 +86,7 @@ _XIT            ply
 
 
 ;======================================
-;
+
 ;======================================
 SetPlayerRam    .proc
                 php
@@ -188,24 +207,104 @@ BlitPlayerSprite .proc
 
 
 ;======================================
-; Unpack the playfield into Video RAM
+; Unpack the playfield into Screen RAM
+;--------------------------------------
+; 24 lines will fit within a slot
+;   slot=$2000, 24-lines=$1E00
+; double-lines w/in 2-slots
+;   =$3C00 (of $4000)
+; we then reset the Screen16K buffers
+; (one position) to resume at:
+;   =slot+($3C00-$2000)
+;   =$6000+1C00... =$7C00
+; space available is $A000-7C00=$2400
+;   14 lines will fit within $2400 bytes
+;   14*2*320=$2300
+; - - - - - - - - - - - - - - - - - - -
+; we intend to resume at line 48 (=24*2)
+;   =48*320, =$3C00
+;   =$3C00-$2000,.. =$1C00
+;   =$6000+$1C00... =$7C00
+; - - - - - - - - - - - - - - - - - - -
+; - - - - - - - - - - - - - - - - - - -
+; we intend to resume at line 76 (=48+14*2)
+;   =76*320, =$5F00
+;   =$5F00-$4000, =$1F00
+;   =$6000+1F00... =$7F00
+; space available is $A000-7F00=$2100
+;   13 lines will fit within $2100 bytes
+;   13*2*320=$2080
+; - - - - - - - - - - - - - - - - - - -
+; we intend to resume at line 102 (=76+13*2)
+;   =102*320, =$7F80
+;   =$7F80-$6000, =$1F80
+;   =$6000+1F80... =$7F80
+; space available is $A000-7F80=$2080
+;   13 lines will fit within $2080 bytes
+;   13*2*320=$2080
+; - - - - - - - - - - - - - - - - - - -
+; we intend to resume at line 128 (=102+13*2)
+;   =128*320, =$A000
+;   =$A000-$A000, =$0000
+;   =$6000+0000... =$6000
+; space available is $A000-6000=$4000
+;   24 lines will fit within $4000 bytes
+;   24*2*320=$3C00
+;--------------------------------------
+; - - - - - - - - - - - - - - - - - - -
+; we intend to resume at line 176 (=128+24*2)
+;   =176*320, =$DC00
+;   =$DC00-$C000, =$1C00
+;   =$6000+1C00... =$7C00
+; space available is $A000-7C00=$2400
+;   14 lines will fit within $2400 bytes
+;   14*2*320=$2300
+; - - - - - - - - - - - - - - - - - - -
+; we intend to resume at line 204 (-176+14*2)
+;   =204*320, =$FF00
+;   =$FF00-$E000, =$1F00
+;   =$6000+1F00... =$7F00
+; space available is $A000-7F00=$2100
+;   13 lines will fit within $2100 bytes
+;   13*2*320=$2080
+; - - - - - - - - - - - - - - - - - - -
+; we intend to resume at line 230 (=204+13*2)
+;   =230*320, =$11F80
+;   =$11F80-$10000, =$1F80
+;   =$6000+1F80... =$7F80
+; - - - - - - - - - - - - - - - - - - -
+; we're done @ line 256
 ;======================================
 SetScreenRAM    .proc
+zpSRCidx        .var zpIndex1           ; source pointer, range[0:255]
+zpDSTidx        .var zpIndex2           ; dest pointer, range[0:255]
+zpRowBytes      .var zpIndex3           ; source byte counter, range[0:39]
+;---
+
                 pha
                 phx
                 phy
 
-                stz zpIndex1            ; source pointer, range[0:255]
-                stz zpIndex2            ; dest pointer, range[0:255]
-                stz zpIndex3            ; source byte counter, range[0:40]
+                lda zpPFDest
+                sta zpPFDest_cache
+                lda zpPFDest+1
+                sta zpPFDest_cache+1
+                lda zpPFDest2
+                sta zpPFDest2_cache
+                lda zpPFDest2+1
+                sta zpPFDest2_cache+1
 
-_next1          ldy zpIndex1
-                lda (zpSource),Y
-                inc zpIndex3            ; increment the byte counter
-                inc zpIndex1            ; increment the source pointer
+                stz zpSRCidx
+                stz zpDSTidx
+                stz zpRowBytes
+
+_next1          ldy zpSRCidx
+                lda (zpPFSource),Y
+                inc zpRowBytes          ; increment the byte counter
+                inc zpSRCidx            ; increment the source pointer
                 bne _1
 
-                inc zpSource+1
+                inc zpPFSource+1
 
 _1              ldx #3
 _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
@@ -216,152 +315,68 @@ _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
                 pha                     ; preserve
 
                 lda zpTemp1
-                lda BlitLines   ; HACK:
-                ;and #1          ; HACK:
-                ldy zpIndex2
-                sta (zpDest),Y
-                sta (zpDest2),Y         ; double-height
+                ;lda nBlitLines  ; HACK:     color the line so we can analyze the render
+                ;and #15         ; HACK:
+                ;clc             ; HACK:
+                ;adc #15         ; HACK:
+
+                ldy zpDSTidx
+                sta (zpPFDest),Y
+                sta (zpPFDest2),Y         ; double-height
 
                 iny
-                sta (zpDest),Y          ; double-pixel
-                sta (zpDest2),Y         ; double-height
+                sta (zpPFDest),Y          ; double-pixel
+                sta (zpPFDest2),Y         ; double-height
 
                 iny
-                sty zpIndex2            ; update the dest pointer
+                sty zpDSTidx            ; update the dest pointer
                 bne _2
 
-                inc zpDest+1
-                inc zpDest2+1
+                inc zpPFDest+1
+                inc zpPFDest2+1
 
 _2              pla                     ; restore
 
                 dex
                 bpl _nextPixel
 
-                ldx zpIndex3
+                ldx zpRowBytes
                 cpx #40                 ; <40?
                 bcc _next1              ;   yes
 
 ;   we completed a line
-                stz zpIndex3            ;   no, clear the byte counter
-                dec BlitLines           ; one less line to process
+                stz zpRowBytes          ;   no, clear the byte counter
+                dec nBlitLines          ; one less line to process
                 beq _XIT                ; exit when zero lines remain
 
 ;   skip the next line since it is already rendered
-                lda zpDest
+                lda zpPFDest_cache
                 clc
-                adc #$40
-                sta zpDest
-                lda zpDest+1
-                adc #$01
-                sta zpDest+1
+                adc #<$280
+                sta zpPFDest
+                sta zpPFDest_cache
+                lda zpPFDest_cache+1
+                adc #>$280
+                sta zpPFDest+1
+                sta zpPFDest_cache+1
 
-                lda zpDest2
+                lda zpPFDest2_cache
                 clc
-                adc #$40
-                sta zpDest2
-                lda zpDest2+1
-                adc #$01
-                sta zpDest2+1
+                adc #<$280
+                sta zpPFDest2
+                sta zpPFDest2_cache
+                lda zpPFDest2_cache+1
+                adc #>$280
+                sta zpPFDest2+1
+                sta zpPFDest2_cache+1
 
+                stz zpDSTidx
                 bra _next1
 
 _XIT            ply
                 plx
                 pla
                 rts
-
-;---
-;                 pha
-;                 phx
-;                 phy
-
-;                 lda #<Screen16K         ; Set the destination address
-;                 sta zpDest
-;                 lda #>Screen16K
-;                 sta zpDest+1
-;                 lda #`Screen16K
-;                 sta zpDest+2
-
-;                 ;stz zpTemp2     ; HACK:
-
-;                 ; .i16
-;                 ldx #0
-;                 stx zpIndex1            ; source offset         [0-960]
-;                 stx zpIndex2            ; destination offset    [0-7680]
-;                 stx zpIndex3            ; column offset         [0-39]
-
-; ;   32 pixel border
-;                 lda #0
-;                 ldx #31
-;                 ldy #0
-; _nextBorder     sta (zpDest),Y
-;                 iny
-;                 dex
-;                 bpl _nextBorder
-
-;                 sty zpIndex2
-
-; _nextByte       ldy zpIndex1
-;                 lda (zpSource),Y
-
-;                 inc zpIndex1            ; increment the byte counter (source pointer)
-;                 bne _1
-
-;                 inc zpIndex1+1
-; _1              inc zpIndex3            ; increment the column counter
-
-;                 ldx #3
-; _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
-;                 asl
-;                 rol zpTemp1
-;                 asl
-;                 rol zpTemp1
-;                 pha                     ; preserve
-
-;                 lda zpTemp1
-;                 ldy zpIndex2
-;                 sta (zpDest),Y
-;                 iny
-;                 sta (zpDest),Y          ; double-pixel
-;                 iny
-;                 sty zpIndex2
-;                 pla
-
-;                 dex
-;                 bpl _nextPixel
-
-;                 ldx zpIndex3
-;                 cpx #32
-;                 bcc _checkEnd
-
-;                 ;inc zpTemp2     ; HACK: exit criterian
-;                 ;lda zpTemp2
-;                 ;cmp #24
-;                 ;beq _XIT
-
-; ;   32 pixel border (x2)
-;                 lda #0
-;                 ldx #63                 ; 32-byte right-edge border & 32-bytes left-edge border
-;                 ldy zpIndex2
-; _nextBorder2    sta (zpDest),Y
-;                 iny
-;                 dex
-;                 bpl _nextBorder2
-
-;                 sty zpIndex2
-
-;                 ldx #0
-;                 stx zpIndex3            ; reset the column counter
-
-; _checkEnd       ldx zpIndex1
-;                 ;!! cpx #$300               ; 24 source lines (32 bytes/line)... = 24 destination lines (~8K)
-;                 bcc _nextByte
-
-; _XIT            ply
-;                 plx
-;                 pla
-;                 rts
                 .endproc
 
 
@@ -399,47 +414,64 @@ BlitPlayfield   .proc
                 phx
                 phy
 
+;   preserve IOPAGE control
+                lda IOPAGE_CTRL
+                pha
+
 ;   switch to system map
                 stz IOPAGE_CTRL
 
-                ldy #$05
-                ldx #$00
-                stx _index
-_nextBank       phx                     ; preserve
-                ldx _index
+;   ensure edit mode
+                lda MMU_CTRL
+                pha                     ; preserve
+                ora #mmuEditMode
+                sta MMU_CTRL
 
-                lda _data_count,X
-                sta BlitLines
+                ldy #$05                ; perform 5 block-copy operations
+                stz _index
 
-                lda _data_MMUslot,X
-                sta MMU_Block3
-                inc A
-                sta MMU_Block4
-                plx                     ; restore
-
+_nextBank       ldx _index
                 inc _index
 
-                lda _data_Source,X      ; Set the source address
-                sta zpSource
-                lda _data_Source+1,X    ; Set the source address
-                sta zpSource+1
+                lda _data_count,X
+                sta nBlitLines
 
-                lda _data_Dest,X        ; Set the destination address
-                sta zpDest
+                lda _data_MMUslot,X
+                sta MMU_Block4
+                inc A
+                sta MMU_Block5
+
+                txa                     ; convert to WORD index
+                asl
+                tax
+
+                lda _data_Source,X      ; set the source address
+                sta zpPFSource
+                lda _data_Source+1,X
+                sta zpPFSource+1
+
+                lda _data_Dest,X        ; set the destination address
+                sta zpPFDest
                 lda _data_Dest+1,X
-                sta zpDest+1
+                sta zpPFDest+1
 
-                lda _data_Dest2,X        ; Set the destination2 address (double-height lines)
-                sta zpDest2
+                lda _data_Dest2,X        ; set the destination2 address (double-height lines)
+                sta zpPFDest2
                 lda _data_Dest2+1,X
-                sta zpDest2+1
+                sta zpPFDest2+1
 
                 jsr SetScreenRAM
 
-                inx
-                inx
                 dey
                 bne _nextBank
+
+;   restore MMU control
+                pla
+                sta MMU_CTRL
+
+;   restore IOPAGE control
+                pla
+                sta IOPAGE_CTRL
 
                 ply
                 plx
@@ -461,72 +493,16 @@ _data_Dest      .word Screen16K
                 .word Screen16K
 
 _data_Dest2     .word Screen16K+320
-                .word Screen16K+$1C00+320
-                .word Screen16K+$1F00+320
-                .word Screen16K+$1F80+320
+                .word Screen16K+320+$1C00
+                .word Screen16K+320+$1F00
+                .word Screen16K+320+$1F80
                 .word Screen16K+320
 
-_data_count     .byte 24,14,13,13,24
+_data_count     .byte 24,14,13,13,24        ; # of lines to draw
 
 _data_MMUslot   .byte $10,$11,$12,$13,$15
 
 _index          .byte ?
-;---
-;                 pha
-;                 phx
-;                 phy
-
-;                 ldy #6                  ; 7 chuncks of 24 lines
-;                 ldx #0
-
-; _nextBank       ; .m16
-;                 lda _data_Source,X      ; Set the source address
-;                 sta zpSource
-;                 lda _data_Source+2,X
-;                 and #$FF
-;                 sta zpSource+2
-;                 ; .m8
-
-;                 jsr SetScreenRAM
-
-;                 ; .m16
-;                 lda _data_Dest,X        ; Set the destination address
-;                 sta zpDest
-;                 lda _data_Dest+2,X
-;                 and #$FF
-;                 sta zpDest+2
-;                 ; .m8
-
-;                 phx
-;                 phy
-
-;                 ;!!jsr BlitScreenRam
-
-;                 ply
-;                 plx
-
-;                 inx
-;                 inx
-;                 inx
-;                 dey
-;                 bpl _nextBank
-
-;                 ply
-;                 plx
-;                 pla
-;                 rts
-
-; ;--------------------------------------
-
-; _data_Source    .long Playfield+$0000,Playfield+$0300
-;                 .long Playfield+$0600,Playfield+$0900
-;                 .long Playfield+$0C00,Playfield+$0F00
-;                 .long Playfield+$1200
-
-; _data_Dest      ; .long BITMAP0,BITMAP1
-;                 ; .long BITMAP2,BITMAP3
-;                 ; .long BITMAP4,BITMAP5
-;                 ; .long BITMAP6,BITMAP7
 
                 .endproc
 
@@ -694,13 +670,22 @@ v_RenderLine    .var 23*CharResX+4
                 phx
                 phy
 
+;   preserve IOPAGE control
+                lda IOPAGE_CTRL
+                pha
+
+;   switch to color map
+                lda #iopPage3
+                sta IOPAGE_CTRL
+
                 lda isIntro
                 beq _cont
 
                 jmp _XIT
 
+_cont
 ;   reset color for the 40-char line
-_cont           ldx #$FF
+                ldx #$FF
                 ldy #$FF
 _nextColor      inx
                 iny
@@ -715,8 +700,13 @@ _nextColor      inx
                 sta CS_COLOR_MEM_PTR+v_RenderLine+40,X
                 bra _nextColor
 
+_processText
+;   switch to text map
+                lda #iopPage2
+                sta IOPAGE_CTRL
+
 ;   process the text
-_processText    ldx #$FF
+                ldx #$FF
                 ldy #$FF
 _nextChar       inx
                 iny
@@ -785,7 +775,12 @@ _1              sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
-_XIT            ply
+_XIT
+;   restore IOPAGE control
+                pla
+                sta IOPAGE_CTRL
+
+                ply
                 plx
                 pla
                 plp
@@ -1268,355 +1263,6 @@ _XIT
 
                 ply
                 plx
-                pla
-                plp
-                rts
-                .endproc
-
-
-;======================================
-; Render Title
-;======================================
-RenderPlayers   .proc
-v_RenderLine    .var 26*CharResX
-;---
-
-                php
-                pha
-                phx
-                phy
-
-;   switch to color map
-                lda #iopPage3
-                sta IOPAGE_CTRL
-
-;   reset color for the 40-char line
-                ldx #$FF
-                ldy #$FF
-_nextColor      inx
-                iny
-                cpy #$14
-                beq _processText
-
-                lda PlayersMsgColor,Y
-                sta CS_COLOR_MEM_PTR+v_RenderLine,X
-                inx
-                sta CS_COLOR_MEM_PTR+v_RenderLine,X
-                bra _nextColor
-
-;   process the text
-_processText
-
-;   switch to text map
-                lda #iopPage2
-                sta IOPAGE_CTRL
-
-                ldx #$FF
-                ldy #$FF
-_nextChar       inx
-                iny
-                cpy #$14
-                beq _XIT
-
-                lda PlayersMsg,Y
-                beq _space
-                cmp #$20
-                beq _space
-
-                cmp #$41
-                bcc _number
-                bra _letter
-
-_space          sta CS_TEXT_MEM_PTR+v_RenderLine,X
-                inx
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
-
-                bra _nextChar
-
-;   (ascii-30)*2+$A0
-_number         sec
-                sbc #$30
-                asl
-
-                clc
-                adc #$A0
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
-                inx
-                inc A
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
-
-                bra _nextChar
-
-_letter         sta CS_TEXT_MEM_PTR+v_RenderLine,X
-                inx
-                clc
-                adc #$40
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
-
-                bra _nextChar
-
-_XIT
-;   switch to system map
-                stz IOPAGE_CTRL
-
-                ply
-                plx
-                pla
-                plp
-                rts
-                .endproc
-
-
-;======================================
-; Render Player Scores & Bombs
-;--------------------------------------
-; preserves:
-;   X Y
-;======================================
-RenderScore     .proc
-v_RenderLine    .var 27*CharResX
-;---
-
-                php
-                pha
-                phx
-                phy
-
-;   if game is not in progress then exit
-                lda zpWaitForPlay
-                bne _XIT
-
-;   switch to color map
-                lda #iopPage3
-                sta IOPAGE_CTRL
-
-;   reset color for the 40-char line
-                ldx #$FF
-                ldy #$FF
-_nextColor      inx
-                iny
-                cpy #$14
-                beq _processText
-
-                lda ScoreMsgColor,Y
-                sta CS_COLOR_MEM_PTR+v_RenderLine,X
-                inx
-                sta CS_COLOR_MEM_PTR+v_RenderLine,X
-                bra _nextColor
-
-;   process the text
-_processText
-
-;   switch to text map
-                lda #iopPage2
-                sta IOPAGE_CTRL
-
-                ldx #$FF
-                ldy #$FF
-_nextChar       inx
-                iny
-                cpy #$14
-                beq _XIT
-
-                lda ScoreMsg,Y
-                beq _space
-                cmp #$20
-                beq _space
-
-                cmp #$9B
-                beq _bomb
-
-                cmp #$41
-                bcc _number
-                bra _letter
-
-_space          sta CS_TEXT_MEM_PTR+v_RenderLine,X
-                inx
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
-
-                bra _nextChar
-
-;   (ascii-30)*2+$A0
-_number         sec
-                sbc #$30
-                asl
-
-                clc
-                adc #$A0
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
-                inx
-                inc A
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
-
-                bra _nextChar
-
-_letter         sta CS_TEXT_MEM_PTR+v_RenderLine,X
-                inx
-                clc
-                adc #$40
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
-
-                bra _nextChar
-
-_bomb           sta CS_TEXT_MEM_PTR+v_RenderLine,X
-                inx
-                inc A
-                sta CS_TEXT_MEM_PTR+v_RenderLine,X
-
-                bra _nextChar
-
-_XIT
-;   switch to system map
-                stz IOPAGE_CTRL
-
-                ply
-                plx
-                pla
-                plp
-                rts
-                .endproc
-
-
-;======================================
-; Render Canyon
-;--------------------------------------
-; codes $01-$03 are boulders (destructible)
-; codes $84-$85 are canyon (not destructible)
-;======================================
-RenderCanyon    .proc
-v_RenderLine    .var 13*CharResX    ; skip 13 lines
-v_QtyLines      = zpTemp1
-;---
-
-                php
-                pha
-                phy
-
-                lda #11             ; 11 lines
-                sta v_QtyLines
-
-                lda #<CANYON
-                sta zpSource
-                lda #>CANYON
-                sta zpSource+1
-
-;   pointer to text-color memory
-                lda #<CS_COLOR_MEM_PTR+v_RenderLine
-                sta zpDest
-                lda #>CS_COLOR_MEM_PTR+v_RenderLine
-                sta zpDest+1
-
-;   pointer to text-character memory
-                lda #<CS_TEXT_MEM_PTR+v_RenderLine
-                sta zpDest+2
-                lda #>CS_TEXT_MEM_PTR+v_RenderLine
-                sta zpDest+3
-
-                ldy #40             ; 40 characters per line
-_nextChar       dey
-                bpl _1
-
-                dec v_QtyLines
-                beq _XIT
-
-                ldy #40             ; reset index
-
-                lda zpSource
-                clc
-                adc #40
-                sta zpSource
-                lda zpSource+1
-                adc #0
-                sta zpSource+1
-
-                lda zpDest
-                clc
-                adc #40
-                sta zpDest
-                lda zpDest+1
-                adc #0
-                sta zpDest+1
-
-                lda zpDest+2
-                clc
-                adc #40
-                sta zpDest+2
-                lda zpDest+3
-                adc #0
-                sta zpDest+3
-
-_1              lda (zpSource),Y
-                beq _space          ; 0 or ' ' are processed as a space
-                cmp #$20
-                beq _space
-
-                cmp #$84            ; is code < $84?
-                bcc _boulder
-
-_earth          eor #$80            ; clear the high-bit (to convert the data into the ascii code)
-                pha
-
-;   switch to color map
-                lda #iopPage3
-                sta IOPAGE_CTRL
-
-                lda #$E0
-                sta (zpDest),Y
-
-;   switch to text map
-                lda #iopPage2
-                sta IOPAGE_CTRL
-
-                pla
-                sta (zpDest+2),Y
-
-                bra _nextChar
-
-_space          pha
-
-;   switch to color map
-                lda #iopPage3
-                sta IOPAGE_CTRL
-
-                lda #$00
-                sta (zpDest),Y
-
-;   switch to text map
-                lda #iopPage2
-                sta IOPAGE_CTRL
-
-                pla
-                sta (zpDest+2),Y
-
-                bra _nextChar
-
-_boulder        pha
-
-;   switch to color map
-                lda #iopPage3
-                sta IOPAGE_CTRL
-
-                pla
-                phy
-                tay
-                lda CanyonColors,Y
-                ply
-                sta (zpDest),Y
-
-;   switch to text map
-                lda #iopPage2
-                sta IOPAGE_CTRL
-
-                lda #$01
-                sta (zpDest+2),Y
-
-                bra _nextChar
-
-_XIT
-;   switch to system map
-                stz IOPAGE_CTRL
-
-                ply
                 pla
                 plp
                 rts
