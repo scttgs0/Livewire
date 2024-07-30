@@ -315,10 +315,10 @@ _nextPixel      stz zpTemp1             ; extract 2-bit pixel color
                 pha                     ; preserve
 
                 lda zpTemp1
-                ;!!lda nBlitLines  ; HACK:     color the line so we can analyze the render
-                ;!!and #15         ; HACK:
-                ;!!clc             ; HACK:
-                ;!!adc #15         ; HACK:
+                ;lda nBlitLines         ; DEBUG: color the lines so that we can analyze the render
+                ;and #15                ; DEBUG:
+                ;clc                    ; DEBUG:
+                ;adc #15                ; DEBUG:
 
                 ldy zpDSTidx
                 sta (zpPFDest),Y
