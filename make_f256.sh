@@ -17,7 +17,7 @@ mkdir -p obj/
         --flat \
         --nostart \
         -D PGX=0 \
-        -o obj/livewireB.bin \
+        -o obj/livewire.bin \
         --list=obj/livewireB.lst \
         --labels=obj/livewireB.lbl \
         livewire.asm

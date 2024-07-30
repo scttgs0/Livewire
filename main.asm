@@ -116,13 +116,13 @@ _next7          sta OBJSEG,X            ; segment # 29
 ;   enable VBI + DLI
                 jsr InitIRQs
 
-                ;lda #$0F               ; put white...
-                ;sta COLPM1             ; in player 1,
-                ;sta COLPM2             ; player 2
-                ;sta COLPM3             ; and 3
+                ;!!lda #$0F               ; put white...
+                ;!!sta COLPM1             ; in player 1,
+                ;!!sta COLPM2             ; player 2
+                ;!!sta COLPM3             ; and 3
 
-                ;lda #$16               ; put yellow...
-                ;sta COLPM0             ; in player 0
+                ;!!lda #$16               ; put yellow...
+                ;!!sta COLPM0             ; in player 0
 
 ;   DEBUG: [0-7] to display specific grid
                 ;!!lda #3
@@ -201,7 +201,7 @@ _wait1          lda isPaused            ; we paused?
 _plive          lda FlashTimer          ; flash going?
                 bne _nofend             ;   yes! store...
 
-                ;sta SP01_X              ; flash position!
+                ;!!sta SP01_X              ; flash position!
 
 _nofend         lda ObjectMoveTmr       ; objects moving?
                 bne _noohan             ;   not yet!
@@ -272,6 +272,7 @@ _next6          .frsRandomByte          ; get a random
                 lda #1                  ; set up...
                 sta OBJINC,X            ; obj. increment
                 sta isObjPresent,X      ; object present
+
 _nxtogn         dex                     ; loop back to do
                 bpl _next4              ; next object
 
@@ -281,7 +282,6 @@ _nxtogn         dex                     ; loop back to do
 _noohan         lda CONSOL              ; any console
                 cmp #7                  ; keys pressed?
                 beq _jconwt             ;   nope!
-
                 jmp LIVE                ;   yes, restart game
 
 _jconwt         lda isDirtyPlayer

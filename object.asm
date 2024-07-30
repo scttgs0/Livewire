@@ -155,7 +155,7 @@ _tryShort       lda SHORTF,Y            ; short available?
                 bra _doitagain          ; no short avail!
 
 _initShort      lda OBJGRD,X            ; object's sub-grid # *16
-                asl
+                asl                     ; *16
                 asl
                 asl
                 asl
@@ -207,6 +207,7 @@ DrawObject      .proc
                 lda SEGY,Y              ; get object's y position
                 sta PLOTY
                 sta SAVEY               ; and save
+
                 jmp _oddSkip            ; skip odd routine
 
 ;   process odd
@@ -267,6 +268,7 @@ _next2          ldx SHAPIX              ; get line #
                 sta XI
                 lda PYINC,Y             ; y increment of line,
                 sta YI
+
                 lda OBJLEN,X            ; absolute length of line
                 tay
                 lda SIZEWK,Y            ; then scaled length
@@ -323,6 +325,7 @@ _next1          lda SHORTF,X            ; short alive?
                 lda SHORTX,X            ; get x pos.
                 clc
                 adc AddOrSub2,Y         ; and adjust position
+
                 cmp #240                ; on grid?
                 bcs _resetShort         ;   no! don't move
 

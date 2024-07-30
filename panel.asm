@@ -5,19 +5,23 @@
 AddToScore      .proc
                 ldy #0                  ; get zero
                 sed                     ; set decimal mode
+
                 lda SCORE+2             ; this section
                 clc                     ; increments
                 adc SCOADD+2            ; the 3-digit
                 sta SCORE+2             ; score using
                 sty SCOADD+2            ; the 3-digit
+
                 lda SCORE+1             ; score add
                 adc SCOADD+1            ; area, then
                 sta SCORE+1             ; zeros out
                 sty SCOADD+1            ; the
+
                 lda SCORE               ; score add
                 adc SCOADD              ; area using
                 sta SCORE               ; the
                 sty SCOADD              ; y register.
+
                 cld                     ; clr decimal mode
                 jsr ShowScore           ; show score
 
@@ -33,6 +37,7 @@ AddToScore      .proc
                 adc #2                  ; to it
                 cld                     ; clr decimal
                 sta BONUS               ; and save bonus
+
 _XIT            rts
                 .endproc
 
@@ -51,6 +56,7 @@ _next1          lda SCORE,Y             ; get score byte
 
                 inx                     ; increment show
                 inx                     ; pos. by 2
+
                 iny                     ; next score byte
                 cpy #3                  ; done?
                 bne _next1              ;   not yet!
@@ -87,6 +93,7 @@ DecrementLives  .proc
 _WAITPD         ldx #7                  ; 8 projectiles
                 lda #0                  ; zero tally
 _CKPRLV         ora isProjActive,X      ; check all projectiles for activity
+
                 dex
                 bne _CKPRLV
 
@@ -99,6 +106,7 @@ _CKPRLV         ora isProjActive,X      ; check all projectiles for activity
 
                 ldx #3                  ; 4 shorts (0-3)
 _STPSHO         sta SHORTF,X            ; turn off
+
                 dex                     ; all of 'em
                 bpl _STPSHO             ; loop until done
 
@@ -108,6 +116,7 @@ _STPSHO         sta SHORTF,X            ; turn off
 
                 lda #0                  ; erase
                 sta COLOR               ; color
+
                 lda #5                  ; erase all 6
                 sta OBJNUM              ; objects
 _ERSOBJ         jsr DrawObject          ; erase it!
@@ -115,30 +124,35 @@ _ERSOBJ         jsr DrawObject          ; erase it!
                 ldx OBJNUM              ; get object #
                 lda #30                 ; place at
                 sta OBJSEG,X            ; seg #30
+
                 lda #1                  ; set up move
                 sta OBJINC,X            ; increment
+
 _RNDOBG         .frsRandomByte          ; get random
                 and #$0F                ; sub-grid #
                 cmp #$0F                ; 0-14
                 beq _RNDOBG
 
                 sta OBJGRD,X
+
                 dec OBJNUM              ; more objects?
                 bpl _ERSOBJ             ; yeah, do 'em
 
                 lda #$0F                ; show player
-                ;sta COLPM0             ; death here
+                ;!!sta COLPM0             ; death here
                 sta SID1_CTRL1          ; start sound
+
 _MOREWT         .frsRandomByte          ; set random
                 and #$1F                ; death sound
                 sta SID1_FREQ1          ; frequency
+
                 lda #6                  ; wait 0.1 sec
                 jsr WAIT
 
-                ;dec COLPM0             ; dec brightness
-                ;lda COLPM0             ; now set
-                ;sta SID1_CTRL1          ; death volume
-                ;bne _MOREWT            ; more wait
+                ;!!dec COLPM0             ; dec brightness
+                ;!!lda COLPM0             ; now set
+                ;!!sta SID1_CTRL1          ; death volume
+                ;!!bne _MOREWT            ; more wait
 
                 lda LIVES               ; more lives?
                 beq _DEAD               ;   no more life!
@@ -152,8 +166,8 @@ _MOREWT         .frsRandomByte          ; set random
                 lda #FALSE              ; reset player kill flag
                 sta isPlayerDead
 
-                ;lda #$16               ; and
-                ;sta COLPM0             ; player color
+                ;!!lda #$16               ; and
+                ;!!sta COLPM0             ; player color
                 rts
 
 _DEAD           pla                     ; all dead, pull

@@ -302,21 +302,21 @@ _XIT            ply
 ; DISPLAY LIST INTERRUPTS - HEAD
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Interrupt_DLI1  .proc
-                ;pha                     ; save accum
+                ;!!pha                     ; save accum
 
-                ;lda GRAC1              ; get gr. ctrl [0,3]
-                ;sta WSYNC              ; wait for sync
-                ;sta GRACTL             ; store it
+                ;!!lda GRAC1              ; get gr. ctrl [0,3]
+                ;!!sta WSYNC              ; wait for sync
+                ;!!sta GRACTL             ; store it
 
-                ;lda DMAC1              ; get and save
-                ;sta DMACTL             ; DMA ctrl
+                ;!!lda DMAC1              ; get and save
+                ;!!sta DMACTL             ; DMA ctrl
 
-                ;lda #<Interrupt_DLI2   ; point...
-                ;sta VDSLST             ; to...
-                ;lda #>Interrupt_DLI2   ; next...
-                ;sta VDSLST+1           ; DLI!
+                ;!!lda #<Interrupt_DLI2   ; point...
+                ;!!sta VDSLST             ; to...
+                ;!!lda #>Interrupt_DLI2   ; next...
+                ;!!sta VDSLST+1           ; DLI!
 
-                ;pla                     ; get accum
+                ;!!pla                     ; get accum
                 rti                     ; and exit!
                 .endproc
 
@@ -325,26 +325,26 @@ Interrupt_DLI1  .proc
 ; DISPLAY LIST INTERRUPTS - TAIL
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Interrupt_DLI2  .proc
-                ;pha                     ; save accum
-                ;.m16
+                ;!!pha                     ; save accum
+                ;!!.m16
 
-                ;lda #$e4e4              ; get white
-                ;sta PfColor0            ; put in color 0
-                ;lda #$00e4
-                ;sta PfColor0+2
+                ;!!lda #$e4e4              ; get white
+                ;!!sta PfColor0            ; put in color 0
+                ;!!lda #$00e4
+                ;!!sta PfColor0+2
 
-                ;lda #$4cdc              ; put blue...
-                ;sta PfColor1            ; in color 1
-                ;lda #$0044
-                ;sta PfColor1+2
+                ;!!lda #$4cdc              ; put blue...
+                ;!!sta PfColor1            ; in color 1
+                ;!!lda #$0044
+                ;!!sta PfColor1+2
 
-                ;lda #$982c              ; put orange...
-                ;sta PfColor2            ; in color 2
-                ;lda #$00fc
-                ;sta PfColor2+2
+                ;!!lda #$982c              ; put orange...
+                ;!!sta PfColor2            ; in color 2
+                ;!!lda #$00fc
+                ;!!sta PfColor2+2
 
-                ;.m8
-                ;pla                     ; get accum.
+                ;!!.m8
+                ;!!pla                     ; get accum.
                 rti                     ; and exit
                 .endproc
 
@@ -356,10 +356,14 @@ Interrupt_DLI2  .proc
 ;----------------
 
 INFOLN          .text '000000 00 LVL 01'
-InfoLineColor   .byte $10,$10,$10,$10
-                .byte $10,$10,$00,$20
-                .byte $20,$00,$30,$30
-                .byte $30,$00,$30,$30
+
+InfoLineColor   .byte $10,$10,$10,$10,$10,$10
+                .byte $00
+                .byte $20,$20
+                .byte $00
+                .byte $30,$30,$30
+                .byte $00
+                .byte $30,$30
 
 MAGMSG          .text '  ANALOG COMPUTING  '
 TitleMsg        ;.text '      LIVEWIRE      '
@@ -404,10 +408,10 @@ _1              ldx InputType
 
                 sta InputFlags
 
-_2              ;lda #<Interrupt_DLI1   ; point to
-                ;sta VDSLST             ; first
-                ;lda #>Interrupt_DLI1   ; display list
-                ;sta VDSLST+1           ; interrupt
+_2              ;!!lda #<Interrupt_DLI1   ; point to
+                ;!!sta VDSLST             ; first
+                ;!!lda #>Interrupt_DLI1   ; display list
+                ;!!sta VDSLST+1           ; interrupt
 
 ;   this section processes all timers
                 lda ObjectMoveTmr
@@ -427,12 +431,10 @@ _4              lda FlashTimer
 
 _5              lda isPlayerDead        ; player dead?
                 beq _6                  ;   no, continue!
-
                 jmp _VBcont             ; skip player stuff
 
 _6              lda isIntro             ; in intro?
                 beq _7                  ;   no, continue!
-
                 jmp _VBend               ; exit if intro
 
 _7              lda KEYCHAR             ; get keyboard
@@ -442,6 +444,7 @@ _7              lda KEYCHAR             ; get keyboard
                 lda isPaused            ; toggle pause state
                 eor #$FF
                 sta isPaused
+
                 jmp _endKeys            ; done w/key
 
 _8              cmp #$39                ; space bar?
@@ -455,6 +458,7 @@ _8              cmp #$39                ; space bar?
                 ldx #5                  ; time to kill all objects
                 lda #TRUE
 _next1          sta isObjDead,X
+
                 dex
                 bpl _next1
 
@@ -467,10 +471,11 @@ _next2          lda SHORTF,X
                 clc
                 adc #4                  ; 400 points for each short
                 sta MISCAD
-                cld
 
+                cld
                 lda #0                  ; kill short
                 sta SHORTF,X
+
 _9              dex
                 bpl _next2
 
@@ -485,7 +490,7 @@ _endKeys        lda #0                  ; clear keypress
                 sta SID1_CTRL1          ; all sounds
                 sta SID1_CTRL2          ; during
                 sta SID1_CTRL3          ; the
-                ;sta AUDC4              ; pause
+                sta SID2_CTRL1          ; pause
 
                 jmp _VBend               ; then exit
 
@@ -515,17 +520,17 @@ _11             lda MOVSOU              ; move sound?
                 dec MOVSOU              ; dec counter
                 ldx MOVSOU              ; put in index
                 lda MOVFRQ,X            ; get frequency
-                ;sta AUDF4
+                sta SID2_FREQ1
                 lda MOVCTL,X            ; get control
-                ;sta AUDC4
+                sta SID2_CTRL1
 
-_12             ;lda COLPM2              ; cycle player 2 color
-                ;clc
-                ;adc #16
-                ;sta COLPM2              ; save in p/m 2
-                ;sta COLPM3              ; and in p/m 3
-                ;and #$FC                ; also put in pf3 for missiles
-                ;sta COLPF3
+_12             ;!!lda COLPM2              ; cycle player 2 color
+                ;!!clc
+                ;!!adc #16
+                ;!!sta COLPM2              ; save in p/m 2
+                ;!!sta COLPM3              ; and in p/m 3
+                ;!!and #$FC                ; also put in pf3 for missiles
+                ;!!sta COLPF3
 
 ;   transient processing
                 dec TransientTmr        ; transient time
@@ -570,8 +575,8 @@ _17             lda #4                  ; reset fire timer
                 lda JOYPAD              ; using stick?
                 beq _readTrigger        ;   yes!
 
-                ;lda PTRIG0             ; get padl trigger
-                ;jmp _cmpTrigger        ; check it
+                ;!!lda PTRIG0             ; get padl trigger
+                ;!!jmp _cmpTrigger        ; check it
 
 _readTrigger    lda InputFlags          ; get stick trigger
                 and #$10
@@ -611,16 +616,16 @@ _gotProj        dec ProjAvail           ; 1 less available
 _chkPlyrMove    lda JOYPAD              ; using stick?
                 beq _goStick            ;   yes!
 
-                ;lda POT0                ; get paddle
-                ;lsr                     ; divide by
-                ;lsr                     ; 16 to get
-                ;lsr                     ; usable value
-                ;lsr
-                ;cmp #15                 ; > 14?
-                ;bmi _storePos           ;   no, go store
+                ;!!lda POT0                ; get paddle
+                ;!!lsr                     ; divide by
+                ;!!lsr                     ; 16 to get
+                ;!!lsr                     ; usable value
+                ;!!lsr
+                ;!!cmp #15                 ; > 14?
+                ;!!bmi _storePos           ;   no, go store
 
-                ;lda #14                 ; max. is 14
-                ;bne _storePos           ; and go store
+                ;!!lda #14                 ; max. is 14
+                ;!!bne _storePos           ; and go store
 
 _goStick        lda PlyrMoveTmr         ; ready for stick?
                 beq _readStick          ;   yes!
@@ -658,22 +663,22 @@ _noStore        asl                     ; *16 (position index)
                 asl
                 tax
 
-                ;lda P0PL
-                ;and #$0C               ; hit p2/p3?
-                ;beq _noHitShort        ;   no!
+                ;!!lda P0PL
+                ;!!and #$0C               ; hit p2/p3?
+                ;!!beq _noHitShort        ;   no!
 
-                ; lda #TRUE               ; oops! hit short!
-                ; sta isPlayerDead        ; kill player
-                ; jmp _VBend              ; and exit vblank
+                ;!!lda #TRUE               ; oops! hit short!
+                ;!!sta isPlayerDead        ; kill player
+                ;!!jmp _VBend              ; and exit vblank
 
 _noHitShort     lda SEGX,X              ; get player's
-                ; .m16
+                ;!! .m16
                 and #$FF
                 asl                     ; *2
                 clc                     ; x position and
                 adc #61                 ; adjust for p/m
                 sta SPR(sprite_t.X, 0)  ; and save
-                ; .m8
+                ;!! .m8
 
                 ldy PLRY                ; hold old y pos
 
@@ -791,7 +796,6 @@ _missiles       inc PRFLIP              ; inc flip index
                 sta MISNUM
 _projLoop       lda isProjActive,X      ; is proj. active?
                 bne _gotActProj         ;     you bet
-
                 jmp _chkProjEnd         ;     try another
 
 _gotActProj     ldx MISNUM              ; get missile #
@@ -1018,8 +1022,8 @@ _nextShort      dec DESTNM              ; more?
                 inc VBXHLD
                 jmp _shortLoop          ; loop back.
 
-_VBend          ; TODO: blit to SP02+
-                ;sta HITCLR             ; clear collision
+_VBend          ;!! TODO: blit to SP02+
+                ;!!sta HITCLR             ; clear collision
 
 _XIT            ply
                 plx

@@ -40,6 +40,7 @@ ClearPlayfield  .proc
 _next1          ldy #0                  ; note: playfield is 32-bytes * 160 lines = 5120 bytes
                 tya
 _next2          sta (LO),Y
+
                 dey
                 bne _next2
 
@@ -48,6 +49,7 @@ _next2          sta (LO),Y
 
                 lda #TRUE
                 sta isDirtyPlayfield
+
                 rts
 
 _1              inc HI
@@ -235,6 +237,7 @@ _doX            lda ACCX                ; add deltax to
                 clc                     ; x accumulator
                 adc DELTAX
                 sta ACCX
+
                 cmp ENDPT               ; at endpoint yet?
                 bcc _plotIt             ;   no, go plot.
 

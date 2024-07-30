@@ -118,28 +118,36 @@ _nogrid1        dec GRDWK2              ; continue drawing
 
 _gridborder1    ldx GRDADJ              ; now draw 15
                 stx GRDWK               ; close grid
+
                 lda #15                 ; border lines
                 sta GRDWK2
+
 _gridborderLn1  lda CX,X                ; get close x
                 sta PLOTX
                 lda CY,X                ; get close y
                 sta PLOTY
+
                 lda CX+1,X              ; next close x
                 sta DRAWX
+
                 clc                     ; find point
                 adc PLOTX               ; between them
                 ror A
                 sta XWORK               ; and save it!
+
                 lda CY+1,X              ; next close y
                 sta DRAWY
+
                 clc                     ; find point
                 adc PLOTY               ; between them
                 ror A
                 sta YWORK               ; and save it!
+
                 lda #15                 ; set up a work
                 sec                     ; area to hold
                 sbc GRDWK2              ; the points
                 sta GRID                ; between lines
+
                 jsr GridCoordSave       ; and save them
 
                 lda PfColor0            ; invisible grid?
@@ -158,9 +166,11 @@ _nogrid2        dec GRDWK2              ; more lines?
 
 _gridborder2    ldx GRDADJ              ; now draw 15
                 stx GRDWK               ; far grid
+
                 lda #15                 ; border lines
                 sta GRDWK2
                 sta OFFSET              ; and set offset
+
 _gridborderLn2  lda FX,X                ; get far x
                 sta PLOTX
                 lda FY,X                ; get far y
@@ -228,6 +238,7 @@ _next1          tax
                 ldy #0
 _next2          lda SEGWK,Y             ; copy segwk table to segx
                 sta SEGX,X
+
                 inx
                 iny
                 cpy #16
@@ -245,11 +256,11 @@ _next2          lda SEGWK,Y             ; copy segwk table to segx
                 ldy #0
 _next3          lda SEGWK,Y             ; copy segwk table to segy
                 sta SEGY,X
+
                 inx
                 iny
                 cpy #16
                 bne _next3
-
 
 ; ----------------------------
 ; NOW GENERATE RIM COORDINATES
@@ -266,6 +277,7 @@ _next3          lda SEGWK,Y             ; copy segwk table to segy
                 ldy #0
 _next4          lda SEGWK,Y             ; copy segwk table to rimx
                 sta RIMX,X
+
                 inx
                 iny
                 cpy #16
@@ -283,6 +295,7 @@ _next4          lda SEGWK,Y             ; copy segwk table to rimx
                 ldy #0
 _next5          lda SEGWK,Y             ; copy segwk table to rimy
                 sta RIMY,X
+
                 inx
                 iny
                 cpy #16
@@ -292,13 +305,14 @@ _next5          lda SEGWK,Y             ; copy segwk table to rimy
                 clc
                 adc #16
                 sta GRIDNO
+
                 cmp #240                ; all done?
                 beq _XIT                ;   you bet!
-
                 jmp _next1              ;   loop back!
 
 _XIT            lda #FALSE              ; no more intro status
                 sta isIntro
+
                 rts
                 .endproc
 
@@ -316,38 +330,47 @@ DivideSEGWK     .proc
                 lda #16
                 sta STEP
                 sta NEXT
-                lsr
+
+                lsr                     ; /2
                 sta DEST
+
 _next1          lda #0
                 sta LAST
+
 _next2          ldx LAST
                 lda SEGWK,X
+
                 ldx NEXT
                 clc
                 adc SEGWK,X
                 ror A
                 ldx DEST
                 sta SEGWK,X
+
                 lda LAST
                 clc
                 adc STEP
                 sta LAST
+
                 adc STEP
                 cmp #17
                 bcs _nostep
 
                 sta NEXT
+
                 lda DEST
                 clc
                 adc STEP
                 sta DEST
+
                 jmp _next2
 
 _nostep         lda STEP
-                lsr
+                lsr                     ; /2
                 sta STEP
                 sta NEXT
-                lsr
+
+                lsr                     ; /2
                 beq _XIT
 
                 sta DEST
@@ -382,9 +405,11 @@ GridCoordSave   .proc
                 sta RIMX,X
                 lda PLOTY               ; get ploty and save
                 sta RIMY,X
+
                 lda DRAWX               ; get drawx and save
                 sta RIMX+15,X
                 lda DRAWY               ; get drawy and save
                 sta RIMY+15,X
+
 _XIT            rts
                 .endproc
