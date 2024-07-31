@@ -42,7 +42,7 @@ _next1          sta $80,X
                 sta BCDLVL              ; level #
                 sta isIntro             ; set intro flag
 
-                ;!!lda #0                  ; init...
+                ;!!lda #0                 ; init...
                 ;!!sta AUDCTL             ; audio
                 ;!!sta HITCLR             ; collision
                 ;!!sta COLBK              ; backgnd color
@@ -309,6 +309,7 @@ _nodifi         sed                     ; increment
                 clc
                 adc #1
                 sta BCDLVL
+
                 cld                     ; now go to
 _nogrdi         lda isDirtyPlayfield
                 beq _2

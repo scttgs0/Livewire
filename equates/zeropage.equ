@@ -121,9 +121,7 @@ zpSize              .long ?             ; Number of bytes to copy
 
 zpPFSource          .long ?             ; Starting address for the source data
 zpPFDest            .long ?             ; Starting address for the destination block
-zpPFDest2           .long ?             ; Starting address for the destination block
 zpPFDest_cache      .long ?             ; Starting address for the destination block
-zpPFDest2_cache     .long ?             ; Starting address for the destination block
 
 zpTemp1             .byte ?
 zpTemp2             .byte ?
