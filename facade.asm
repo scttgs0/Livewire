@@ -803,7 +803,6 @@ _nextColor      inx
 
 ;   process the text
 _processText
-
 ;   switch to text map
                 lda #iopPage2
                 sta IOPAGE_CTRL
@@ -820,7 +819,9 @@ _nextChar       inx
 
                 bra _nextChar
 
-_XIT            stz IOPAGE_CTRL
+_XIT
+;   switch to system map
+                stz IOPAGE_CTRL
 
                 ply
                 plx
@@ -893,7 +894,9 @@ _letter         sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
-_XIT            stz IOPAGE_CTRL
+_XIT
+;   switch to system map
+                stz IOPAGE_CTRL
 
                 ply
                 plx
@@ -909,7 +912,6 @@ RenderSelect    .proc
 v_RenderLine    .var 19*CharResX
 ;---
 
-                php
                 pha
                 phx
                 phy
@@ -990,7 +992,6 @@ _XIT
                 ply
                 plx
                 pla
-                plp
                 rts
                 .endproc
 
