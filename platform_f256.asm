@@ -212,7 +212,7 @@ _next1          sta SID1_BASE,X
                 sta SID2_ATDCY1
 
                 ; 0%|sidDecay6ms
-                stz SID1_SUREL1         ; Susatain/Release = 0 [square wave]
+                stz SID1_SUREL1         ; Sustain/Release = 0 [square wave]
                 stz SID1_SUREL2
                 stz SID1_SUREL3
                 stz SID2_SUREL1
@@ -223,7 +223,7 @@ _next1          sta SID1_BASE,X
                 sta SID1_CTRL3
                 sta SID2_CTRL1
 
-                lda #$0C                ; Volume = 12 (high-range)
+                lda #$08                ; Volume = 8 (mid-range)
                 sta SID1_SIGVOL
                 sta SID2_SIGVOL
 
@@ -343,6 +343,8 @@ InitGfxPalette  .proc
                 lda #$01
                 sta IOPAGE_CTRL
 
+; - - - - - - - - - - - - - - - - - - -
+;   palette 0
                 lda #<Palette
                 sta zpSource
                 lda #>Palette
@@ -816,9 +818,9 @@ InitIRQs        .proc
                 ;lda #>vecIRQ_BRK
                 ;sta IRQ_PRIOR+1
 
-                lda #<HandleIrq
+                lda #<irqMain
                 sta vecIRQ_BRK
-                lda #>HandleIrq
+                lda #>irqMain
                 sta vecIRQ_BRK+1
 
 ;   initialize the console
