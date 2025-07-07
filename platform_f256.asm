@@ -1,6 +1,6 @@
 
 ; SPDX-FileName: platform_f256.asm
-; SPDX-FileCopyrightText: Copyright 2023, Scott Giese
+; SPDX-FileCopyrightText: Copyright 2023-2025, Scott Giese
 ; SPDX-License-Identifier: GPL-3.0-or-later
 
 
@@ -145,7 +145,7 @@ _tmp            .byte $00
 
 
 ;======================================
-; Convert BCD to Binary
+; Convert Binary to BCD
 ;======================================
 Bin2Bcd         .proc
                 ldx #00
@@ -180,6 +180,40 @@ _tmp            .byte $00
 
                 .endproc
 
+
+;======================================
+; Convert Binary to Ascii
+;--------------------------------------
+; on entry:
+;   A           byte value
+; on exit:
+;   Y,A         2-byte ascii value
+;======================================
+Bin2Ascii       .proc
+                pha
+
+;   upper-nibble to ascii
+                lsr
+                lsr
+                lsr
+                lsr
+                and #$0F
+                tax
+                ldy _hex,X
+
+;   lower-nibble to ascii
+                pla
+                and #$0F
+                tax
+                lda _hex,X
+
+                rts
+
+;--------------------------------------
+
+_hex            .text '0123456789ABCDEF'
+
+                .endproc
 
 ;======================================
 ; Initialize SID
@@ -328,7 +362,7 @@ _Text_CLUT      .dword $00282828        ; 0: Dark Jungle Green
 ;======================================
 ; Initialize the graphic-color LUT
 ;--------------------------------------
-; preserve      A, Y
+; preserve      A, X, Y
 ;======================================
 InitGfxPalette  .proc
                 pha
@@ -407,48 +441,6 @@ InitSprites     .proc
                 .frsSpriteInit SPR_PROJECTILE, scEnable|scLUT0|scDEPTH0|scSIZE_16, 2
                 .frsSpriteInit SPR_PROJECTILE, scEnable|scLUT0|scDEPTH0|scSIZE_16, 3
 
-                ; .frsSpriteClearX 4
-                ; .frsSpriteClearY 4
-                ; .frsSpriteClearX 5
-                ; .frsSpriteClearY 5
-                ; .frsSpriteClearX 6
-                ; .frsSpriteClearY 6
-                ; .frsSpriteClearX 7
-                ; .frsSpriteClearY 7
-                ; .frsSpriteClearX 8
-                ; .frsSpriteClearY 8
-                ; .frsSpriteClearX 9
-                ; .frsSpriteClearY 9
-                ; .frsSpriteClearX 10
-                ; .frsSpriteClearY 10
-
-                ; .resetSprite SP02
-                ; .resetSprite SP03
-                ; .resetSprite SP04
-                ; .resetSprite SP05
-                ; .resetSprite SP06
-                ; .resetSprite SP07
-                ; .resetSprite SP08
-                ; .resetSprite SP09
-                ; .resetSprite SP10
-                ; .resetSprite SP11
-                ; .resetSprite SP12
-                ; .resetSprite SP13
-                ; .resetSprite SP14
-                ; .resetSprite SP15
-                ; .resetSprite SP16
-                ; .resetSprite SP17
-                ; .resetSprite SP18
-                ; .resetSprite SP19
-
-                ; lda #scEnable|scLUT0|scDEPTH0|scSIZE_16
-                ; sta SP00_CTRL
-                ; sta SP02_CTRL
-                ; sta SP03_CTRL
-
-                ; lda #scEnable|scLUT1|scDEPTH0|scSIZE_16
-                ; sta SP01_CTRL
-
 ;   restore IOPAGE control
                 pla
                 sta IOPAGE_CTRL
@@ -456,6 +448,33 @@ InitSprites     .proc
                 pla
                 rts
                 .endproc
+
+
+;======================================
+; Clear all Sprites
+;======================================
+; ClearSprites    .proc
+;                 pha
+
+; ;   preserve IOPAGE control
+;                 lda IOPAGE_CTRL
+;                 pha
+
+; ;   switch to system map
+;                 stz IOPAGE_CTRL
+
+;                 .frsSpriteClear 0
+;                 .frsSpriteClear 1
+;                 .frsSpriteClear 2
+;                 .frsSpriteClear 3
+
+; ;   restore IOPAGE control
+;                 pla
+;                 sta IOPAGE_CTRL
+
+;                 pla
+;                 rts
+;                 .endproc
 
 
 ;======================================
@@ -484,6 +503,9 @@ InitBitmap      .proc
                 lda #locLayer2_BM2
                 sta LAYER_ORDER_CTRL_1
 
+                stz BITMAP0_CTRL        ; disabled
+                stz BITMAP1_CTRL
+
 ;   restore IOPAGE control
                 pla
                 sta IOPAGE_CTRL
@@ -500,7 +522,6 @@ InitBitmap      .proc
 ;======================================
 ClearScreen     .proc
 v_QtyPages      .var $05                ; 40x30 = $4B0... 4 pages + 176 bytes
-
 v_EmptyText     .var $00
 v_TextColor     .var $40
 ;---
@@ -705,6 +726,11 @@ InitCPUVectors  .proc
                 lda #>DefaultHandler
                 sta vecABORT+1
 
+                lda #<DefaultHandler
+                sta vecNMI
+                lda #>DefaultHandler
+                sta vecNMI+1
+
                 lda #<BOOT
                 sta vecRESET
                 lda #>BOOT
@@ -856,10 +882,15 @@ InitIRQs        .proc
                 and #~INT00_SOF
                 sta INT_MASK_REG0
 
+;   enable Start-of-Line IRQ
+                ;!!lda INT_MASK_REG0
+                ;!!and #~INT00_SOL
+                ;!!sta INT_MASK_REG0
+
 ;   enable Keyboard IRQ
-                ; lda INT_MASK_REG1
-                ; and #~INT01_VIA1
-                ; sta INT_MASK_REG1
+                ;!! lda INT_MASK_REG1
+                ;!! and #~INT01_VIA1
+                ;!! sta INT_MASK_REG1
 
 ;   restore IOPAGE control
                 pla

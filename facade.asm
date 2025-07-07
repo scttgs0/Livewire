@@ -35,7 +35,7 @@ ClearScreenRAM  .proc
                 lda #>Screen16K         ; Set the source address
                 sta zpDest+1
 
-                lda #$05                ; quantity of buffer fills (16k/interation)
+                lda #$05                ; quantity of buffer fills (16k/iteration)
                 sta zpIndex1
 
                 lda #$00
@@ -274,37 +274,36 @@ _index          .byte ?
 
 ;======================================
 SetPlayerRam    .proc
-                php
                 pha
                 phx
                 phy
 
                 lda #<PlyrAnimFrame    ; Set the source address
                 sta zpSource
-                lda #>PlyrAnimFrame    ; Set the source address
+                lda #>PlyrAnimFrame
                 sta zpSource+1
                 lda #`PlyrAnimFrame
                 sta zpSource+2
 
                 lda #<SPR_PLAYER       ; Set the destination address
                 sta zpDest
-                lda #>SPR_PLAYER       ; Set the destination address
+                lda #>SPR_PLAYER
                 sta zpDest+1
                 lda #`SPR_PLAYER
                 sta zpDest+2
 
-                ;!! .i16
-                ldx #0
-                stx zpIndex1            ; source offset         [0-960]
-                stx zpIndex2            ; destination offset    [0-7680]
-                stx zpIndex3            ; column offset         [0-39]
+                stz zpIndex1            ; source offset         [0-960]
+                stz zpIndex1+1
+                stz zpIndex2            ; destination offset    [0-7680]
+                stz zpIndex2+1
+                stz zpIndex3            ; column offset         [0-39]
 
 _nextByte       ldy zpIndex1
                 lda (zpSource),Y
 
                 inc zpIndex1            ; increment the byte counter (source pointer)
 
-                ldx #7
+                ldx #7                  ; process 8 bits
 _nextPixel      stz zpTemp1             ; extract 1-bit pixel
                 asl
                 rol zpTemp1
@@ -320,6 +319,7 @@ _skipColor      pha
                 sta (zpDest),Y
                 iny
                 sty zpIndex2
+
                 pla
 
                 dex
@@ -336,12 +336,9 @@ _checkEnd       ldx zpIndex1
                 cpx #16
                 bcc _nextByte
 
-_XIT            ;!! .i8
-
-                ply
+_XIT            ply
                 plx
                 pla
-                plp
                 rts
                 .endproc
 
@@ -350,22 +347,20 @@ _XIT            ;!! .i8
 ;
 ;======================================
 BlitPlayerRam   .proc
-                php
-                pha
+                ;!! pha
 
-                lda #<$0400
-                sta zpSize
-                lda #>$0400
-                sta zpSize+1
-                lda #0
-                sta zpSize+2
+                ;!! lda #<$0400
+                ;!! sta zpSize
+                ;!! lda #>$0400
+                ;!! sta zpSize+1
+                ;!! stz zpSize+2
 
-                lda #<SPR_PLAYER        ; Set the source address
-                sta zpSource
-                lda #>SPR_PLAYER
-                sta zpSource+1
-                lda #`SPR_PLAYER
-                sta zpSource+2
+                ;!! lda #<SPR_PLAYER        ; Set the source address
+                ;!! sta zpSource
+                ;!! lda #>SPR_PLAYER
+                ;!! sta zpSource+1
+                ;!! lda #`SPR_PLAYER
+                ;!! sta zpSource+2
 
                 ;!! lda #<(SPRITES-VRAM)    ; Set the destination address
                 ;!! sta zpDest
@@ -374,10 +369,9 @@ BlitPlayerRam   .proc
                 ;!! lda #`(SPRITES-VRAM)
                 ;!! sta zpDest+2
 
-                jsr Copy2VRAM
+                ;!! jsr Copy2VRAM
 
-                pla
-                plp
+                ;!! pla
                 rts
                 .endproc
 
@@ -387,7 +381,7 @@ BlitPlayerRam   .proc
 ;======================================
 BlitPlayerSprite .proc
                 jsr SetPlayerRam
-                jsr BlitPlayerRam
+                ;!! jsr BlitPlayerRam
 
                 rts
                 .endproc
@@ -437,11 +431,11 @@ Copy2VRAM       .proc
                 ;!!.setdp zpSource
                 ;!!.m8i8
 
-    ; Set SDMA to go from system to video RAM, 1D copy
+;   Set SDMA to go from system to video RAM, 1D copy
                 ;!!lda #sdcSysRAM_Src|sdcEnable
                 ;!!sta SDMA0_CTRL
 
-    ; Set VDMA to go from system to video RAM, 1D copy
+;   Set VDMA to go from system to video RAM, 1D copy
                 ;!!lda #vdcSysRAM_Src|vdcEnable
                 ;!!sta VDMA_CTRL
 

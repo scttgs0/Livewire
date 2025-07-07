@@ -58,6 +58,10 @@ BOOT            ldx #$FF                ; initialize the stack
 
                 stz IOPAGE_CTRL
 
+                stz BACKGROUND_COLOR_R
+                stz BACKGROUND_COLOR_G
+                stz BACKGROUND_COLOR_B
+
                 jmp LIVE
 
 
@@ -81,14 +85,14 @@ BOOT            ldx #$FF                ; initialize the stack
                 .include "grid.asm"
                 .include "render.asm"
 
-                .include "DATA.inc"
+                .include "data/DATA.inc"
 
 
 ;--------------------------------------
                 .align $400
 ;--------------------------------------
 
-GameFont        .include "FONT.inc"
+GameFont        .include "data/FONT.inc"
 GameFont_end
 
 
@@ -96,7 +100,7 @@ GameFont_end
                 .align $100
 ;--------------------------------------
 
-Palette         .include "PALETTE.inc"
+Palette         .include "data/PALETTE.inc"
 Palette_end
 
 
@@ -104,7 +108,7 @@ Palette_end
                 .align $100
 ;--------------------------------------
 
-Stamps          .include "SPRITES.inc"
+Stamps          .include "data/SPRITES.inc"
 Stamps_end
 
 Playfield       .fill 160*32,$00
