@@ -1,6 +1,6 @@
 
 ; SPDX-FileName: facade.asm
-; SPDX-FileCopyrightText: Copyright 2023, Scott Giese
+; SPDX-FileCopyrightText: Copyright 2023-2025, Scott Giese
 ; SPDX-License-Identifier: GPL-3.0-or-later
 
 
@@ -88,7 +88,7 @@ _XIT
 ;======================================
 ; Unpack the playfield into Screen RAM
 ;--------------------------------------
-;
+; preserve      A, X, Y
 ;======================================
 SetScreenRAM    .proc
 zpSRCidx        .var zpIndex1           ; source pointer, range[0:255]
@@ -180,6 +180,8 @@ _XIT            ply
 
 ;======================================
 ;
+;--------------------------------------
+; preserve      A, X, Y
 ;======================================
 BlitPlayfield   .proc
                 pha
@@ -272,17 +274,19 @@ _index          .byte ?
 
 ;======================================
 
+;--------------------------------------
+; preserve      A, X, Y
 ;======================================
 SetPlayerRam    .proc
                 pha
                 phx
                 phy
 
-                lda #<PlyrAnimFrame    ; Set the source address
+                lda #<tblPlayerAnimFrame    ; Set the source address
                 sta zpSource
-                lda #>PlyrAnimFrame
+                lda #>tblPlayerAnimFrame
                 sta zpSource+1
-                lda #`PlyrAnimFrame
+                lda #`tblPlayerAnimFrame
                 sta zpSource+2
 
                 lda #<SPR_PLAYER       ; Set the destination address
@@ -511,9 +515,7 @@ v_TextColor     .var $40
 v_RenderLine    .var 24*CharResX
 ;---
 
-                php
                 pha
-                phx
                 phy
 
 ;   switch to color map
@@ -557,9 +559,7 @@ _next2          sta (zpDest),Y
                 stz IOPAGE_CTRL
 
                 ply
-                plx
                 pla
-                plp
                 rts
                 .endproc
 
@@ -571,7 +571,6 @@ RenderGamePanel .proc
 v_RenderLine    .var 23*CharResX+4
 ;---
 
-                php
                 pha
                 phx
                 phy
@@ -606,12 +605,13 @@ _nextColor      inx
                 sta CS_COLOR_MEM_PTR+v_RenderLine+40,X
                 bra _nextColor
 
+;   process the text
 _processText
+
 ;   switch to text map
                 lda #iopPage2
                 sta IOPAGE_CTRL
 
-;   process the text
                 ldx #$FF
                 ldy #$FF
 _nextChar       inx
@@ -689,7 +689,6 @@ _XIT
                 ply
                 plx
                 pla
-                plp
                 rts
                 .endproc
 
@@ -758,7 +757,9 @@ _letter         sta CS_TEXT_MEM_PTR+v_RenderLine,X
 
                 bra _nextChar
 
-_XIT            stz IOPAGE_CTRL
+_XIT
+;   switch to system map
+                stz IOPAGE_CTRL
 
                 ply
                 plx
@@ -769,6 +770,8 @@ _XIT            stz IOPAGE_CTRL
 
 ;======================================
 ; Render Title
+;--------------------------------------
+; preserve      A, X, Y
 ;======================================
 RenderTitle     .proc
 v_RenderLine    .var 13*CharResX
@@ -826,6 +829,8 @@ _XIT
 
 ;======================================
 ; Render Author
+;--------------------------------------
+; preserve      A, X, Y
 ;======================================
 RenderAuthor    .proc
 v_RenderLine    .var 16*CharResX
@@ -901,6 +906,8 @@ _XIT
 
 ;======================================
 ; Render SELECT (Qty of Players)
+;--------------------------------------
+; preserve      A, X, Y
 ;======================================
 RenderSelect    .proc
 v_RenderLine    .var 19*CharResX

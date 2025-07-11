@@ -26,29 +26,38 @@ ENDPT               .byte ?             ; draw endpoint
 HOLD                .byte ?             ; work area
 XWORK               .byte ?
 YWORK               .byte ?
+
 GRID                .byte ?             ; grid # work
 OFFSET              .byte ?             ; grid offset
-PlyrMoveTmr         .byte ?             ; player move timer
-PlyrGridPos         .byte ?             ; player grid #
-PLRY                .byte ?             ; player y pos.
+
+playerGridPos       .byte ?             ; player grid #
+playerYPos          .byte ?
+playerMoveTmr       .byte ?
+playerShootTmr      .byte ?             ; player fire timer
+playerShapeTmr      .byte ?             ; plyr. shape count
+playerTempByte      .byte ?             ; plyr. image byte
+isPlayerDead        .byte ?             ; kill plyr flag
+
 GRIDNO              .byte ?             ; grid #
 LAST                .byte ?             ; grid...
 NEXT                .byte ?             ; divide...
 STEP                .byte ?             ; work...
 DEST                .byte ?             ; areas
 VBXHLD              .byte ?             ; x hold
-PlyrShootTmr        .byte ?             ; player fire timer
 ENDVAL              .byte ?             ; work area
+
 MISNUM              .byte ?             ; missile #
 PRFLIP              .byte ?             ; proj. flip flag
 ProjAdvTimer        .byte ?             ; proj. move timer
 ProjAdvToggle       .byte ?             ; proj. timer (every other frame)
+
 DelayTimer          .byte ?             ; general timer
 isIntro             .byte ?             ; intro flag
 BCDLVL              .byte ?             ; level #
 zpShowColor         .byte ?             ; char. color [placed in high nibble]
 zpShowByte          .byte ?             ; char. byte pos.
 YOFSET              .byte ?             ; plot y offset
+
 ObjectMoveTmr       .byte ?             ; object move timer
 OBJNUM              .byte ?             ; object #
 SHAPIX              .byte ?             ; obj. shape index
@@ -57,19 +66,20 @@ XI                  .byte ?             ; obj. x increment
 YI                  .byte ?             ; obj. y increment
 SHAPCT              .byte ?             ; obj. shape cnt.
 HLDGRD              .byte ?             ; obj. grid work
+
 isPaused            .byte ?             ; pause flag
 ZAP                 .byte ?             ; zap flag
+
 SAVEX               .byte ?             ; work area
 SAVEY               .byte ?             ; work area
 FLASHY              .byte ?             ; obj. flash pos.
 FlashTimer          .byte ?             ; flash time
-SPoint1_Index       .byte ?             ; player...
-SPoint2_Index       .byte ?             ; shape...
-SPoint3_Index       .byte ?             ; index...
-StartPointIndex     .byte ?             ; areas
-PlayerTempByte      .byte ?             ; plyr. image byte
-PlyrShapeCnt        .byte ?             ; plyr. shape count
-isPlayerDead        .byte ?             ; kill plyr flag
+
+idxSPoint1          .byte ?             ; player...
+idxSPoint2          .byte ?             ; shape...
+idxSPoint3          .byte ?             ; index...
+idxStartPoint       .byte ?             ; areas
+
 ProjAvail           .byte ?             ; # proj. available
 TransientTmr        .byte ?             ; transient timer
 DESTLO              .byte ?             ; destination...

@@ -134,7 +134,7 @@ _killObj        lda #FALSE              ; object is no longer alive
                 bpl _doitagain
 
                 lda OBJGRD,X            ; check for collision with player?
-                cmp PlyrGridPos
+                cmp playerGridPos
                 bne _chkShort           ;   no hit
 
                 lda #TRUE               ;   hit, kill player!

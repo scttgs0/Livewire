@@ -31,7 +31,7 @@ LIVE            .proc
 
                 ;!!jsr InitSID             ; init sound
 
-                lda #0                  ; clear page 0
+                lda #0                  ; clear page-0
                 ldx #127
 _next1          sta $80,X
 
@@ -42,7 +42,7 @@ _next1          sta $80,X
                 sta BCDLVL              ; level #
                 sta isIntro             ; set intro flag
 
-                ;!!lda #0                 ; init...
+                lda #0                 ; init...
                 ;!!sta AUDCTL             ; audio
                 ;!!sta HITCLR             ; collision
                 ;!!sta COLBK              ; backgnd color
@@ -74,9 +74,9 @@ _next5          sta isProjActive,X      ; clear proj.
 
                 ldx #5
 _next6          lda INFOLN,X            ; copy score...
-                sta LASTSC+5,X          ; to last...
+                sta LASTSC+5,X          ; to last score line
 
-                dex                     ; score line
+                dex
                 bpl _next6
 
                 lda #29                 ; set all...
@@ -91,17 +91,19 @@ _next7          sta OBJSEG,X            ; segment # 29
 
                 lda #6                  ; 6 projectiles available
                 sta ProjAvail
+
                 lda #2                  ; set...
                 sta BONUS               ; bonus=20000
+
                 lda #4
                 sta LIVES               ; 4 extra lives
                 jsr ShowLives           ; show lives remaining
 
-                stz SPoint1_Index       ; set up...
+                stz idxSPoint1          ; set up...
                 lda #5                  ; player shape indexes
-                sta SPoint2_Index
+                sta idxSPoint2
                 lda #10
-                sta SPoint3_Index
+                sta idxSPoint3
 
                 jsr RenderPublisher
                 jsr RenderTitle
@@ -261,6 +263,7 @@ _next5          .frsRandomByte          ; let's try to
                 sta NUMOBJ,Y            ; waiting.
                 tya                     ; then set
                 sta ObjectType,X        ; object type
+
 _next6          .frsRandomByte          ; get a random
                 and #$0F                ; sub-grid
                 cmp #15                 ; number

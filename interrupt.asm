@@ -1,4 +1,9 @@
 
+; SPDX-FileName: interrupt.asm
+; SPDX-FileCopyrightText: Copyright 2025, Scott Giese
+; SPDX-License-Identifier: GPL-3.0-or-later
+
+
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; Main IRQ Handler
@@ -11,10 +16,12 @@ irqMain         .proc
 
                 cld
 
+; - - - - - - - - - - - - - - - - - - -
 ;   switch to system map
                 lda IOPAGE_CTRL
                 pha                     ; preserve
                 stz IOPAGE_CTRL
+; - - - - - - - - - - - - - - - - - - -
 
                 ; lda INT_PENDING_REG1
                 ; bit #INT01_VIA1
@@ -34,8 +41,10 @@ _1              lda INT_PENDING_REG0
 
                 jsr irqVBIHandler
 
+; - - - - - - - - - - - - - - - - - - -
 _XIT            pla                     ; restore
                 sta IOPAGE_CTRL
+; - - - - - - - - - - - - - - - - - - -
 
                 ply
                 plx
@@ -93,6 +102,7 @@ _1              pla                     ;   no
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _1r             pla
                 pha
                 cmp #KEY_F2|$80
@@ -104,6 +114,7 @@ _1r             pla
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _2              pla
                 pha
                 cmp #KEY_F3
@@ -115,6 +126,7 @@ _2              pla
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _2r             pla
                 pha
                 cmp #KEY_F3|$80
@@ -126,6 +138,7 @@ _2r             pla
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _3              pla
                 pha
                 cmp #KEY_F4
@@ -137,6 +150,7 @@ _3              pla
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _3r             pla
                 pha
                 cmp #KEY_F4|$80
@@ -148,6 +162,7 @@ _3r             pla
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _4              pla
                 pha
                 cmp #KEY_UP
@@ -166,6 +181,7 @@ _4a             lda #itKeyboard
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _4r             pla
                 pha
                 cmp #KEY_UP|$80
@@ -177,6 +193,7 @@ _4r             pla
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _5              pla
                 pha
                 cmp #KEY_DOWN
@@ -195,6 +212,7 @@ _5a             lda #itKeyboard
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _5r             pla
                 pha
                 cmp #KEY_DOWN|$80
@@ -206,6 +224,7 @@ _5r             pla
 
                 jmp _CleanUpXIT
 
+; - - - - - - - - - - - - - - - - - - -
 _6              pla
                 pha
                 cmp #KEY_LEFT
@@ -386,7 +405,7 @@ LASTSC          .text '                '
 
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Handle Vertical Blank Interrupt (SOF)
+; Vertical Blank Interrupt (SOF)
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 irqVBIHandler   .proc
                 pha
@@ -552,26 +571,25 @@ _14             sta OBJHUE+4
                 sta TransientTmr
 
 ;   player processing
-_15             inc PlyrShapeCnt        ; inc plyr timer
-                lda PlyrShapeCnt        ; ready to change shape?
+_15             inc playerShapeTmr      ; inc player timer
+                lda playerShapeTmr      ; ready to change shape?
                 cmp #3
                 bne _16                 ;   not yet!
 
-                lda #0                  ; better reset index
-                sta PlyrShapeCnt
+                stz playerShapeTmr      ; better reset index
 
-                inc SPoint1_Index       ; and increment all shape indexes!
-                inc SPoint2_Index
-                inc SPoint3_Index
+                inc idxSPoint1          ; and increment all shape indexes!
+                inc idxSPoint2
+                inc idxSPoint3
 
-_16             lda PlyrShootTmr        ; check if player is shooting
+_16             lda playerShootTmr      ; check if player is shooting
                 beq _17
 
-                dec PlyrShootTmr
+                dec playerShootTmr
                 bra _chkPlyrMove
 
 _17             lda #4                  ; reset fire timer
-                sta PlyrShootTmr
+                sta playerShootTmr
 
                 lda JOYPAD              ; using stick?
                 beq _readTrigger        ;   yes!
@@ -603,7 +621,7 @@ _gotProj        dec ProjAvail           ; 1 less available
                 lda #0                  ; initialize segment # to 0
                 sta PROJSG,X
 
-                lda PlyrGridPos         ; set up proj grid #
+                lda playerGridPos       ; set up proj grid #
                 sta ProjGridPos,X
                 asl                     ; *16
                 asl
@@ -628,20 +646,20 @@ _chkPlyrMove    lda JOYPAD              ; using stick?
                 ;!!lda #14                 ; max. is 14
                 ;!!bne _storePos           ; and go store
 
-_goStick        lda PlyrMoveTmr         ; ready for stick?
+_goStick        lda playerMoveTmr       ; ready for stick?
                 beq _readStick          ;   yes!
 
-                dec PlyrMoveTmr         ; dec timer
+                dec playerMoveTmr       ; dec timer
                 jmp _VBcont             ; jmp to continue
 
 _readStick      lda #3                  ; reset stick timer
-                sta PlyrMoveTmr         ; to 3 jiffies
+                sta playerMoveTmr       ; to 3 jiffies
 
                 lda InputFlags          ; get stick
                 and #$0F
                 tax
 
-                lda PlyrGridPos         ; get plyr grid #
+                lda playerGridPos       ; get plyr grid #
                 clc                     ; add the
                 adc DeflectionValue,X   ; direction inc
                 bmi _samePos            ; if <0.. reject
@@ -649,14 +667,14 @@ _readStick      lda #3                  ; reset stick timer
                 cmp #15                 ; if <15.. use it!
                 bne _storePos
 
-_samePos        lda PlyrGridPos         ; get grid #
-_storePos       cmp PlyrGridPos         ; same as last?
+_samePos        lda playerGridPos       ; get grid #
+_storePos       cmp playerGridPos       ; same as last?
                 beq _noStore            ;   yes, don't store
 
                 ldx #9                  ; start up
                 stx MOVSOU              ; move sound
 
-                sta PlyrGridPos         ; save grid #
+                sta playerGridPos       ; save grid #
 
 _noStore        asl                     ; *16 (position index)
                 asl
@@ -674,92 +692,94 @@ _noStore        asl                     ; *16 (position index)
 
 _noHitShort     lda SEGX,X              ; get player's
                 ;!! .m16
-                and #$FF
+                ;!! and #$FF
                 asl                     ; *2
                 clc                     ; x position and
                 adc #61                 ; adjust for p/m
                 sta SPR(sprite_t.X, 0)  ; and save
                 ;!! .m8
 
-                ldy PLRY                ; hold old y pos
+;   [DEBUG] $2469
+                ldy playerYPos          ; hold old y pos
 
                 lda SEGY,X              ; get new y pos
                 clc                     ; adjust for p/m
                 adc #32                 ; by adding 32
-                sta PLRY                ; set y pos
+                sta playerYPos          ; set y pos
 
 ;   create the animated player sprite
                 lda #0                  ; clear out old player image
                 ldx #15
-_clrPS          sta PlyrAnimFrame,X
+_clrPS          sta tblPlayerAnimFrame,X
+
                 dex
                 bpl _clrPS
 
 ;   generate the new animated player frame
                 lda #15                 ; copy 16-byte
-                sta StartPointIndex
+                sta idxStartPoint
 
 _startPointLoop lda #0                  ; player image to player 0
-                sta PlayerTempByte
+                sta playerTempByte      ; composite work area
 
-                lda SPoint1_Index
-                and #15
+                lda idxSPoint1
+                and #15                 ; clamp to [0:15]
                 tax
-                lda StartPointIndex
-                cmp StartPointTbl,X
-                bcc _skipSP1
+                lda idxStartPoint
+                cmp tblStartPoint,X     ; draw this scanline?
+                bcc _skipSP1            ;   no
 
-                cmp EndPointTbl,X
-                bcs _skipSP1
-
-                tax
-                lda PN1,X               ; get image 1 and save
-                sta PlayerTempByte
-
-_skipSP1        lda SPoint2_Index
-                and #15
-                tax
-                lda StartPointIndex
-                cmp StartPointTbl,X
-                bcc _skipSP2
-
-                cmp EndPointTbl,X
-                bcs _skipSP2
+                cmp tblEndPoint,X       ; draw this scanline?
+                bcs _skipSP1            ;   no
 
                 tax
-                lda PN2,X
-                ora PlayerTempByte      ; add image 2 and save
-                sta PlayerTempByte
+                lda imgPlayerNS,X       ; get image 1 and save
+                sta playerTempByte      ; composite work area
 
-_skipSP2        lda SPoint3_Index
-                and #15
+_skipSP1        lda idxSPoint2
+                and #15                 ; clamp to [0:15]
                 tax
-                lda StartPointIndex
-                cmp StartPointTbl,X
-                bcc _skipSP3
+                lda idxStartPoint
+                cmp tblStartPoint,X     ; draw this scanline?
+                bcc _skipSP2            ;   no
 
-                cmp EndPointTbl,X
-                bcs _skipSP3
+                cmp tblEndPoint,X       ; draw this scanline?
+                bcs _skipSP2            ;   no
 
                 tax
-                lda PN3,X
-                ora PlayerTempByte      ; add image 3 and save
-                sta PlayerTempByte
+                lda imgPlayerNWSE,X
+                ora playerTempByte      ; merge image 2 and save
+                sta playerTempByte
 
-_skipSP3        lda PLRY
-                clc
-                adc StartPointIndex
-                sec
-                sbc #16
-                clc
-                adc #32
+_skipSP2        lda idxSPoint3
+                and #15                 ; clamp to [0:15]
+                tax
+                lda idxStartPoint
+                cmp tblStartPoint,X     ; draw this scanline?
+                bcc _skipSP3            ;   no
+
+                cmp tblEndPoint,X       ; draw this scanline?
+                bcs _skipSP3            ;   no
+
+                tax
+                lda imgPlayerNESW,X
+                ora playerTempByte      ; merge image 3 and save
+                sta playerTempByte
+
+_skipSP3        lda playerYPos
+                ;clc
+                ;adc idxStartPoint
+                ;sec
+                ;sbc #16
+                ;clc
+                ;adc #32
                 sta SPR(sprite_t.Y, 0)
 
-                ldy StartPointIndex
-                lda PlayerTempByte      ; get image byte
-                sta PlyrAnimFrame,Y     ; put in p/m area
+                ldy idxStartPoint
+                lda playerTempByte          ; get image byte
+                sta tblPlayerAnimFrame,Y    ; put in p/m area
 
-                dec StartPointIndex     ; more image?
+                dec idxStartPoint       ; more image?
                 bpl _startPointLoop     ;   yes!
 
                 lda #TRUE
@@ -928,7 +948,7 @@ _noavin         lda PROJSG,X            ; segment 0?
                 bpl _nokilp             ;   no!
 
                 lda ProjGridPos,X       ; same grid as player?
-                cmp PlyrGridPos
+                cmp playerGridPos
                 bne _nokilp             ;   no!
 
                 lda #TRUE               ; the player is dead!

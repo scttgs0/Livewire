@@ -244,7 +244,7 @@ _next2          lda SEGWK,Y             ; copy segwk table to segx
                 cpy #16
                 bne _next2
 
-; NOW THE Y COORDS
+; THE Y COORDS
                 ldx GRIDNO
                 lda SEGY,X              ; set up segwk
                 sta SEGWK               ; with end
@@ -262,9 +262,9 @@ _next3          lda SEGWK,Y             ; copy segwk table to segy
                 cpy #16
                 bne _next3
 
-; ----------------------------
-; NOW GENERATE RIM COORDINATES
-; ----------------------------
+; ------------------------
+; GENERATE RIM COORDINATES
+; ------------------------
 
                 ldx GRIDNO
                 lda RIMX,X              ; set up segwk
@@ -283,7 +283,7 @@ _next4          lda SEGWK,Y             ; copy segwk table to rimx
                 cpy #16
                 bne _next4
 
-; NOW THE RIM Y COORDS
+; THE RIM Y COORDS
                 ldx GRIDNO
                 lda RIMY,X              ; set up segwk
                 sta SEGWK               ; with end
